@@ -2,6 +2,7 @@
 #define INPUT_HANDLER_H
 
 #include "InputInterpreter.h"
+#include "GameUnits.h"
 
 #include <deque>
 #include <vector>
@@ -14,13 +15,15 @@ public:
     void update(float dt);
     Unit::Vec2D getMovement() const;
     bool isHoldingKey(Unit::Input input) const;
-    bool tryRegister(Unit::Input input, float bufferTime);
+    bool tryRegister(Unit::Input input, float bufferTime = InputHandler::BUFFER_TIME);
     void flush();
+
+    // TO DO: Delay
 
 private:
     std::shared_ptr<InputInterpreter> interpreter;
-    
-    const float BUFFER_TIME = 0.4f; // Time in seconds to keep buffer inputs, assumes no move buffers longer that this
+
+    static constexpr float BUFFER_TIME = 0.4f; // Time in seconds to keep buffer inputs, assumes no move buffers longer that this
     struct BufferedInput {
         Unit::Input input;
         float inputtedTime;

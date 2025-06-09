@@ -11,6 +11,7 @@
 #include "KeyboardInputInterpreter.h"
 
 #include "Player.h"
+#include "DemoCharacter.h"
 
 #include <memory>
 #include <vector>
@@ -33,8 +34,11 @@ int main() {
     inputInterpreters[1]->setKeyMapping(Unit::Input::MoveLeft, KEY_A);
     inputInterpreters[1]->setKeyMapping(Unit::Input::MoveRight, KEY_D);
 
-    world->addPlayer(Player(0, inputInterpreters[0], world.get()));
-    world->addPlayer(Player(1, inputInterpreters[1], world.get()));
+    std::unique_ptr<Player> player1 = std::make_unique<Player>(0, std::make_unique<DemoCharacter>(), inputInterpreters[0], world.get(), world.get());
+    std::unique_ptr<Player> player2 = std::make_unique<Player>(1, std::make_unique<DemoCharacter>(), inputInterpreters[1], world.get(), world.get());
+
+    world->addPlayer(std::move(player1));
+    world->addPlayer(std::move(player2));
     
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
@@ -45,7 +49,7 @@ int main() {
 
         DrawText("Maiden is Ball", 10, 10, 20, DARKGRAY);
         
-        for (int i = 0; i < 1; i++)
+        for (int i = 0; i < 2; i++)
         inputInterpreters[i]->update(dt); // Update input interpreters
         
         world->update(dt); // Update game world logic

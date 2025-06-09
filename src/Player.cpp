@@ -1,41 +1,53 @@
 #include "Player.h"
 
-#include "algorithm"
+#include <algorithm>
+#include <cmath>
+#include <raylib.h>
 
-Player::Player(int playerId, std::shared_ptr<InputInterpreter> inputInterpreter, IWorldView* worldView)
+Player::Player(int playerId,
+               std::unique_ptr<Character> character,
+               std::shared_ptr<InputInterpreter> inputInterpreter,
+               IWorldView* worldView,
+               IBulletSpawner* bulletSpawner)
     : playerId(playerId),
-      input(std::move(inputInterpreter)),
+      character(std::move(character)),
+      input(std::make_unique<InputHandler>(std::move(inputInterpreter))),
       world(worldView),
-      health(3), // default values, can be changed
-      stock(2), // default values, can be changed
-      pos(playerId * 500.0f, playerId * 500.0f), // Default position 
-      arrow(0.0f, 1.0f), // Default arrow direction pointing up
-      cooldown{0.0f, 0.0f, 0.0f, 0.0f}
-{}
+      bulletSpawner(bulletSpawner),
+      health(3),
+      stock(2),
+      pos(500 + playerId * 500.0f, 300 + playerId * 500.0f),
+      hitbox(pos, 16.0f),
+      arrow(0.0f, 1.0f)
+{
+    this->character->registerPlayer(this);
+    roundReset();
+}
 
 void Player::update(float dt) {
-    input.update(dt);
+    input->update(dt);
 
-    // Handle movement input (example)
-    Unit::Vec2D movement = input.getMovement();
-    float speed = 690.0f;
-    if (input.isHoldingKey(Unit::Input::Focus)) {
-        speed = 120.0f;
-    }
+    Unit::Vec2D movement = input->getMovement();
+    float speed = input->isHoldingKey(Unit::Input::Focus)
+                    ? character->getFocusedSpeed()
+                    : character->getMoveSpeed();
     pos += movement * dt * speed;
-    
-    // TO DO: character.update(dt, input);
+    hitbox.setPosition(pos);
+
+    character->update(dt, *input);
 
     updateArrow(dt);
     updateCooldowns(dt);
-    updateModifiers(dt);
     updateStatusEffects(dt);
+    updateLocks(dt);
+    updateModifiers(dt);
 }
 
-// void Player::render(Renderer& renderer) const {
-//     character.getGraphicComponent().render(renderer);
-// }
+void Player::render(Renderer& renderer) const {
+    _render(renderer); // TO DO: Delegate this to character's graphics component
+}
 
+// --- Life related ---
 void Player::setHealth(int h) {
     health = std::max(0, h);
 }
@@ -44,86 +56,164 @@ void Player::setStock(int s) {
     stock = std::max(0, s);
 }
 
-void Player::setPos(const Unit::Vec2D& position) {
-    pos = position;
+int Player::getHealth() const {
+    return health;
+}
+
+int Player::getStock() const {
+    return stock;
+}
+
+const Hitbox* Player::getHitbox() const {
+    return &hitbox;
+}
+
+std::string Player::getCharacterName() const {
+    return character->getName();
 }
 
 void Player::registerHit() {
-    health = std::max(0, health - 1); // Decrease health, clamp at 0
+    health = std::max(0, health - 1);
     if (health == 0 && stock > 0) {
         stock--;
     }
 }
 
-void Player::applyCooldown(Unit::Move move, float cd) {
-    cooldown[static_cast<int>(move)] = cd;
-}
-
-void Player::applyStatusEffect() {
-    // TO DO: when status effects are implemented, apply them here
-}
-
-void Player::applyModifier() {
-    // TO DO: When modifiers are implemented, apply them here
-}
-
 void Player::roundReset() {
     health = 3;
-    for (int i = 0; i < Unit::NUM_MOVES; ++i) {
-        applyCooldown(static_cast<Unit::Move>(i), 0.0f);
-    }
+    for (auto& cd : cooldown) cd = 0.0f;
+    for (auto& se : statusEffects) se = 0.0f;
+    for (auto& lock : locks) lock = 0.0f;
+    for (auto& mod : modifierValues) mod = {0.0f, 1.0f};
 }
 
+// --- Exposed Interface ---
+int Player::getId() const {
+    return playerId;
+}
+
+Unit::Vec2D Player::getPosition() const {
+    return pos;
+}
+
+Unit::Vec2D Player::getArrow() const {
+    return arrow;
+}
+
+const std::array<float, Unit::NUM_MOVES>& Player::getCooldown() const {
+    return cooldown;
+}
+
+const std::array<float, Unit::NUM_STATUS_EFFECTS>& Player::getStatusEffects() const {
+    return statusEffects;
+}
+
+const std::array<float, Unit::NUM_LOCKS>& Player::getLocks() const {
+    return locks;
+}
+
+void Player::spawnBullet(std::unique_ptr<Bullet> bullet) {
+    bulletSpawner->spawnBullet(std::move(bullet));
+}
+
+void Player::setPosition(const Unit::Vec2D& position) {
+    pos = position;
+}
+
+void Player::applyCooldown(Unit::Move move, float duration) {
+    cooldown[static_cast<int>(move)] = duration;
+}
+
+void Player::applyStatusEffect(Unit::StatusEffect effect, float duration) {
+    statusEffects[static_cast<int>(effect)] = duration;
+}
+
+void Player::applyLock(Unit::Modifier mod, float duration) {
+    locks[static_cast<int>(mod)] = duration;
+}
+
+void Player::applyModifier(Unit::Modifier mod, float duration, float value) {
+    modifierValues[static_cast<int>(mod)] = {duration, value};
+}
+
+// --- Private Helpers ---
 void Player::updateArrow(float dt) {
-    Unit::Vec2D direction = world->getPlayer(playerId ^ 1)->getPos() - pos;
-    if (direction.magnitude() > 0.01f) {
-        Unit::Vec2D targetArrow = direction.normalized();
-        // Blend toward the target direction
-        float blendFactor = 0.12f;
-        arrow = (arrow * (1.0f - blendFactor) + targetArrow * blendFactor).normalized();
-        
-        float maxAngle = 0.15f; // radians
-        float dot = std::clamp(arrow.dot(targetArrow), -1.0f, 1.0f);
-        float angleBetween = std::acos(dot);
-        if (angleBetween > maxAngle) {
-            // Rotate arrow toward targetArrow to be exactly maxAngle away
-            // Find orthonormal vector
-            Unit::Vec2D axis = { -arrow.y, arrow.x }; // perpendicular to arrow
-            float directionSign = (axis.dot(targetArrow) > 0.0f) ? 1.0f : -1.0f;
-            float cosA = std::cos(maxAngle);
-            float sinA = std::sin(maxAngle) * directionSign;
-            // Rotate arrow by maxAngle toward target
-            arrow = {
-                arrow.x * cosA - arrow.y * sinA,
-                arrow.x * sinA + arrow.y * cosA
-            };
-            arrow = arrow.normalized();
-        }
+    Unit::Vec2D targetPos = world->getPlayer(playerId ^ 1)->getPosition();
+    Unit::Vec2D dir = targetPos - pos;
+
+    if (dir.magnitude() > 0.01f) {
+        Unit::Vec2D targetDir = dir.normalized();
+
+        float dot = std::clamp(arrow.dot(targetDir), -1.0f, 1.0f);
+        float angleToTarget = std::acos(dot);
+
+        if (angleToTarget < 0.001f)
+            return;
+
+        // Rotation direction (2D cross product)
+        float cross = arrow.x * targetDir.y - arrow.y * targetDir.x;
+        float turnDirection = (cross > 0) ? 1.0f : -1.0f;
+
+        // Dynamic max turn speed: proportional to angle difference, with limits
+        constexpr float minTurnSpeed = 2.0f;    // radians/sec, minimal guaranteed speed
+        constexpr float maxTurnSpeed = 10.0f;   // max speed arrow can turn
+        // Increase turn speed when angle is bigger, else use minimal
+        float dynamicTurnSpeed = std::clamp(angleToTarget * 8.0f, minTurnSpeed, maxTurnSpeed);
+
+        // How much we can turn this frame
+        float maxAngleThisFrame = dynamicTurnSpeed * dt;
+        float rotateBy = std::min(angleToTarget, maxAngleThisFrame);
+
+        float cosA = std::cos(rotateBy);
+        float sinA = std::sin(rotateBy) * turnDirection;
+
+        Unit::Vec2D newArrow = {
+            arrow.x * cosA - arrow.y * sinA,
+            arrow.x * sinA + arrow.y * cosA
+        };
+
+        // Smoothly blend toward the new arrow direction to avoid jitter
+        constexpr float smoothing = 10.0f; // responsiveness for interpolation
+        arrow = (newArrow * (1.0f - dt * smoothing) + targetDir * dt * smoothing).normalized();
     }
 }
 
 
 void Player::updateCooldowns(float dt) {
     for (float& cd : cooldown) {
-        if (cd > 0.0f) {
+        if (cd > 0.0f)
             cd = std::max(cd - dt, 0.0f);
-        }
+    }
+}
+
+void Player::updateStatusEffects(float dt) {
+    for (float& se : statusEffects) {
+        if (se > 0.0f)
+            se = std::max(se - dt, 0.0f);
+    }
+}
+
+void Player::updateLocks(float dt) {
+    for (float& lock : locks) {
+        if (lock > 0.0f)
+            lock = std::max(lock - dt, 0.0f);
     }
 }
 
 void Player::updateModifiers(float dt) {
-    // TO DO: When modifiers are implemented, update them here
+    for (auto& [duration, value] : modifierValues) {
+        if (duration > 0.0f) {
+            duration = std::max(duration - dt, 0.0f);
+            if (duration == 0.0f) {
+                value = 1.0f; // Reset to neutral modifier
+            }
+        }
+    }
 }
-
-void Player::updateStatusEffects(float dt) {
-    // TO DO: When status effects are implemented, update them here
-}
-
-
 
 // the big renderer for fun
 #include "raylib.h"
-void Player::render(Renderer& renderer) const {
+void Player::_render(Renderer& renderer) const {
     Vector2 center = { pos.x, pos.y };
 
     // Draw player base with subtle glow (3 layered circles)

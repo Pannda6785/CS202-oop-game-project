@@ -6,6 +6,8 @@
 
 namespace Unit {
 
+    const float EPS = 1e-6;
+
     struct Vec2D {
         float x = 0.0f;
         float y = 0.0f;
@@ -67,7 +69,40 @@ namespace Unit {
     };
     const int NUM_MOVES = static_cast<int>(Move::MoveCount);
 
- 
+    enum class StatusEffect {
+        Invincible,
+        Stun,
+        Paralyze,
+        Confuse,
+        Poison,
+        DeathToll,
+        Mini,
+        Slow,
+        StatusEffectCount // This should always be the last element
+    };
+    const int NUM_STATUS_EFFECTS = static_cast<int>(StatusEffect::StatusEffectCount);
+
+    enum class Lock {
+        MoveLock,
+        ArrowLock,
+        BasicLock,
+        WideLock,
+        OffensiveLock,
+        DefensiveLock,
+        LockCount // This should always be the last element
+    };
+    const int NUM_LOCKS = static_cast<int>(Lock::LockCount);
+
+    enum class Modifier {
+        SpeedModifier,
+        SizeModifier,
+        BulletSizeModifier,
+        CooldownModifier,
+        FlinchModifier,
+        ModifierCount // This should always be the last element
+    };
+    const int NUM_MODIFIERS = static_cast<int>(Modifier::ModifierCount);
+
 };
 
 #endif // GAME_UNITS_H
