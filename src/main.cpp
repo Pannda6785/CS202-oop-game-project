@@ -1,17 +1,16 @@
 #include "raylib.h"
 
-#include "GameUnits.h"
+#include "Unit.hpp"
 
-#include "Renderer.h"
+#include "graphics/GraphicsComponentManager.hpp"
+#include "graphics/Renderer.hpp"
 
-#include "IWorldView.h"
-#include "World.h"
+#include "input/InputInterpreter.hpp"
+#include "input/KeyboardInputInterpreter.hpp"
 
-#include "InputInterpreter.h"
-#include "KeyboardInputInterpreter.h"
-
-#include "Player.h"
-#include "DemoCharacter.h"
+#include "game/World.hpp"
+#include "game/player/Player.hpp"
+#include "game/character/CharacterGraphicsComponent.hpp"
 
 #include <memory>
 #include <vector>
@@ -24,22 +23,37 @@ int main() {
 
     SetTargetFPS(60);
 
+    /*
+        MAIN GAME LOOP
+        + draw dt
+        + update interpreters
+        + update world
+        + render
+        + audio
+    */
+
     std::unique_ptr<World> world = std::make_unique<World>();
-    std::unique_ptr<Renderer> renderer = std::make_unique<Renderer>(world.get());
+    std::unique_ptr<Renderer> renderer = std::make_unique<Renderer>();
 
-    std::vector<std::shared_ptr<KeyboardInputInterpreter>> inputInterpreters = { std::make_shared<KeyboardInputInterpreter>(0), std::make_shared<KeyboardInputInterpreter>(1) };
-
+    std::vector<std::shared_ptr<KeyboardInputInterpreter>> inputInterpreters = { std::make_shared<KeyboardInputInterpreter>(), std::make_shared<KeyboardInputInterpreter>() };
     inputInterpreters[1]->setKeyMapping(Unit::Input::MoveUp, KEY_W);
     inputInterpreters[1]->setKeyMapping(Unit::Input::MoveDown, KEY_S); 
     inputInterpreters[1]->setKeyMapping(Unit::Input::MoveLeft, KEY_A);
     inputInterpreters[1]->setKeyMapping(Unit::Input::MoveRight, KEY_D);
 
-    std::unique_ptr<Player> player1 = std::make_unique<Player>(0, std::make_unique<DemoCharacter>(), inputInterpreters[0], world.get(), world.get());
-    std::unique_ptr<Player> player2 = std::make_unique<Player>(1, std::make_unique<DemoCharacter>(), inputInterpreters[1], world.get(), world.get());
+    std::unique_ptr<Player> player1 = std::make_unique<Player>(0, world.get());
+    std::unique_ptr<Player> player2 = std::make_unique<Player>(1, world.get());
+
+    player1->registerInputInterpreter(inputInterpreters[0]);
+    player2->registerInputInterpreter(inputInterpreters[1]);
+    player1->registerGraphicsComponent(std::make_unique<CharacterGraphicsComponent>(player1.get()));
+    player2->registerGraphicsComponent(std::make_unique<CharacterGraphicsComponent>(player2.get()));
 
     world->addPlayer(std::move(player1));
     world->addPlayer(std::move(player2));
-    
+
+    world->init();
+
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
         float dt = GetFrameTime();
@@ -53,9 +67,8 @@ int main() {
         inputInterpreters[i]->update(dt); // Update input interpreters
         
         world->update(dt); // Update game world logic
-        
-        renderer->renderBattle(); // Render game world
-        renderer->renderHUD(); // Render HUD
+
+        GraphicsComponentManager::instance().render(*renderer); // Update graphics components
 
         EndDrawing();
     }
