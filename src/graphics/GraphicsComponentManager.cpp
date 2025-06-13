@@ -1,6 +1,5 @@
 #include "GraphicsComponentManager.hpp"
 #include "GraphicsComponent.hpp"
-#include "Renderer.hpp"
 
 #include <algorithm>
 
@@ -30,18 +29,18 @@ void GraphicsComponentManager::unregisterComponent(const GraphicsComponent* comp
     }
 }
 
-void GraphicsComponentManager::render(Renderer& renderer) const {
+void GraphicsComponentManager::render() const {
     for (const auto* component : components) {
         if (component->isVisible()) {
-            component->render(renderer);
+            component->render();
         }
     }
 }
 
-void GraphicsComponentManager::renderIf(Renderer& renderer, const std::function<bool(const GraphicsComponent&)>& predicate) const {
+void GraphicsComponentManager::renderIf(const std::function<bool(const GraphicsComponent&)>& predicate) const {
     for (const auto* component : components) {
         if (component->isVisible() && predicate(*component)) {
-            component->render(renderer);
+            component->render();
         }
     }
 }

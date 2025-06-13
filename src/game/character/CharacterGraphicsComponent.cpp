@@ -1,63 +1,88 @@
 #include "CharacterGraphicsComponent.hpp"
+#include "../player/IPlayerView.hpp"
 #include "../hitbox/CircleHitbox.hpp"
 #include <raylib.h>
 #include <algorithm>
 
 CharacterGraphicsComponent::CharacterGraphicsComponent(const IPlayerView* playerView)
     : player(playerView),
-      frameTime(0.0f),
-      hitboxTexture(nullptr),
-      arrowTexture(nullptr)
+      time(0.0f)
 {
     loadTextures();
+    Shader loadedShader = LoadShader(0, "../src/game/character/white_silhouette.fs");
+    whiteSilhouette = new Shader(loadedShader);
 }
 
 CharacterGraphicsComponent::~CharacterGraphicsComponent() {
     unloadTextures();
+    if (whiteSilhouette) {
+        UnloadShader(*whiteSilhouette);  // unload the actual shader
+        delete whiteSilhouette;          // free memory
+        whiteSilhouette = nullptr;
+    }
+}
+
+void CharacterGraphicsComponent::render() const {
+    if (!player) return; // not expected
+    renderUnderlay();
+    renderCharacter();
+    renderOverlay();
 }
 
 void CharacterGraphicsComponent::update(float dt) {
-    frameTime += dt;
+    time += dt;
+    timeBuffer += dt;
+    if (timeBuffer > 1 / animationFPS) {
+        curAnimId++;
+        timeBuffer -= 1 / animationFPS;
+    }
+
+    if (characterSpecificUpdate(dt)) {
+        return;
+    }
+
+    remainingStaggerTime -= dt;
+    if (remainingStaggerTime > Unit::EPS) {
+        if (remainingStaggerTime > wakeAnim.size() / animationFPS) {
+            toRenderCharacterTexture = staggerAnim[curAnimId % staggerAnim.size()];
+            wakeAnimId0 = curAnimId;
+            return;
+        } 
+        if (curAnimId - wakeAnimId0 < wakeAnim.size()) {
+            toRenderCharacterTexture = wakeAnim[curAnimId - wakeAnimId0];
+            return;
+        }
+    }
+
+    Unit::Vec2D movement = player->getMovement();
+
+    if (movement.magnitude() < Unit::EPS) {
+        toRenderCharacterTexture = idleAnim[curAnimId % idleAnim.size()];
+        return;
+    }
+
+    float direction = ((player->getTargetPosition()).x < (player->getPosition()).x) ? -1.0f : 1.0f;
+    if (direction * movement.x > Unit::EPS || (direction * movement.x > -Unit::EPS && movement.y > -Unit::EPS)) {
+        toRenderCharacterTexture = walkAnim[curAnimId % walkAnim.size()];
+        return;
+    }
+    
+    toRenderCharacterTexture = backAnim[curAnimId % backAnim.size()];
 }
 
-void CharacterGraphicsComponent::render(Renderer& /*renderer*/) const {
-    if (!player) return;
+void CharacterGraphicsComponent::resize(float scale) {
+    size *= scale;
+}
+
+void CharacterGraphicsComponent::takeHit(float staggerTime) {
+    remainingStaggerTime = staggerTime;
+}
+
+void CharacterGraphicsComponent::renderUnderlay() const {
+    // TO DO: Properly do this right
 
     Unit::Vec2D pos = player->getPosition();
     Vector2 center = { pos.x, pos.y };
-
-    // Draw character
-    int currentFrame = static_cast<int>(frameTime / characterAnimationSpeed) % std::max(1, static_cast<int>(idle.size()));
-    if (!idle.empty()) {
-        Texture2D tex = *idle[currentFrame];
-        float scale = 0.25f; // adjust to fit your game
-        Vector2 drawPos = {
-            center.x - tex.width * scale / 2.0f + 20 * scale,
-            center.y - tex.height * scale / 2.0f - 30 * scale
-        };
-        DrawTextureEx(tex, drawPos, 0.0f, scale, WHITE);
-    } else {
-        DrawCircleV(center, 20.0f, BLUE);
-    }
-    // Draw arrow
-    Unit::Vec2D arrow = player->getArrow();
-    Vector2 arrowEnd = { pos.x + arrow.x * 40, pos.y + arrow.y * 40 };
-    DrawLineEx(center, arrowEnd, 3.0f, RED);
-    Vector2 perp = { -arrow.y, arrow.x };  // perpendicular vector
-    Vector2 tip = arrowEnd;
-    Vector2 baseLeft = { tip.x - arrow.x * 10 + perp.x * 5, tip.y - arrow.y * 10 + perp.y * 5 };
-    Vector2 baseRight = { tip.x - arrow.x * 10 - perp.x * 5, tip.y - arrow.y * 10 - perp.y * 5 };
-    Vector2 points[3] = { tip, baseLeft, baseRight };
-    DrawTriangle(points[0], points[1], points[2], RED);
-
-    // Draw hitbox
-    const CircleHitbox* hitbox = player->getHitbox();
-    if (hitbox) {
-        Unit::Vec2D pos = hitbox->getPosition();
-        Vector2 center = { pos.x, pos.y };
-        float radius = hitbox->getRadius();
-        DrawCircleV(center, radius, RED);
-    }
 
     // Draw health as hearts below player
     const float heartSpacing = 22;
@@ -100,70 +125,68 @@ void CharacterGraphicsComponent::render(Renderer& /*renderer*/) const {
             GREEN
         );
     }
+
+    // Draw arrow
+    Unit::Vec2D arrow = player->getArrow();
+    Vector2 arrowEnd = { pos.x + arrow.x * 40, pos.y + arrow.y * 40 };
+    DrawLineEx(center, arrowEnd, 3.0f, RED);
+    Vector2 perp = { -arrow.y, arrow.x };  // perpendicular vector
+    Vector2 tip = arrowEnd;
+    Vector2 baseLeft = { tip.x - arrow.x * 10 + perp.x * 5, tip.y - arrow.y * 10 + perp.y * 5 };
+    Vector2 baseRight = { tip.x - arrow.x * 10 - perp.x * 5, tip.y - arrow.y * 10 - perp.y * 5 };
+    Vector2 points[3] = { tip, baseLeft, baseRight };
+    DrawTriangle(points[0], points[1], points[2], RED);
 }
 
-void CharacterGraphicsComponent::takeHit() {
-    frameTime = 0.0f;
+void CharacterGraphicsComponent::renderOverlay() const {
+    // TO DO: Properly do this right
+
+    // Draw hitbox
+    const CircleHitbox* hitbox = dynamic_cast<const CircleHitbox*>(player->getHitbox());
+    if (hitbox) {
+        Unit::Vec2D pos = hitbox->getPosition();
+        Vector2 center = { pos.x, pos.y };
+        float radius = hitbox->getRadius();
+        DrawCircleV(center, radius, RED);
+    }
 }
 
-void CharacterGraphicsComponent::loadTextures() {
-    std::string character_path = "../assets/sprites/priestess/";
+void CharacterGraphicsComponent::renderCharacter() const {
+    if (!toRenderCharacterTexture) return; // not expected
+    Texture tex = *toRenderCharacterTexture;
 
-    for (int i = 0; i <= 1; ++i) {
-        std::string path = character_path + "movement/idle" + std::to_string(i) + ".png";
-        idle.push_back(new Texture2D(LoadTexture(path.c_str())));
-    }
+    Unit::Vec2D pos = player->getPosition();
+    Vector2 center = { pos.x, pos.y };
 
-    for (int i = 0; i <= 1; ++i) {
-        std::string path = character_path + "movement/walk" + std::to_string(i) + ".png";
-        walkForward.push_back(new Texture2D(LoadTexture(path.c_str())));
-    }
+    float scale = 0.25f * size;
+    float direction = ((player->getTargetPosition()).x < (player->getPosition()).x) ? -1.0f : 1.0f;
 
-    for (int i = 0; i <= 1; ++i) {
-        std::string path = character_path + "movement/back" + std::to_string(i) + ".png";
-        walkBackward.push_back(new Texture2D(LoadTexture(path.c_str())));
-    }
-
-    for (int i = 0; i <= 1; ++i) {
-        std::string path = character_path + "hit/stagger" + std::to_string(i) + ".png";
-        stagger.push_back(new Texture2D(LoadTexture(path.c_str())));
-    }
-
-    for (int i = 0; i <= 5; ++i) {
-        std::string path = character_path + "hit/wake" + std::to_string(i) + ".png";
-        wakeup.push_back(new Texture2D(LoadTexture(path.c_str())));
-    }
-
-    // hitboxTexture = new Texture2D(LoadTexture("..."));
-    // arrowTexture = new Texture2D(LoadTexture("..."));
-}
-
-void CharacterGraphicsComponent::unloadTextures() {
-    auto freeTextures = [](std::vector<Texture*>& textures) {
-        for (Texture* tex : textures) {
-            if (tex) {
-                UnloadTexture(*tex);
-                delete tex;
-            }
-        }
-        textures.clear();
+    Rectangle srcRect = {
+        0.0f, 0.0f,
+        direction * tex.width, (float)tex.height
     };
 
-    freeTextures(idle);
-    freeTextures(walkForward);
-    freeTextures(walkBackward);
-    freeTextures(stagger);
-    freeTextures(wakeup);
+    Rectangle destRect = {
+        center.x, center.y,
+        tex.width * scale, tex.height * scale
+    };
 
-    if (hitboxTexture) {
-        UnloadTexture(*hitboxTexture);
-        delete hitboxTexture;
-        hitboxTexture = nullptr;
-    }
+    Vector2 origin = {
+        tex.width * scale / 2.0f,
+        tex.height * scale / 2.0f
+    };
 
-    if (arrowTexture) {
-        UnloadTexture(*arrowTexture);
-        delete arrowTexture;
-        arrowTexture = nullptr;
+    float inv = player->getInvincibility();
+
+    if (inv > Unit::EPS) {
+        float flashAlpha = 0.5f * (sinf(time * flashFrequency * 2.0f * PI) + 1.0f);
+        BeginShaderMode(*whiteSilhouette);
+        int flashLoc = GetShaderLocation(*whiteSilhouette, "flashAmount");
+        SetShaderValue(*whiteSilhouette, flashLoc, &flashAlpha, SHADER_UNIFORM_FLOAT);
+        DrawTexturePro(tex, srcRect, destRect, origin, 0.0f, WHITE); 
+        EndShaderMode();
+    } else {
+        // Normal rendering
+        DrawTexturePro(tex, srcRect, destRect, origin, 0.0f, WHITE);
     }
 }

@@ -29,7 +29,7 @@ Unit::Vec2D KeyboardInputInterpreter::getMovement() const {
     if (IsKeyDown(keyMapping[static_cast<int>(Unit::Input::MoveRight)])) movement.x += 1.0f;
 
     if (movement.magnitude() > 0.1f) {
-        movement = movement.normalized(); // Normalize the movement vector
+        movement = movement.normalized();
     }
 
     return movement;

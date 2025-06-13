@@ -4,23 +4,24 @@
 #include "IPlayerControl.hpp"
 #include "IPlayerView.hpp"
 
-#include "../IWorldView.hpp"
 #include "InputBufferer.hpp"
 #include "../character/Character.hpp"
 #include "../character/CharacterGraphicsComponent.hpp"
-#include "../hitbox/CircleHitbox.hpp"
+#include "../hitbox/Hitbox.hpp"
 
 #include <array>
 #include <memory>
 #include <string>
+
+class IWorldView;
 
 class Player : public IPlayerControl, public IPlayerView {
 public:
     Player(int playerId, IWorldView* worldView);
 
     // Update methods
-    void update(float dt);
     void init();
+    void update(float dt);
     void takeHit();
     void confirmHit();
     void roundReset();
@@ -36,7 +37,7 @@ public:
     int getStock() const override;
     void setHealth(int h);
     void setStock(int s);
-    const CircleHitbox* getHitbox() const override;
+    const Hitbox* getHitbox() const override;
     
     // Positional data
     Unit::Vec2D getPosition() const override;
@@ -67,7 +68,7 @@ private:
     int playerId;
     int health;
     int stock;
-    std::unique_ptr<CircleHitbox> hitbox;
+    std::unique_ptr<Hitbox> hitbox;
 
     // Positional data
     Unit::Vec2D pos;

@@ -78,7 +78,7 @@ namespace Unit {
         SizeModifier,
         BulletSizeModifier,
         CooldownModifier,
-        FlinchModifier,
+        StaggerModifier,
         ModifierCount // This should always be the last element
     };
     const int NUM_MODIFIERS = static_cast<int>(Modifier::ModifierCount);

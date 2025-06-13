@@ -5,7 +5,7 @@
 
 #include <array>
 
-class CircleHitbox;
+class Hitbox;
 
 class IPlayerView {
 public:
@@ -17,7 +17,7 @@ public:
     virtual int getStock() const = 0;
 
     // Positional data
-    virtual const CircleHitbox* getHitbox() const = 0;
+    virtual const Hitbox* getHitbox() const = 0;
     virtual Unit::Vec2D getPosition() const = 0;
     virtual Unit::Vec2D getArrow() const = 0;
     virtual Unit::Vec2D getMovement() const = 0;

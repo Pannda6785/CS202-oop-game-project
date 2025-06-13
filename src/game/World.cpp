@@ -24,7 +24,7 @@ const Player* World::getPlayer(int playerId) const {
             return player.get();
         }
     }
-    return nullptr; // Not found
+    return nullptr;
 }
 
 std::vector<const Player*> World::getPlayers() const {
@@ -87,34 +87,33 @@ void World::handleCollisions() {
         }
     }
 
+    std::vector<std::pair<int, int>> hits; // (hitPlayerHit, hitterIf)
     // --- Bullet vs Player ---
     for (size_t i = 0; i < bullets.size(); ++i) {
         if (bullets[i]->isDone() || toDelete[i]) continue;
         const Hitbox* dmg = bullets[i]->getDamagingHitbox();
         if (dmg) {
+            int playerId = -1;
             for (auto& player : players) {
+                playerId++;
+                bool alreadyHit = false;
+                for (const auto& hit : hits) {
+                    if (hit.first == playerId && hit.second == bullets[i]->isWhose()) {
+                        alreadyHit = true;
+                        break;
+                    }
+                }
+                if (alreadyHit) continue; // Skip if already hit this player
                 if (player->getInvincibility() < Unit::EPS 
                         && player->getPlayerId() != bullets[i]->isWhose() 
                         && dmg->collidesWith(*player->getHitbox())) {
-                    player->takeHit();
-
-                    Player* p = nullptr;
-                    for (auto& pPtr : players) {
-                        if (pPtr->getPlayerId() == bullets[i]->isWhose()) {
-                            p = pPtr.get();
-                            break;
-                        }
-                    }
-                    if (p) {
-                        p->confirmHit(); // Confirm hit for the player who shot the bullet
-                    }
-                    
+                    hits.emplace_back(playerId, bullets[i]->isWhose());
                     toDelete[i] = true; // Mark bullet for deletion
                     break; // No need to check other players
                 }
             }
         }
-
+        
         /* if debuff is ever implemented */
         // for (const auto& [hb, effect, duration, targetId] : bullets[i]->getStatusEffectHitboxes()) {
         //     if (!hb) continue;
@@ -124,6 +123,15 @@ void World::handleCollisions() {
         //         }
         //     }
         // }
+    }
+
+    for (auto [hitPlayerId, hitterId] : hits) {
+        Player* hitPlayer = players[hitPlayerId].get();
+        hitPlayer->takeHit();
+        if (hitterId < players.size()) {
+            Player* hitter = players[hitterId].get();
+            hitter->confirmHit();
+        }
     }
 
     // --- Remove marked bullets ---

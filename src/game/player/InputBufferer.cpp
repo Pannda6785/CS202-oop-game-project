@@ -29,23 +29,18 @@ bool InputBufferer::isHoldingKey(Unit::Input input) const {
 bool InputBufferer::tryRegister(Unit::Input input, float bufferTime) {
     float thresholdTime = currentTime - bufferTime;
 
-    // We'll store the iterator to the earliest matched input found from the back
-    bool matchFound = false;
-    std::deque<BufferedInput>::iterator matchIt;
+    std::deque<BufferedInput>::iterator matchIt = bufferQueue.begin();
 
-    // Iterate backwards through the bufferQueue
     for (auto it = bufferQueue.rbegin(); it != bufferQueue.rend(); ++it) {
         if (it->inputtedTime < thresholdTime) {
-            break; // Since we're going backward, any earlier inputs are older and can be ignored
+            break;
         }
         if (it->input == input) {
-            matchFound = true;
             matchIt = it.base(); // points to the next(matched element) in normal iterator form
         }
     }
 
-    if (matchFound) {
-        // Remove all inputs up to and including the matched input
+    if (matchIt != bufferQueue.begin()) {
         bufferQueue.erase(bufferQueue.begin(), matchIt);
         return true;
     }

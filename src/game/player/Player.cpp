@@ -1,4 +1,6 @@
 #include "Player.hpp"
+#include "../hitbox/CircleHitbox.hpp"
+#include "../IWorldView.hpp"
 
 #include <algorithm>
 #include <cmath>
@@ -10,26 +12,27 @@ Player::Player(int playerId, IWorldView* worldView)
 {}
 
 // --- Update methods ---
-void Player::update(float dt) {
-    input->update(dt);
-    updateMovement(dt);
-    hitbox->setPosition(pos);
-    updateArrow(dt);
-    // character->update(dt);
-    invincibility = std::max(0.0f, invincibility - dt);
-    updateLocks(dt);
-    updateModifiers(dt);
-    graphics->update(dt);
-}
-
 void Player::init() {
     setPosition({500 + playerId * 500.0f, 300 + playerId * 100.0f});
     arrow = {0.0f, 1.0f};
     stock = 2;
     roundReset();
     applyInvincibility(3.0f, true);
-    // character->registerPlayer(this);
-    // character->registerInputBufferer(input.get());
+    character->registerPlayer(this);
+    character->registerInputBufferer(input.get());
+    character->init();
+}
+
+void Player::update(float dt) {
+    input->update(dt);
+    updateMovement(dt);
+    hitbox->setPosition(pos);
+    updateArrow(dt);
+    character->update(dt);
+    invincibility = std::max(0.0f, invincibility - dt);
+    updateLocks(dt);
+    updateModifiers(dt);
+    graphics->update(dt);
 }
 
 void Player::takeHit() {
@@ -39,13 +42,13 @@ void Player::takeHit() {
         roundReset();
     }
     applyInvincibility(3.0f);
-    applyModifier(Unit::Modifier::MovementModifier, 2.0f * modifiers[static_cast<int>(Unit::Modifier::FlinchModifier)].second, 0.5f);
-    applyLock(Unit::Lock::MovementLock, 1.5f * modifiers[static_cast<int>(Unit::Modifier::FlinchModifier)].second);
-    applyLock(Unit::Lock::BasicLock, 1.6f * modifiers[static_cast<int>(Unit::Modifier::FlinchModifier)].second);
-    applyLock(Unit::Lock::WideLock, 1.6f * modifiers[static_cast<int>(Unit::Modifier::FlinchModifier)].second);
-    applyLock(Unit::Lock::OffensiveLock, 1.6f * modifiers[static_cast<int>(Unit::Modifier::FlinchModifier)].second);
-    applyLock(Unit::Lock::DefensiveLock, 1.6f * modifiers[static_cast<int>(Unit::Modifier::FlinchModifier)].second);
-    graphics->takeHit();
+    applyModifier(Unit::Modifier::MovementModifier, 2.0f * modifiers[static_cast<int>(Unit::Modifier::StaggerModifier)].second, 0.5f);
+    applyLock(Unit::Lock::MovementLock, 1.5f * modifiers[static_cast<int>(Unit::Modifier::StaggerModifier)].second);
+    applyLock(Unit::Lock::BasicLock, 1.6f * modifiers[static_cast<int>(Unit::Modifier::StaggerModifier)].second);
+    applyLock(Unit::Lock::WideLock, 1.6f * modifiers[static_cast<int>(Unit::Modifier::StaggerModifier)].second);
+    applyLock(Unit::Lock::OffensiveLock, 1.6f * modifiers[static_cast<int>(Unit::Modifier::StaggerModifier)].second);
+    applyLock(Unit::Lock::DefensiveLock, 1.6f * modifiers[static_cast<int>(Unit::Modifier::StaggerModifier)].second);
+    graphics->takeHit(1.5f); // how long movement lock
 }
 
 void Player::confirmHit() {
@@ -74,8 +77,8 @@ void Player::registerCharacter(std::unique_ptr<Character> character) {
 }
 
 void Player::registerGraphicsComponent(std::unique_ptr<CharacterGraphicsComponent> graphicsComponent) {
-    graphics = std::move(graphicsComponent);
     // it is expected that the character will register the graphics component
+    graphics = std::move(graphicsComponent);
 }
 
 // --- Life data ---
@@ -99,7 +102,7 @@ void Player::setStock(int s) {
     stock = std::max(0, s);
 }
 
-const CircleHitbox* Player::getHitbox() const {
+const Hitbox* Player::getHitbox() const {
     return hitbox.get();
 }
 
@@ -177,8 +180,8 @@ void Player::updateMovement(float dt) {
     if (locks[static_cast<int>(Unit::Lock::MovementLock)] > 0.0f) {
         speed = 0;
     }
-    movement = input->getMovement() * dt * speed;
-    pos += movement;
+    movement = input->getMovement() * speed;
+    pos += movement * dt;
 }
 
 void Player::updateArrow(float dt) {

@@ -5,7 +5,6 @@
 #include <functional>
 
 class GraphicsComponent;
-class Renderer;
 
 class GraphicsComponentManager {
 public:
@@ -14,8 +13,8 @@ public:
     void registerComponent(const GraphicsComponent* component);
     void unregisterComponent(const GraphicsComponent* component);
 
-    void render(Renderer& renderer) const;
-    void renderIf(Renderer& renderer, const std::function<bool(const GraphicsComponent&)>& predicate) const;
+    void render() const;
+    void renderIf(const std::function<bool(const GraphicsComponent&)>& predicate) const;
 
 private:
     GraphicsComponentManager() = default;
