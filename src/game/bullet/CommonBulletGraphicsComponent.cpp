@@ -26,11 +26,11 @@ void CommonBulletGraphicsComponent::render() const {
 
     if (useTexture && texture) {
         Color tint = WHITE;
-        tint.a = bullet->isStartedUp() ? 255 : 128; // Semi-transparent if not started up
+        tint.a = bullet->getDamagingHitbox() ? 255 : 128; // Semi-transparent if not started up
         DrawTextureEx(*texture, { pos.x - texture->width/2.0f, pos.y - texture->height/2.0f }, 0.0f, 1.0f, tint);
     } else {
         Color tint = RED;
-        tint.a = bullet->isStartedUp() ? 255 : 128; // Semi-transparent if not started up
+        tint.a = bullet->getDamagingHitbox() ? 255 : 128; // Semi-transparent if not started up
         DrawCircleV(pos, radius, tint);
     }
 }

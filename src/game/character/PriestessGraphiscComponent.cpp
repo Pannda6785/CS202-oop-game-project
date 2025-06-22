@@ -2,9 +2,7 @@
 #include <raylib.h>
 #include <string>
 
-PriestessGraphicsComponent::PriestessGraphicsComponent(const IPlayerView* playerView)
-    : CharacterGraphicsComponent(playerView)
-{
+PriestessGraphicsComponent::PriestessGraphicsComponent() : CharacterGraphicsComponent() {
     loadTextures();
 }
 

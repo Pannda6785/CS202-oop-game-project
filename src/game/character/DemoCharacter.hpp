@@ -9,13 +9,11 @@
 
 class DemoCharacter : public Character {
 public:
-    DemoCharacter(IBulletSpawner* world);  
+    DemoCharacter();
 
     void init() override;
-    void update(float dt) override;
+    void update(float dt, InputBufferer* input) override;
 
-private:
-    std::array<float, Unit::NUM_MOVES> cooldown;
 };
 
 #endif // DEMO_CHARACTER_HPP

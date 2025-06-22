@@ -34,7 +34,6 @@ public:
 
     const Unit::Vec2D& getPosition() const;
     const Unit::Vec2D& getVelocity() const;
-    const bool isStartedUp() const;
 
 private:
     Unit::Vec2D pos;

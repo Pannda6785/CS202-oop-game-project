@@ -6,7 +6,6 @@
 
 #include "InputBufferer.hpp"
 #include "../character/Character.hpp"
-#include "../character/CharacterGraphicsComponent.hpp"
 #include "../hitbox/Hitbox.hpp"
 
 #include <array>
@@ -14,10 +13,12 @@
 #include <string>
 
 class IWorldView;
+class IBulletSpawner;
 
 class Player : public IPlayerControl, public IPlayerView {
 public:
-    Player(int playerId, IWorldView* worldView);
+    Player(int playerId, IWorldView* worldView, IBulletSpawner* bulletSpawner,
+            std::unique_ptr<Character> character, std::shared_ptr<InputInterpreter> inputInterpreter);
 
     // Update methods
     void init();
@@ -26,18 +27,16 @@ public:
     void confirmHit();
     void roundReset();
 
-    // Register components, these must be called before the game starts (init())
-    void registerInputInterpreter(std::shared_ptr<InputInterpreter> inputInterpreter);
-    void registerCharacter(std::unique_ptr<Character> character);
-    void registerGraphicsComponent(std::unique_ptr<CharacterGraphicsComponent> graphicsComponent);
+    // World interaction
+    void spawnBullet(std::unique_ptr<Bullet> bullet);
 
     // Life data
     int getPlayerId() const override;
     int getHealth() const override;
     int getStock() const override;
+    const Hitbox* getHitbox() const override;
     void setHealth(int h);
     void setStock(int s);
-    const Hitbox* getHitbox() const override;
     
     // Positional data
     Unit::Vec2D getPosition() const override;
@@ -48,23 +47,24 @@ public:
     
     // Status data
     float getInvincibility() const override;
-    const std::array<std::pair<float, float>, Unit::NUM_MODIFIERS>& getModifiers() const override;
-    const std::array<float, Unit::NUM_LOCKS>& getLocks() const override;
-    void applyInvincibility(float duration, bool force = false) override;
-    void applyLock(Unit::Lock lock, float duration, bool force = false) override;
-    void applyModifier(Unit::Modifier mod, float duration, float value, bool force = false) override;
+    std::pair<float, float> getModifier(Unit::Modifier mod) const override;
+    float getLock(Unit::Lock lock) const override;
+    float getCooldown(Unit::Move move) const override;
 
-    // Character data
+    void applyInvincibility(float duration, bool force = false) override;
+    void applyModifier(Unit::Modifier mod, float duration, float value, bool force = false) override;
+    void applyLock(Unit::Lock lock, float duration, bool force = false) override;
+    void applyCooldown(Unit::Move move, float duration, bool force = false) override;
 
 private:
     IWorldView* world;
+    IBulletSpawner* bulletSpawner;
 
     // Behavioral components
     std::unique_ptr<InputBufferer> input;
     std::unique_ptr<Character> character;
-    std::unique_ptr<CharacterGraphicsComponent> graphics;
 
-    // Basic stats
+    // Life data
     int playerId;
     int health;
     int stock;
@@ -75,16 +75,16 @@ private:
     Unit::Vec2D arrow;
     Unit::Vec2D movement;
 
-    // State trackers
+    // Status data
     float invincibility;
-    std::array<float, Unit::NUM_LOCKS> locks{};
     std::array<std::pair<float, float>, Unit::NUM_MODIFIERS> modifiers{}; // duration and values
+    std::array<float, Unit::NUM_LOCKS> locks{};
+    std::array<float, Unit::NUM_MOVES> cooldown{};
 
     // Helpers
     void updateMovement(float dt);
     void updateArrow(float dt);
-    void updateLocks(float dt);
-    void updateModifiers(float dt);
+    void updateStatus(float dt);
 };
 
 #endif // PLAYER_HPP

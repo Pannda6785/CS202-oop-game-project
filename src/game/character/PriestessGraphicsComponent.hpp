@@ -5,7 +5,7 @@
 
 class PriestessGraphicsComponent : public CharacterGraphicsComponent {
 public:
-    PriestessGraphicsComponent(const IPlayerView* playerView);
+    PriestessGraphicsComponent();
     ~PriestessGraphicsComponent() override;
 
 protected:

@@ -48,17 +48,22 @@ namespace Unit {
     };
 
     enum class Input {
+        MoveRight,
+        MoveLeft,
+        MoveUp,
+        MoveDown,
+
+        Confirm,
+        Back,
+        Pause,
+        Toggle,
+
         Basic,
         Wide,
         Offensive,
         Defensive,
         Focus,
-        Toggle,
-        Pause,
-        MoveRight,
-        MoveLeft,
-        MoveUp,
-        MoveDown,
+        
         InputCount // This should always be the last element
     };
     const int NUM_INPUTS = static_cast<int>(Input::InputCount);

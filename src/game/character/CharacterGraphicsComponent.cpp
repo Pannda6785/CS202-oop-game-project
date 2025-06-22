@@ -1,20 +1,18 @@
 #include "CharacterGraphicsComponent.hpp"
+
 #include "../player/IPlayerView.hpp"
 #include "../hitbox/CircleHitbox.hpp"
+
 #include <raylib.h>
 #include <algorithm>
 
-CharacterGraphicsComponent::CharacterGraphicsComponent(const IPlayerView* playerView)
-    : player(playerView),
-      time(0.0f)
-{
-    loadTextures();
+CharacterGraphicsComponent::CharacterGraphicsComponent() {
+    setVisible(false);
     Shader loadedShader = LoadShader(0, "../src/game/character/white_silhouette.fs");
     whiteSilhouette = new Shader(loadedShader);
 }
 
 CharacterGraphicsComponent::~CharacterGraphicsComponent() {
-    unloadTextures();
     if (whiteSilhouette) {
         UnloadShader(*whiteSilhouette);  // unload the actual shader
         delete whiteSilhouette;          // free memory
@@ -22,8 +20,15 @@ CharacterGraphicsComponent::~CharacterGraphicsComponent() {
     }
 }
 
+void CharacterGraphicsComponent::registerPlayer(IPlayerView* playerView) {
+    player = playerView;
+}
+
+void CharacterGraphicsComponent::init() {
+    setVisible(true);
+}
+
 void CharacterGraphicsComponent::render() const {
-    if (!player) return; // not expected
     renderUnderlay();
     renderCharacter();
     renderOverlay();
@@ -37,11 +42,7 @@ void CharacterGraphicsComponent::update(float dt) {
         timeBuffer -= 1 / animationFPS;
     }
 
-    if (characterSpecificUpdate(dt)) {
-        return;
-    }
-
-    remainingStaggerTime -= dt;
+    remainingStaggerTime = std::max(0.0f, remainingStaggerTime - dt);
     if (remainingStaggerTime > Unit::EPS) {
         if (remainingStaggerTime > wakeAnim.size() / animationFPS) {
             toRenderCharacterTexture = staggerAnim[curAnimId % staggerAnim.size()];
@@ -52,6 +53,10 @@ void CharacterGraphicsComponent::update(float dt) {
             toRenderCharacterTexture = wakeAnim[curAnimId - wakeAnimId0];
             return;
         }
+    }
+
+    if (characterSpecificUpdate(dt)) {
+        return;
     }
 
     Unit::Vec2D movement = player->getMovement();
@@ -152,7 +157,6 @@ void CharacterGraphicsComponent::renderOverlay() const {
 }
 
 void CharacterGraphicsComponent::renderCharacter() const {
-    if (!toRenderCharacterTexture) return; // not expected
     Texture tex = *toRenderCharacterTexture;
 
     Unit::Vec2D pos = player->getPosition();

@@ -48,7 +48,3 @@ const Unit::Vec2D& CommonBullet::getPosition() const {
 const Unit::Vec2D& CommonBullet::getVelocity() const {
     return vel;
 }
-
-const bool CommonBullet::isStartedUp() const {
-    return startedUp;
-}

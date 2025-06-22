@@ -1,31 +1,32 @@
 #ifndef CHARACTER_HPP
 #define CHARACTER_HPP
 
+#include "CharacterGraphicsComponent.hpp"
+
+#include <memory>
 #include <string>
 
-class IBulletSpawner;
 class IPlayerControl;
 class InputBufferer;
 
 class Character {
 public:
-    Character(IBulletSpawner* bulletSpawnerRef);
     virtual ~Character() = default;
 
+    void registerPlayer(IPlayerControl* playerRef);
+    
     virtual void init() = 0;
-    virtual void update(float dt) = 0;
+    virtual void update(float dt, InputBufferer* input) = 0;
 
     std::string getName();
     float getMoveSpeed();
     float getFocusedSpeed();
 
-    void registerPlayer(IPlayerControl* playerRef);
-    void registerInputBufferer(InputBufferer* inputRef);
+    CharacterGraphicsComponent* getGraphics();
 
 protected:
-    IBulletSpawner* bulletSpawner;
-    IPlayerControl* player = nullptr;
-    InputBufferer* input = nullptr;
+    IPlayerControl* player;
+    std::unique_ptr<CharacterGraphicsComponent> graphics;
 
     std::string name;
     float moveSpeed;

@@ -13,10 +13,13 @@ class Shader;
 
 class CharacterGraphicsComponent : public GraphicsComponent {
 public:
-    CharacterGraphicsComponent(const IPlayerView* playerView);
+    CharacterGraphicsComponent();
     virtual ~CharacterGraphicsComponent();
 
+    void registerPlayer(IPlayerView* playerView);
+
     void render() const override;
+    void init();
     void update(float dt);
 
     // Event based
@@ -24,10 +27,11 @@ public:
     void takeHit(float staggerTime);
 
 protected:
-    virtual void loadTextures() {};
-    virtual void unloadTextures() {};
+    virtual void loadTextures() = 0;
+    virtual void unloadTextures() = 0;
     virtual bool characterSpecificUpdate(float dt) { return false; };
 
+private:
     void renderUnderlay() const; // magic circle, ring, arrow
     void renderOverlay() const; // hitbox
     void renderCharacter() const; // character and all that animations

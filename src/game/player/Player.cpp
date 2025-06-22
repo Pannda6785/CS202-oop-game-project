@@ -1,26 +1,42 @@
 #include "Player.hpp"
-#include "../hitbox/CircleHitbox.hpp"
+
 #include "../IWorldView.hpp"
+#include "../IBulletSpawner.hpp"
+#include "../bullet/Bullet.hpp"
+
+#include "../hitbox/CircleHitbox.hpp"
+#include "../character/CharacterGraphicsComponent.hpp"
 
 #include <algorithm>
 #include <cmath>
 
-Player::Player(int playerId, IWorldView* worldView)
-    : playerId(playerId),
-      world(worldView),
-      hitbox(std::make_unique<CircleHitbox>(pos, 6.0f))
-{}
+Player::Player(int playerId, IWorldView* worldView, IBulletSpawner* bulletSpawner,
+            std::unique_ptr<Character> character, std::shared_ptr<InputInterpreter> inputInterpreter) 
+        : playerId(playerId), world(worldView), bulletSpawner(bulletSpawner), 
+          character(std::move(character)), input(std::make_unique<InputBufferer>(inputInterpreter)) 
+{
+    this->character->registerPlayer(this);
+    this->character->getGraphics()->registerPlayer(this);
+
+    health = 3;
+    stock = 2;
+
+    pos = {500 + playerId * 500.0f, 300 + playerId * 100.0f};
+    arrow = {0.0f, 1.0f};
+    movement = {0.0f, 0.0f};
+    
+    hitbox = std::make_unique<CircleHitbox>(pos, 6.0f);
+}
 
 // --- Update methods ---
 void Player::init() {
-    setPosition({500 + playerId * 500.0f, 300 + playerId * 100.0f});
-    arrow = {0.0f, 1.0f};
-    stock = 2;
-    roundReset();
-    applyInvincibility(3.0f, true);
-    character->registerPlayer(this);
-    character->registerInputBufferer(input.get());
     character->init();
+    character->getGraphics()->init();
+    
+    for (auto& lock : locks) lock = 0.0f;
+    for (auto& mod : modifiers) mod = {0.0f, 1.0f};
+    for (auto& cd : cooldown) cd = 0.0f;
+    applyInvincibility(3.0f, true);
 }
 
 void Player::update(float dt) {
@@ -28,11 +44,9 @@ void Player::update(float dt) {
     updateMovement(dt);
     hitbox->setPosition(pos);
     updateArrow(dt);
-    character->update(dt);
-    invincibility = std::max(0.0f, invincibility - dt);
-    updateLocks(dt);
-    updateModifiers(dt);
-    graphics->update(dt);
+    character->update(dt, input.get());
+    updateStatus(dt);
+    character->getGraphics()->update(dt);
 }
 
 void Player::takeHit() {
@@ -48,7 +62,7 @@ void Player::takeHit() {
     applyLock(Unit::Lock::WideLock, 1.6f * modifiers[static_cast<int>(Unit::Modifier::StaggerModifier)].second);
     applyLock(Unit::Lock::OffensiveLock, 1.6f * modifiers[static_cast<int>(Unit::Modifier::StaggerModifier)].second);
     applyLock(Unit::Lock::DefensiveLock, 1.6f * modifiers[static_cast<int>(Unit::Modifier::StaggerModifier)].second);
-    graphics->takeHit(1.5f); // how long movement lock
+    character->getGraphics()->takeHit(1.7f * modifiers[static_cast<int>(Unit::Modifier::StaggerModifier)].second); // how long movement lock
 }
 
 void Player::confirmHit() {
@@ -61,24 +75,9 @@ void Player::roundReset() {
     for (auto& mod : modifiers) mod = {0.0f, 1.0f};
 }
 
-// --- Register components ---
-void Player::registerInputInterpreter(std::shared_ptr<InputInterpreter> inputInterpreter) {
-    input = std::make_unique<InputBufferer>(inputInterpreter);
-    // if (character) {
-    //     character->registerInputBufferer(input.get());
-    // }
-}
-
-void Player::registerCharacter(std::unique_ptr<Character> character) {
-    this->character = std::move(character);
-    // character->registerPlayer(this);
-    // character->setGraphicsComponent(graphics.get());
-    // if (input) character->registerInputBufferer(input.get());
-}
-
-void Player::registerGraphicsComponent(std::unique_ptr<CharacterGraphicsComponent> graphicsComponent) {
-    // it is expected that the character will register the graphics component
-    graphics = std::move(graphicsComponent);
+// --- Operations ---
+void Player::spawnBullet(std::unique_ptr<Bullet> bullet) {
+    bulletSpawner->spawnBullet(move(bullet));
 }
 
 // --- Life data ---
@@ -130,7 +129,6 @@ Unit::Vec2D Player::getTargetPosition() const {
 
 void Player::setPosition(const Unit::Vec2D& newPos) {
     pos = newPos;
-    if (hitbox) hitbox->setPosition(pos);
 }
 
 // --- Status data ---
@@ -138,12 +136,16 @@ float Player::getInvincibility() const {
     return invincibility;
 }
 
-const std::array<std::pair<float, float>, Unit::NUM_MODIFIERS>& Player::getModifiers() const {
-    return modifiers;
+std::pair<float, float> Player::getModifier(Unit::Modifier mod) const {
+    return modifiers[static_cast<int>(mod)];
 }
 
-const std::array<float, Unit::NUM_LOCKS>& Player::getLocks() const {
-    return locks;
+float Player::getLock(Unit::Lock lock) const {
+    return locks[static_cast<int>(lock)];
+}
+
+float Player::getCooldown(Unit::Move move) const {
+    return cooldown[static_cast<int>(move)];
 }
 
 void Player::applyInvincibility(float duration, bool force) {
@@ -154,6 +156,11 @@ void Player::applyInvincibility(float duration, bool force) {
     }
 }
 
+void Player::applyModifier(Unit::Modifier mod, float duration, float value, bool force) {
+    // always force, i guess
+    modifiers[static_cast<int>(mod)] = {duration, value};
+}
+
 void Player::applyLock(Unit::Lock lock, float duration, bool force) {
     if (force) {
         locks[static_cast<int>(lock)] = duration;
@@ -162,18 +169,20 @@ void Player::applyLock(Unit::Lock lock, float duration, bool force) {
     }
 }
 
-void Player::applyModifier(Unit::Modifier mod, float duration, float value, bool force) {
-    // always force, i guess
-    modifiers[static_cast<int>(mod)] = {duration, value};
+void Player::applyCooldown(Unit::Move move, float duration, bool force) {
+    if (force) {
+        cooldown[static_cast<int>(move)] = duration;
+    } else {
+        cooldown[static_cast<int>(move)] = std::max(cooldown[static_cast<int>(move)], duration);
+    }
 }
 
 // --- Private helpers ---
 void Player::updateMovement(float dt) {
     movement = {0.0f, 0.0f};
-    float speed = 660;
-    // float speed = input->isHoldingKey(Unit::Input::Focus)
-    //             ? character->getFocusedSpeed()
-    //             : character->getMoveSpeed();
+    float speed = input->isHoldingKey(Unit::Input::Focus)
+                ? character->getFocusedSpeed()
+                : character->getMoveSpeed();
     if (modifiers[static_cast<int>(Unit::Modifier::MovementModifier)].first > 0.0f) {
         speed *= modifiers[static_cast<int>(Unit::Modifier::MovementModifier)].second;
     }
@@ -230,14 +239,9 @@ void Player::updateArrow(float dt) {
     arrow = rotatedArrow.normalized();
 }
 
-void Player::updateLocks(float dt) {
-    for (float& lock : locks) {
-        if (lock > 0.0f)
-            lock = std::max(lock - dt, 0.0f);
-    }
-}
+void Player::updateStatus(float dt) {
+    invincibility = std::max(0.0f, invincibility - dt);
 
-void Player::updateModifiers(float dt) {
     for (auto& [duration, value] : modifiers) {
         if (duration > 0.0f) {
             duration = std::max(duration - dt, 0.0f);
@@ -246,4 +250,15 @@ void Player::updateModifiers(float dt) {
             }
         }
     }
+
+    for (float& lock : locks) {
+        if (lock > 0.0f)
+            lock = std::max(lock - dt, 0.0f);
+    }
+
+    for (float& cd : cooldown) {
+        if (cd > 0.0f) 
+            cd = std::max(cd - dt, 0.0f);
+    }
 }
+

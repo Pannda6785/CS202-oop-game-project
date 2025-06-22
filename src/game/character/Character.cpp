@@ -1,11 +1,7 @@
 #include "Character.hpp"
 
-#include "../IBulletSpawner.hpp"
 #include "../player/IPlayerControl.hpp"
 #include "../player/InputBufferer.hpp"
-
-Character::Character(IBulletSpawner* bulletSpawnerRef)
-    : bulletSpawner(bulletSpawnerRef) {}
 
 std::string Character::getName() {
     return name;
@@ -23,6 +19,6 @@ void Character::registerPlayer(IPlayerControl* playerRef) {
     player = playerRef;
 }
 
-void Character::registerInputBufferer(InputBufferer* inputRef) {
-    input = inputRef;
+CharacterGraphicsComponent* Character::getGraphics() {
+    return graphics.get();
 }

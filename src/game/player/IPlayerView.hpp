@@ -25,10 +25,9 @@ public:
 
     // Status data
     virtual float getInvincibility() const = 0;
-    virtual const std::array<std::pair<float, float>, Unit::NUM_MODIFIERS>& getModifiers() const = 0;
-    virtual const std::array<float, Unit::NUM_LOCKS>& getLocks() const = 0;
-
-    // Character data
+    virtual std::pair<float, float> getModifier(Unit::Modifier mod) const = 0;
+    virtual float getLock(Unit::Lock lock) const = 0;
+    virtual float getCooldown(Unit::Move move) const = 0;
 
 };
 
