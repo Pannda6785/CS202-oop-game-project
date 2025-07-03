@@ -34,6 +34,7 @@ public:
     virtual void applyModifier(Unit::Modifier mod, float duration, float value, bool force = false) = 0;
     virtual void applyLock(Unit::Lock lock, float duration, bool force = false) = 0;
     virtual void applyCooldown(Unit::Move move, float duration, bool force = false) = 0;
+    virtual void applyImplicitMoveLock() = 0;
 };
 
 #endif // I_PLAYER_CONTROL_HPP

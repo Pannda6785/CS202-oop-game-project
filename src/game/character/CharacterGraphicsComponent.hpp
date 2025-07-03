@@ -6,6 +6,7 @@
 
 #include <vector>
 #include <string>
+#include <unordered_map>
 
 class IPlayerView;
 class Texture;
@@ -30,6 +31,8 @@ protected:
     virtual void loadTextures() = 0;
     virtual void unloadTextures() = 0;
     virtual bool characterSpecificUpdate(float dt) { return false; };
+    void playAnim(const std::string& animName, bool restart = false);
+    bool animFinished() const;
 
 private:
     void renderUnderlay() const; // magic circle, ring, arrow
@@ -38,29 +41,32 @@ private:
 
 protected:
     const IPlayerView* player;
+
+    struct Animation {
+        std::vector<Texture*> frames;
+        float fps;
+        bool loop;
+        Animation() = default;
+        Animation(std::vector<Texture*> frames, float fps, bool loop)
+            : frames(std::move(frames)), fps(fps), loop(loop) {}
+    };
+    std::unordered_map<std::string, Animation> animations;
+    std::string currentAnimName;
     
+private:
     const Texture* toRenderCharacterTexture = nullptr;
-    const float animationFPS = 5.0f; // 5 frames per second
+    
     float time = 0;
-    float timeBuffer = 0;
-    int curAnimId = 0;
+    float animStartTime = 0;
+
     float size = 1;
 
-    std::vector<Texture*> idleAnim;
-    std::vector<Texture*> walkAnim;
-    std::vector<Texture*> backAnim;
-    std::vector<Texture*> staggerAnim;
-    std::vector<Texture*> wakeAnim;
-
-    Texture* hitboxTexture;
-    Texture* arrowTexture;
-
-private:
-    const float flashFrequency = 5;
-    float remainingStaggerTime = 0.0f;
-    int wakeAnimId0 = 0;
-
+    const float flashFrequency = 4;
     Shader* whiteSilhouette = nullptr;
+
+    float remainingStaggerTime = 0.0f;
+    float remainingWakeUpTime = 0.0f;
+
 };
 
 #endif // CHARACTER_GRAPHICS_COMPONENT_HPP

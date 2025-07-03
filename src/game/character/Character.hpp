@@ -11,23 +11,24 @@ class InputBufferer;
 
 class Character {
 public:
+    Character(std::string name, float moveSpeed, float focusedSpeed, std::unique_ptr<CharacterGraphicsComponent> graphics);
     virtual ~Character() = default;
 
-    void registerPlayer(IPlayerControl* playerRef);
+    virtual void registerPlayer(IPlayerControl* playerRef);
     
-    virtual void init() = 0;
+    virtual void init();
     virtual void update(float dt, InputBufferer* input) = 0;
 
-    std::string getName();
-    float getMoveSpeed();
-    float getFocusedSpeed();
+    std::string getName() const;
+    float getMoveSpeed() const;
+    float getFocusedSpeed() const;
 
     CharacterGraphicsComponent* getGraphics();
 
 protected:
     IPlayerControl* player;
+    
     std::unique_ptr<CharacterGraphicsComponent> graphics;
-
     std::string name;
     float moveSpeed;
     float focusedSpeed;

@@ -3,6 +3,12 @@
 
 #include "../../graphics/GraphicsComponent.hpp"
 
+/*
+    TO DO: If this is ever extensively used (because as of now it's merely demo-purpose)
+    + Render the things based on velocity
+    + Do flyweight
+*/ 
+
 class Texture;
 class CommonBullet;
 

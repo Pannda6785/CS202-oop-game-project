@@ -55,6 +55,7 @@ public:
     void applyModifier(Unit::Modifier mod, float duration, float value, bool force = false) override;
     void applyLock(Unit::Lock lock, float duration, bool force = false) override;
     void applyCooldown(Unit::Move move, float duration, bool force = false) override;
+    void applyImplicitMoveLock() override;
 
 private:
     IWorldView* world;
