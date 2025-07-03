@@ -39,43 +39,29 @@ void CharacterGraphicsComponent::render() const {
 
 void CharacterGraphicsComponent::update(float dt) {
     time += dt;
-    timeBuffer += dt;
-    if (timeBuffer > 1 / animationFPS) {
-        curAnimId++;
-        timeBuffer -= 1 / animationFPS;
-    }
 
-    remainingStaggerTime = std::max(0.0f, remainingStaggerTime - dt);
     if (remainingStaggerTime > Unit::EPS) {
-        if (remainingStaggerTime > wakeAnim.size() / animationFPS) {
-            toRenderCharacterTexture = staggerAnim[curAnimId % staggerAnim.size()];
-            wakeAnimId0 = curAnimId;
-            return;
-        } 
-        if (curAnimId - wakeAnimId0 < wakeAnim.size()) {
-            toRenderCharacterTexture = wakeAnim[curAnimId - wakeAnimId0];
-            return;
+        playAnim("stagger");
+        remainingStaggerTime -= dt;
+    } else if (remainingWakeUpTime > Unit::EPS) {
+        playAnim("wake");
+        remainingWakeUpTime -= dt;
+    } else if (characterSpecificUpdate(dt)) {
+        // already handled in the function
+    } else {
+        Unit::Vec2D move = player->getMovement();
+        if (move.magnitude() < Unit::EPS) {
+            playAnim("idle");
+        } else {
+            float dir = player->getTargetPosition().x < player->getPosition().x ? -1.0f : 1.0f;
+            if (dir * move.x > Unit::EPS || (dir * move.x > -Unit::EPS && move.y > -Unit::EPS)) {
+                playAnim("walk");
+            } else {
+                playAnim("back");
+            }
         }
     }
-
-    if (characterSpecificUpdate(dt)) {
-        return;
-    }
-
-    Unit::Vec2D movement = player->getMovement();
-
-    if (movement.magnitude() < Unit::EPS) {
-        toRenderCharacterTexture = idleAnim[curAnimId % idleAnim.size()];
-        return;
-    }
-
-    float direction = ((player->getTargetPosition()).x < (player->getPosition()).x) ? -1.0f : 1.0f;
-    if (direction * movement.x > Unit::EPS || (direction * movement.x > -Unit::EPS && movement.y > -Unit::EPS)) {
-        toRenderCharacterTexture = walkAnim[curAnimId % walkAnim.size()];
-        return;
-    }
     
-    toRenderCharacterTexture = backAnim[curAnimId % backAnim.size()];
 }
 
 void CharacterGraphicsComponent::resize(float scale) {
@@ -83,7 +69,60 @@ void CharacterGraphicsComponent::resize(float scale) {
 }
 
 void CharacterGraphicsComponent::takeHit(float staggerTime) {
-    remainingStaggerTime = staggerTime;
+    float wakeUpTime = animations["wake"].frames.size() / animations["wake"].fps;
+    constexpr float extra = 0.2f;
+    if (staggerTime < wakeUpTime) {
+        // stagger only, no wake up
+        remainingStaggerTime = staggerTime;
+    } else {
+        // stagger and wake up, stagger an little extra time 
+        remainingStaggerTime = staggerTime - wakeUpTime + extra;
+        remainingWakeUpTime = wakeUpTime;
+    }
+}
+
+void CharacterGraphicsComponent::playAnim(const std::string& animName, bool restart) {
+    auto it = animations.find(animName);
+    if (it == animations.end() || (it->second).frames.empty()) {
+        std::cerr << "Warning: Animation not found: " << animName << std::endl;
+        return;
+    }
+
+    if (currentAnimName != animName || restart) {
+        currentAnimName = animName;
+        animStartTime = time;
+    }
+
+    const Animation& anim = it->second;
+    
+    float animTime = time - animStartTime;
+    int frameIndex = static_cast<int>(animTime * anim.fps);
+
+    if (anim.loop) {
+        frameIndex %= anim.frames.size();
+        toRenderCharacterTexture = anim.frames[frameIndex];
+    } else {
+        if (frameIndex >= anim.frames.size()) {
+            toRenderCharacterTexture = anim.frames.back();
+            std::cerr << "Warning: Tried to play a non-loop finished animation - " << animName << std::endl;
+        } else {
+            toRenderCharacterTexture = anim.frames[frameIndex];
+        }
+    }
+}
+
+bool CharacterGraphicsComponent::animFinished() const {
+    auto it = animations.find(currentAnimName);
+    if (it == animations.end()) {
+        return true; // no animation playing..?
+    }
+    const Animation& anim = it->second;
+    if (anim.loop) {
+        return false;
+    }
+    float elapsedTime = time - animStartTime;
+    float totalDuration = anim.frames.size() / anim.fps;
+    return elapsedTime >= totalDuration; 
 }
 
 void CharacterGraphicsComponent::renderUnderlay() const {
@@ -161,7 +200,7 @@ void CharacterGraphicsComponent::renderOverlay() const {
 
 void CharacterGraphicsComponent::renderCharacter() const {
     if (!toRenderCharacterTexture) {
-        std::cerr << "Character texture is not set!" << std::endl;
+        std::cerr << "Warning: Character texture is not set!" << std::endl;
         return;
     }
     Texture tex = *toRenderCharacterTexture;
@@ -190,7 +229,8 @@ void CharacterGraphicsComponent::renderCharacter() const {
     float inv = player->getInvincibility();
 
     if (inv > Unit::EPS) {
-        float flashAlpha = 0.5f * (sinf(time * flashFrequency * 2.0f * PI) + 1.0f);
+        float flashAlpha = 0.5f * (sinf(time * flashFrequency * 2.0f * PI) + 1.0f); // 0.5 * [-1, 1]
+        flashAlpha *= 0.7; // to avoid bright flashes
         BeginShaderMode(*whiteSilhouette);
         int flashLoc = GetShaderLocation(*whiteSilhouette, "flashAmount");
         SetShaderValue(*whiteSilhouette, flashLoc, &flashAlpha, SHADER_UNIFORM_FLOAT);

@@ -11,6 +11,7 @@
 #include "game/player/Player.hpp"
 
 #include "game/character/bin/DemoCharacter.hpp"
+#include "game/character/priestess/Priestess.hpp"
 
 #include <memory>
 #include <vector>
@@ -45,7 +46,7 @@ int main() {
 
     std::unique_ptr<World> world = std::make_unique<World>();
 
-    std::unique_ptr<Player> player1 = std::make_unique<Player>(0, world.get(), world.get(), std::make_unique<DemoCharacter>(), inputInterpreters[0]);
+    std::unique_ptr<Player> player1 = std::make_unique<Player>(0, world.get(), world.get(), std::make_unique<Priestess>(), inputInterpreters[0]);
     std::unique_ptr<Player> player2 = std::make_unique<Player>(1, world.get(), world.get(), std::make_unique<DemoCharacter>(), inputInterpreters[1]);
 
     world->addPlayer(std::move(player1));

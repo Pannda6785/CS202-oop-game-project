@@ -4,12 +4,23 @@
 #include "../../player/IPlayerControl.hpp"
 #include "../../player/InputBufferer.hpp"
 
+HandlerCharacter::HandlerCharacter(std::string name, float moveSpeed, float focusedSpeed, std::unique_ptr<CharacterGraphicsComponent> graphics)
+    : Character(std::move(name), moveSpeed, focusedSpeed, std::move(graphics)) {
+    fill(moveHandlers.begin(), moveHandlers.end(), nullptr);
+    order = {};
+}
+
 void HandlerCharacter::registerPlayer(IPlayerControl* playerRef) {
     Character::registerPlayer(playerRef);
     for (auto& handler : moveHandlers) {
-        handler->registerPlayer(playerRef);
+        if (handler) {
+            handler->registerCharacter(this);
+            handler->registerPlayer(playerRef);
+        } else {
+            std::cerr << "Warning: MoveHandler is not initialized for character " << name << std::endl;
+        }
     }
-}
+}   
 
 void HandlerCharacter::update(float dt, InputBufferer* input) {
     Unit::Move registeredMove = Unit::Move::MoveCount;
