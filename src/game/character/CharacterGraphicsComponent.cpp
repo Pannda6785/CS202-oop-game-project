@@ -26,6 +26,9 @@ void CharacterGraphicsComponent::registerPlayer(IPlayerView* playerView) {
 
 void CharacterGraphicsComponent::init() {
     setVisible(true);
+    if (!player) {
+        throw std::runtime_error("CharacterGraphicsComponent::init - CharacterGraphicsComponent must be initialized with a player before calling init()");
+    }
 }
 
 void CharacterGraphicsComponent::render() const {
@@ -157,6 +160,10 @@ void CharacterGraphicsComponent::renderOverlay() const {
 }
 
 void CharacterGraphicsComponent::renderCharacter() const {
+    if (!toRenderCharacterTexture) {
+        std::cerr << "Character texture is not set!" << std::endl;
+        return;
+    }
     Texture tex = *toRenderCharacterTexture;
 
     Unit::Vec2D pos = player->getPosition();

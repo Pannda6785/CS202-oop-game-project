@@ -1,28 +1,19 @@
 #include "DemoCharacter.hpp"
 
-#include "PriestessGraphicsComponent.hpp"
+#include "../priestess/PriestessGraphicsComponent.hpp"
 
-#include "../IBulletSpawner.hpp"
-#include "../player/IPlayerControl.hpp"
-#include "../player/InputBufferer.hpp"
+#include "../../IBulletSpawner.hpp"
+#include "../../player/IPlayerControl.hpp"
+#include "../../player/InputBufferer.hpp"
 
-#include "../bullet/CommonBullet.hpp"
+#include "../../bullet/CommonBullet.hpp"
 
 #include <cmath>
 #include <memory>
 
 constexpr float PI = 3.14159265358979323846f;
 
-DemoCharacter::DemoCharacter() : Character() {
-    graphics = std::make_unique<PriestessGraphicsComponent>();
-    name = "DemoCharacter";
-    moveSpeed = 660.0f;
-    focusedSpeed = 120.0f;
-}
-
-void DemoCharacter::init() {
-
-}
+DemoCharacter::DemoCharacter() : Character("DemoCharacter", 690.0f, 120.0f, std::make_unique<PriestessGraphicsComponent>()) {}
 
 void DemoCharacter::update(float dt, InputBufferer* input) {
 

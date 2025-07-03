@@ -10,7 +10,7 @@
 #include "game/World.hpp"
 #include "game/player/Player.hpp"
 
-#include "game/character/DemoCharacter.hpp"
+#include "game/character/bin/DemoCharacter.hpp"
 
 #include <memory>
 #include <vector>

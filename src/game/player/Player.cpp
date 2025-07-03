@@ -16,7 +16,6 @@ Player::Player(int playerId, IWorldView* worldView, IBulletSpawner* bulletSpawne
           character(std::move(character)), input(std::make_unique<InputBufferer>(inputInterpreter)) 
 {
     this->character->registerPlayer(this);
-    this->character->getGraphics()->registerPlayer(this);
 
     health = 3;
     stock = 2;
@@ -31,7 +30,6 @@ Player::Player(int playerId, IWorldView* worldView, IBulletSpawner* bulletSpawne
 // --- Update methods ---
 void Player::init() {
     character->init();
-    character->getGraphics()->init();
     
     for (auto& lock : locks) lock = 0.0f;
     for (auto& mod : modifiers) mod = {0.0f, 1.0f};
@@ -42,10 +40,9 @@ void Player::init() {
 void Player::update(float dt) {
     input->update(dt);
     updateMovement(dt);
-    hitbox->setPosition(pos);
     updateArrow(dt);
-    character->update(dt, input.get());
     updateStatus(dt);
+    character->update(dt, input.get());
     character->getGraphics()->update(dt);
 }
 
@@ -177,6 +174,13 @@ void Player::applyCooldown(Unit::Move move, float duration, bool force) {
     }
 }
 
+void Player::applyImplicitMoveLock() {
+    applyLock(Unit::Lock::BasicLock, 0.2f);
+    applyLock(Unit::Lock::WideLock, 0.2f);
+    applyLock(Unit::Lock::OffensiveLock, 0.2f);
+    applyLock(Unit::Lock::DefensiveLock, 0.2f);
+}
+
 // --- Private helpers ---
 void Player::updateMovement(float dt) {
     movement = {0.0f, 0.0f};
@@ -191,9 +195,15 @@ void Player::updateMovement(float dt) {
     }
     movement = input->getMovement() * speed;
     pos += movement * dt;
+
+    hitbox->setPosition(pos);
 }
 
 void Player::updateArrow(float dt) {
+    if (locks[static_cast<int>(Unit::Lock::ArrowLock)] > 0.0f) {
+        return;
+    }
+
     Unit::Vec2D targetPos = getTargetPosition();
     Unit::Vec2D toTarget = targetPos - pos;
 

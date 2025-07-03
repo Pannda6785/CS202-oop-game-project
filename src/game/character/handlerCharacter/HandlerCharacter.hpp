@@ -1,0 +1,25 @@
+#ifndef HANDLER_CHARACTER_HPP
+#define HANDLER_CHARACTER_HPP
+
+#include "../Character.hpp"
+
+#include <vector>
+#include <array>
+
+class MoveHandler;
+
+class HandlerCharacter : public Character {
+public:
+    void registerPlayer(IPlayerControl* playerRef) override final;
+    void update(float dt, InputBufferer* input) override final;
+
+    void setOrder(std::vector<Unit::Move> newOrder);
+    virtual void neutralize() = 0;
+
+protected:
+    std::array<std::unique_ptr<MoveHandler>, Unit::NUM_MOVES> moveHandlers;
+    std::vector<Unit::Move> order;
+
+};
+
+#endif // HANDLER_CHARACTER_HPP

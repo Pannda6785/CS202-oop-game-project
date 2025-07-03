@@ -99,6 +99,15 @@ namespace Unit {
     };
     const int NUM_LOCKS = static_cast<int>(Lock::LockCount);
 
+    inline Input moveToInput(Move move) {
+        switch (move) {
+            case Move::Basic:     return Input::Basic;
+            case Move::Wide:      return Input::Wide;
+            case Move::Offensive: return Input::Offensive;
+            case Move::Defensive: return Input::Defensive;
+            default:              return Input::InputCount; // Invalid input fallback
+        }
+    }
 };
 
 #endif // UNIT_HPP

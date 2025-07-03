@@ -58,7 +58,7 @@ void World::spawnBullet(std::unique_ptr<Bullet> bullet) {
 }
 
 void World::handleCollisions() {
-    /* clamp player positions to battlefield boundaries */  
+    /* Clamp player positions to battlefield boundaries */  
     for (auto& player : players) {
         if (player->getPosition().x < 0 || player->getPosition().x > Unit::BATTLEFIELD_WIDTH ||
             player->getPosition().y < 0 || player->getPosition().y > Unit::BATTLEFIELD_HEIGHT) {
@@ -68,7 +68,6 @@ void World::handleCollisions() {
             });
         }
     }
-    
     
     /* Bullet vs Bullet */ 
     std::vector<bool> toDelete(bullets.size(), false);
@@ -85,44 +84,10 @@ void World::handleCollisions() {
             }
         }
     }
-
-    /* Remove to-delete bullets */
-    std::vector<std::unique_ptr<Bullet>> newBullets;
+    
+    /* Bullet vs Player: Invincibility applying */
     for (size_t i = 0; i < bullets.size(); ++i) {
-        if (!toDelete[i] && !bullets[i]->isDone()) {
-            newBullets.push_back(std::move(bullets[i]));
-        }
-    }
-    bullets = std::move(newBullets);
-
-    /* Bullet vs Player */
-    std::vector<std::pair<int, int>> hits; // (hitPlayerHit, hitterIf)
-    for (size_t i = 0; i < bullets.size(); ++i) {
-        /* damage applying */
-        const Hitbox* dmg = bullets[i]->getDamagingHitbox();
-        if (dmg) {
-            int playerId = -1;
-            for (auto& player : players) {
-                playerId++;
-                bool alreadyHit = false;
-                for (const auto& hit : hits) {
-                    if (hit.first == playerId && hit.second == bullets[i]->isWhose()) {
-                        alreadyHit = true;
-                        break;
-                    }
-                }
-                if (alreadyHit) continue; 
-                if (player->getInvincibility() < Unit::EPS 
-                        && player->getPlayerId() != bullets[i]->isWhose() 
-                        && dmg->collidesWith(*player->getHitbox())) {
-                    hits.emplace_back(playerId, bullets[i]->isWhose());
-                    toDelete[i] = true; 
-                    break; 
-                }
-            }
-        }
-        
-        /* Invincibility applying */ 
+        if (toDelete[i] || bullets[i]->isDone()) continue;
         for (const auto& [hb, who, duration] : bullets[i]->getInvincibilityHitboxes()) {
             if (!hb) continue;
             for (auto& player : players) {
@@ -131,26 +96,53 @@ void World::handleCollisions() {
                 }
             }
         }
+    }
 
-        /* Debuff applying, if it is ever implemented */
-        // for (const auto& [hb, effect, duration, targetId] : bullets[i]->getStatusEffectHitboxes()) {
-        //     if (!hb) continue;
-        //     for (auto& player : players) {
-        //         if (player->getId() == targetId && hb->collidesWith(*player->getHitbox())) {
-        //             player->applyStatusEffect(effect, duration); // Apply for 1.0s
-        //         }
-        //     }
-        // }
+    /* Bullet vs Player: Damage applying */
+    std::vector<int> hitPlayers;
+    for (size_t i = 0; i < bullets.size(); ++i) {
+        if (toDelete[i] || bullets[i]->isDone()) continue;
+        const Hitbox* dmg = bullets[i]->getDamagingHitbox();
+        if (dmg) {
+            for (auto& player : players) {
+                if (std::find(hitPlayers.begin(), hitPlayers.end(), player->getPlayerId()) != hitPlayers.end()) continue;
+                if (player->getInvincibility() < Unit::EPS 
+                        && player->getPlayerId() != bullets[i]->isWhose() 
+                        && dmg->collidesWith(*player->getHitbox())) {
+                    hitPlayers.emplace_back(player->getPlayerId());
+                    toDelete[i] = true; 
+                    break; 
+                }
+            }
+        }
     }
 
     /* Apply damage to player */
-    for (auto [hitPlayerId, hitterId] : hits) {
-        Player* hitPlayer = players[hitPlayerId].get();
-        hitPlayer->takeHit();
-        if (hitterId < players.size()) {
-            Player* hitter = players[hitterId].get();
-            hitter->confirmHit();
+    for (int hitPlayer : hitPlayers) {
+        for (auto& player : players) {
+            if (player->getPlayerId() == hitPlayer) {
+                player->takeHit();
+                break;
+            }
         }
     }
+
+    /* Confirm hit to non-hit player */
+    if (!hitPlayers.empty()) {
+        for (auto& player : players) {
+            if (std::find(hitPlayers.begin(), hitPlayers.end(), player->getPlayerId()) == hitPlayers.end()) {
+                player->confirmHit();
+            }
+        }
+    }
+    
+    /* Remove to-delete bullets */
+    std::vector<std::unique_ptr<Bullet>> newBullets;
+    for (size_t i = 0; i < bullets.size(); ++i) {
+        if (!toDelete[i] && !bullets[i]->isDone()) {
+            newBullets.push_back(std::move(bullets[i]));
+        }
+    }
+    bullets = std::move(newBullets);
 
 }
