@@ -8,7 +8,7 @@
 #include <string>
 #include <unordered_map>
 
-class IPlayerView;
+class Player;
 class Texture;
 class Shader;
 
@@ -17,7 +17,7 @@ public:
     CharacterGraphicsComponent();
     virtual ~CharacterGraphicsComponent();
 
-    void registerPlayer(IPlayerView* playerView);
+    void registerPlayer(Player* playerView);
 
     void render() const override;
     void init();
@@ -40,7 +40,7 @@ private:
     void renderCharacter() const; // character and all that animations
 
 protected:
-    const IPlayerView* player;
+    const Player* player;
 
     struct Animation {
         std::vector<Texture*> frames;

@@ -1,7 +1,7 @@
 #include "HoldHandler.hpp"
 
 #include "../../player/InputBufferer.hpp"
-#include "../../player/IPlayerControl.hpp"
+#include "../../player/Player.hpp"
 #include "HandlerCharacter.hpp"
 
 HoldHandler::HoldHandler(Unit::Move move, float minHoldingTime)

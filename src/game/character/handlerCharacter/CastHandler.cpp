@@ -1,7 +1,7 @@
 #include "CastHandler.hpp"
 
 #include "../../player/InputBufferer.hpp"
-#include "../../player/IPlayerControl.hpp"
+#include "../../player/Player.hpp"
 #include "HandlerCharacter.hpp"
 
 CastHandler::CastHandler(Unit::Move move, float minCastingTime)

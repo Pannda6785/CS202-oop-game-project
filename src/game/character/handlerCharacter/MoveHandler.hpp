@@ -5,14 +5,14 @@
 
 class InputBufferer;
 class HandlerCharacter;
-class IPlayerControl;
+class Player;
 
 class MoveHandler {
 public:
     virtual ~MoveHandler() = default;
 
     void registerCharacter(HandlerCharacter* characterRef);
-    void registerPlayer(IPlayerControl* playerRef);
+    void registerPlayer(Player* playerRef);
 
     virtual bool tryRegister(InputBufferer* input) = 0;
     virtual void update(float dt) = 0;
@@ -20,7 +20,7 @@ public:
 
 protected:
     HandlerCharacter* character;
-    IPlayerControl* player;
+    Player* player;
 
 };
 

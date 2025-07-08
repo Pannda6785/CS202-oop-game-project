@@ -4,6 +4,6 @@ void MoveHandler::registerCharacter(HandlerCharacter* characterRef) {
     character = characterRef;
 }
 
-void MoveHandler::registerPlayer(IPlayerControl* playerRef) {
+void MoveHandler::registerPlayer(Player* playerRef) {
     player = playerRef;
 }

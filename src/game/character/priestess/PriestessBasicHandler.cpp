@@ -1,5 +1,5 @@
 #include "PriestessBasicHandler.hpp"
-#include "../../player/IPlayerControl.hpp"
+#include "../../player/Player.hpp"
 #include "PriestessGraphicsComponent.hpp"
 
 PriestessBasicHandler::PriestessBasicHandler(PriestessGraphicsComponent* graphics)

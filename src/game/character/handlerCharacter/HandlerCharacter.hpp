@@ -11,7 +11,7 @@ class HandlerCharacter : public Character {
 public:
     HandlerCharacter(std::string name, float moveSpeed, float focusedSpeed, std::unique_ptr<CharacterGraphicsComponent> graphics);
 
-    void registerPlayer(IPlayerControl* playerRef) override final;
+    void registerPlayer(Player* playerRef) override final;
     void update(float dt, InputBufferer* input) override final;
 
     void setOrder(std::vector<Unit::Move> newOrder); // set new priority order 

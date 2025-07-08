@@ -1,5 +1,5 @@
 #include "PriestessWideHandler.hpp"
-#include "../../player/IPlayerControl.hpp"
+#include "../../player/Player.hpp"
 #include "PriestessGraphicsComponent.hpp"
 
 PriestessWideHandler::PriestessWideHandler(PriestessGraphicsComponent* graphics)

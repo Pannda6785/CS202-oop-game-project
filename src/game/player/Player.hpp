@@ -1,9 +1,6 @@
 #ifndef PLAYER_HPP
 #define PLAYER_HPP
 
-#include "IPlayerControl.hpp"
-#include "IPlayerView.hpp"
-
 #include "InputBufferer.hpp"
 #include "../character/Character.hpp"
 #include "../hitbox/Hitbox.hpp"
@@ -14,8 +11,9 @@
 
 class IWorldView;
 class IBulletSpawner;
+class Bullet;
 
-class Player : public IPlayerControl, public IPlayerView {
+class Player {
 public:
     Player(int playerId, IWorldView* worldView, IBulletSpawner* bulletSpawner,
             std::unique_ptr<Character> character, std::shared_ptr<InputInterpreter> inputInterpreter);
@@ -31,31 +29,29 @@ public:
     void spawnBullet(std::unique_ptr<Bullet> bullet);
 
     // Life data
-    int getPlayerId() const override;
-    int getHealth() const override;
-    int getStock() const override;
-    const Hitbox* getHitbox() const override;
-    void setHealth(int h);
-    void setStock(int s);
+    int getPlayerId() const;
+    int getHealth() const;
+    int getStock() const;
+    const Hitbox* getHitbox() const;
     
     // Positional data
-    Unit::Vec2D getPosition() const override;
-    Unit::Vec2D getArrow() const override;
-    Unit::Vec2D getMovement() const override;
-    Unit::Vec2D getTargetPosition() const override;
-    void setPosition(const Unit::Vec2D& pos) override;
+    Unit::Vec2D getPosition() const;
+    Unit::Vec2D getArrow() const;
+    Unit::Vec2D getMovement() const;
+    Unit::Vec2D getTargetPosition() const;
+    void setPosition(const Unit::Vec2D& pos);
     
     // Status data
-    float getInvincibility() const override;
-    std::pair<float, float> getModifier(Unit::Modifier mod) const override;
-    float getLock(Unit::Lock lock) const override;
-    float getCooldown(Unit::Move move) const override;
+    float getInvincibility() const;
+    std::pair<float, float> getModifier(Unit::Modifier mod) const;
+    float getLock(Unit::Lock lock) const;
+    float getCooldown(Unit::Move move) const;
 
-    void applyInvincibility(float duration, bool force = false) override;
-    void applyModifier(Unit::Modifier mod, float duration, float value, bool force = false) override;
-    void applyLock(Unit::Lock lock, float duration, bool force = false) override;
-    void applyCooldown(Unit::Move move, float duration, bool force = false) override;
-    void applyImplicitMoveLock() override;
+    void applyInvincibility(float duration, bool force = false);
+    void applyModifier(Unit::Modifier mod, float duration, float value, bool force = false);
+    void applyLock(Unit::Lock lock, float duration, bool force = false);
+    void applyCooldown(Unit::Move move, float duration, bool force = false);
+    void applyImplicitMoveLock();
 
 private:
     IWorldView* world;

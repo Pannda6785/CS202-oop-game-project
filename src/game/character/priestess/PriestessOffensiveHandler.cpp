@@ -1,5 +1,5 @@
 #include "PriestessOffensiveHandler.hpp"
-#include "../../player/IPlayerControl.hpp"
+#include "../../player/Player.hpp"
 #include "PriestessGraphicsComponent.hpp"
 
 PriestessOffensiveHandler::PriestessOffensiveHandler(PriestessGraphicsComponent* graphics)

@@ -47,11 +47,9 @@ void Player::update(float dt) {
 }
 
 void Player::takeHit() {
-    setHealth(health - 1);
-    if (health == 0 && stock > 0) {
-        stock--;
-        roundReset();
-    }
+    health = std::max(health - 1, 0);
+    if (health == 0 && stock > 0) stock--;
+
     applyInvincibility(3.0f);
     applyModifier(Unit::Modifier::MovementModifier, 2.0f * modifiers[static_cast<int>(Unit::Modifier::StaggerModifier)].second, 0.5f);
     applyLock(Unit::Lock::MovementLock, 1.5f * modifiers[static_cast<int>(Unit::Modifier::StaggerModifier)].second);
@@ -88,14 +86,6 @@ int Player::getHealth() const {
 
 int Player::getStock() const {
     return stock;
-}
-
-void Player::setHealth(int h) {
-    health = std::max(0, h);
-}
-
-void Player::setStock(int s) {
-    stock = std::max(0, s);
 }
 
 const Hitbox* Player::getHitbox() const {

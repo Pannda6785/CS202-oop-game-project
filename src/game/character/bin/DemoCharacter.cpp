@@ -3,7 +3,7 @@
 #include "../priestess/PriestessGraphicsComponent.hpp"
 
 #include "../../IBulletSpawner.hpp"
-#include "../../player/IPlayerControl.hpp"
+#include "../../player/Player.hpp"
 #include "../../player/InputBufferer.hpp"
 
 #include "../../bullet/CommonBullet.hpp"

@@ -6,7 +6,7 @@
 #include <memory>
 #include <string>
 
-class IPlayerControl;
+class Player;
 class InputBufferer;
 
 class Character {
@@ -14,7 +14,7 @@ public:
     Character(std::string name, float moveSpeed, float focusedSpeed, std::unique_ptr<CharacterGraphicsComponent> graphics);
     virtual ~Character() = default;
 
-    virtual void registerPlayer(IPlayerControl* playerRef);
+    virtual void registerPlayer(Player* playerRef);
     
     virtual void init();
     virtual void update(float dt, InputBufferer* input) = 0;
@@ -26,7 +26,7 @@ public:
     CharacterGraphicsComponent* getGraphics();
 
 protected:
-    IPlayerControl* player;
+    Player* player;
     
     std::unique_ptr<CharacterGraphicsComponent> graphics;
     std::string name;

@@ -1,6 +1,6 @@
 #include "CharacterGraphicsComponent.hpp"
 
-#include "../player/IPlayerView.hpp"
+#include "../player/Player.hpp"
 #include "../hitbox/CircleHitbox.hpp"
 
 #include <raylib.h>
@@ -20,7 +20,7 @@ CharacterGraphicsComponent::~CharacterGraphicsComponent() {
     }
 }
 
-void CharacterGraphicsComponent::registerPlayer(IPlayerView* playerView) {
+void CharacterGraphicsComponent::registerPlayer(Player* playerView) {
     player = playerView;
 }
 
