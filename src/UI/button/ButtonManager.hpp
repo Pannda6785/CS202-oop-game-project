@@ -1,39 +1,46 @@
 #ifndef BUTTON_MANAGER_HPP
 #define BUTTON_MANAGER_HPP
 
-#include "Button.hpp"
-// Đảm bảo đường dẫn đến GraphicsComponentManager.hpp là chính xác trong dự án của bạn
-#include "../../graphics/GraphicsComponentManager.hpp" 
-
 #include <vector>
-#include <memory> // Cho std::unique_ptr
+#include <memory>
+#include <string>
+#include "Button.hpp"
 
 class ButtonManager {
 public:
-    // Singleton pattern
-    static ButtonManager& getInstance();
+    ButtonManager();
+    ~ButtonManager();
 
-    // Ngăn chặn sao chép
-    ButtonManager(const ButtonManager&) = delete;
-    ButtonManager& operator=(const ButtonManager&) = delete;
+    // Add a button to the manager (takes ownership)
+    void addButton(std::unique_ptr<Button> button);
 
-    // Phương thức để thêm nút mới
-    IButtonControl* createButton(int x, int y, int width, int height, const std::string& text);
+    // Update all buttons (handles mouse & keyboard navigation)
+    void update(float dt);
 
-    // Phương thức cập nhật tất cả các nút, có dt
-    void updateButtons(float dt);
+    // Draw all buttons (optional, if not handled by GraphicsComponentManager)
+    // void render() const;
 
-    // Phương thức để xóa nút
-    void removeButton(IButtonControl* button);
+    // Reset: clear all buttons and reset hovered/focused index
+    void reset();
 
-    // Xóa tất cả các nút
-    void clearAllButtons();
+    // Get current hovered/focused index
+    int getHoveredIndex() const;
 
-private:
-    ButtonManager(); // Constructor private cho Singleton
-    ~ButtonManager(); // Destructor private cho Singleton
+    // Get button count
+    int getButtonCount() const;
 
-    std::vector<std::unique_ptr<Button>> m_buttons;
+    // Get pointer to a button by index
+    Button* getButton(int idx);
+
+protected:
+    std::vector<std::unique_ptr<Button>> buttons;
+    int hoveredIndex = -1;
+
+    // Internal helpers
+    void updateHoveredByMouse();
+    void updateHoveredByKeyboard();
+    void triggerCurrentButton();
+    int findNextEnabled(int start, int dir) const;
 };
 
 #endif // BUTTON_MANAGER_HPP

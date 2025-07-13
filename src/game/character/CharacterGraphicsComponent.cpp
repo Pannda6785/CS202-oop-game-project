@@ -5,10 +5,12 @@
 
 #include <raylib.h>
 #include <algorithm>
+#include <iostream>
+#include <cassert>
 
 CharacterGraphicsComponent::CharacterGraphicsComponent() {
     setVisible(false);
-    Shader loadedShader = LoadShader(0, "../src/game/character/white_silhouette.fs");
+    Shader loadedShader = LoadShader(0, "./src/game/character/white_silhouette.fs");
     whiteSilhouette = new Shader(loadedShader);
 }
 
@@ -157,6 +159,7 @@ void CharacterGraphicsComponent::renderOverlay() const {
 }
 
 void CharacterGraphicsComponent::renderCharacter() const {
+    assert(toRenderCharacterTexture != nullptr && "Character texture is not set!");
     Texture tex = *toRenderCharacterTexture;
 
     Unit::Vec2D pos = player->getPosition();

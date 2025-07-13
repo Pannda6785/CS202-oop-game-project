@@ -4,16 +4,18 @@
 
 #include "graphics/GraphicsComponentManager.hpp"
 
-#include "input/InputInterpreter.hpp"
-#include "input/KeyboardInputInterpreter.hpp"
-
-#include "game/World.hpp"
-#include "game/player/Player.hpp"
-
-#include "game/character/DemoCharacter.hpp"
+#include "UI/button/ButtonManager.hpp"
 
 #include <memory>
 #include <vector>
+
+#include <iostream>
+
+#include "UI/game_state/MainMenuState.hpp"
+#include "UI/game_state/SoloModeState.hpp"
+#include "UI/game_state/GameStateManager.hpp"
+
+#include "UI/game_state/EventManager.hpp"
 
 int main() {
     const int screenWidth = 1440;
@@ -32,26 +34,20 @@ int main() {
         + audio
     */
 
-    std::vector<std::shared_ptr<KeyboardInputInterpreter>> inputInterpreters = { std::make_shared<KeyboardInputInterpreter>(), std::make_shared<KeyboardInputInterpreter>() };
-    inputInterpreters[1]->setKeyMapping(Unit::Input::MoveUp, KEY_W);
-    inputInterpreters[1]->setKeyMapping(Unit::Input::MoveDown, KEY_S); 
-    inputInterpreters[1]->setKeyMapping(Unit::Input::MoveLeft, KEY_A);
-    inputInterpreters[1]->setKeyMapping(Unit::Input::MoveRight, KEY_D);
+    GameStateManager gameStateManager;
+    // gameStateManager.changeState(std::make_unique<MainMenuState>());
+    gameStateManager.changeState(std::make_unique<MainMenuState>(gameStateManager));
+    // gameStateManager.processPendingStateChanges();
 
-    inputInterpreters[1]->setKeyMapping(Unit::Input::Basic, KEY_ONE);
-    inputInterpreters[1]->setKeyMapping(Unit::Input::Wide, KEY_TWO); 
-    inputInterpreters[1]->setKeyMapping(Unit::Input::Offensive, KEY_THREE);
-    inputInterpreters[1]->setKeyMapping(Unit::Input::Defensive, KEY_FOUR);
-
-    std::unique_ptr<World> world = std::make_unique<World>();
-
-    std::unique_ptr<Player> player1 = std::make_unique<Player>(0, world.get(), world.get(), std::make_unique<DemoCharacter>(), inputInterpreters[0]);
-    std::unique_ptr<Player> player2 = std::make_unique<Player>(1, world.get(), world.get(), std::make_unique<DemoCharacter>(), inputInterpreters[1]);
-
-    world->addPlayer(std::move(player1));
-    world->addPlayer(std::move(player2));
-
-    world->init();
+    EventManager::getInstance().subscribe(Unit::GameEvent{"enter gameplay"}, [&gameStateManager](const Unit::GameEvent&) {
+    // Change state to SoloModeState, etc.
+        gameStateManager.changeState(std::make_unique<SoloModeState>());
+    });
+    
+    EventManager::getInstance().subscribe(Unit::GameEvent{"exit game"}, [](const Unit::GameEvent&) {
+        // Exit the game, etc.
+        std::cout << "Exiting game!" << std::endl;
+    }); 
 
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
@@ -62,17 +58,18 @@ int main() {
 
         DrawText("Maiden and Hardcoded Background", 10, 10, 20, DARKGRAY);
         
-        for (int i = 0; i < 2; i++)
-        inputInterpreters[i]->update(dt); // Update input interpreters
-        
-        world->update(dt); // Update game world logic
+        gameStateManager.processPendingStateChanges();
+
+        gameStateManager.update(dt); // Update game state manager
 
         GraphicsComponentManager::instance().render(); // Update graphics components
+
+        // gameStateManager.processPendingStateChanges();
 
         EndDrawing();
     }
 
-    CloseWindow();        
+    CloseWindow();
 
     return 0;
 }

@@ -11,7 +11,7 @@ PriestessGraphicsComponent::~PriestessGraphicsComponent() {
 }
 
 void PriestessGraphicsComponent::loadTextures() {
-    std::string character_path = "../assets/sprites/priestess/";
+    std::string character_path = "./assets/sprites/priestess/";
 
     for (int i = 0; i <= 1; ++i) {
         std::string path = character_path + "movement/idle" + std::to_string(i) + ".png";
