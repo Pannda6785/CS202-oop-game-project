@@ -8,12 +8,10 @@
 #include <functional> // Cho std::function
 #include <raylib.h>  // Bao gồm raylib để dùng GetMouseX, GetMouseY, IsMouseButtonDown, etc.
 #include "ButtonGraphicsComponent.hpp" // Bao gồm ButtonGraphicsComponent để sử dụng trong Button
-#include "../../Unit.hpp"
-#include "../game_state/EventManager.hpp"
 
 class Button : public IButtonControl, public IButtonView {
 public:
-    Button(int x, int y, int width, int height, const std::string& text, const Unit::GameEvent& eventToPublish);
+    Button(int x, int y, int width, int height, const std::string& text);
     ~Button();
 
     // --- Phương thức từ IButtonControl ---
@@ -36,7 +34,6 @@ public:
     int getWidth() const override;
     int getHeight() const override;
     Rectangle getBounds() const;
-    Unit::GameEvent getEventToPublish() const override;
 
     // --- Phương thức riêng của Button logic ---
     // Phương thức cập nhật trạng thái dựa trên input của raylib
@@ -58,7 +55,6 @@ private:
     bool disabledState = false;
     std::function<void()> onClick;
     std::function<void()> onHoverEnter;
-    Unit::GameEvent eventToPublish;
 
     std::unique_ptr<ButtonGraphicsComponent> graphic;
 

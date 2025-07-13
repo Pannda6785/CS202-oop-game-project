@@ -5,7 +5,6 @@
 #include "GameState.hpp"
 #include "../button/Button.hpp"
 #include <memory>
-#include "EventManager.hpp"
 
 class GameStateManager;
 

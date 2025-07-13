@@ -12,10 +12,7 @@ MainMenuState::MainMenuState(GameStateManager& gsm)
 MainMenuState::~MainMenuState() = default;
 
 void MainMenuState::enter() {
-    std::unique_ptr<Button> startButton = std::make_unique<Button>(50, 50, 200, 50, "Start Game", Unit::GameEvent{"enter gameplay"});
-    // startButton->setOnClickListener([btn = startButton.get()]() {
-    //     EventManager::getInstance().publish(btn->getEventToPublish());
-    // });
+    std::unique_ptr<Button> startButton = std::make_unique<Button>(50, 50, 200, 50, "Start Game");
     startButton->setOnClickListener([&gsm = gameStateManager]() {
         gsm.changeState(std::make_unique<TestState>(gsm));
     });
@@ -23,7 +20,7 @@ void MainMenuState::enter() {
         std::cout << "Hovered over Start Game button!" << std::endl;
     });
     buttonManager.addButton(std::move(startButton));
-    std::unique_ptr<Button> exitButton = std::make_unique<Button>(50, 150, 200, 50, "Exit Game", Unit::GameEvent{"exit game"});
+    std::unique_ptr<Button> exitButton = std::make_unique<Button>(50, 150, 200, 50, "Exit Game");
     exitButton->setOnClickListener([]() {
         std::cout << "Exiting game!" << std::endl;
     });

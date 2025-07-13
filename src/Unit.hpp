@@ -99,15 +99,6 @@ namespace Unit {
         LockCount // This should always be the last element
     };
     const int NUM_LOCKS = static_cast<int>(Lock::LockCount);
-
-    struct GameEvent {
-        std::string type;
-        // Có thể thêm dữ liệu tùy chỉnh: int id, std::string data, etc.
-        bool operator<(const GameEvent& other) const {
-            return type < other.type; // So sánh dựa trên type
-        }
-
-    };
 };
 
 #endif // UNIT_HPP

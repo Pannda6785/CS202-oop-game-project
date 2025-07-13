@@ -3,8 +3,8 @@
 #include <raylib.h>
 #include <iostream>
 
-Button::Button(int x, int y, int width, int height, const std::string& text, const Unit::GameEvent &eventToPublish)
-    : x(x), y(y), width(width), height(height), text(text), eventToPublish(eventToPublish),
+Button::Button(int x, int y, int width, int height, const std::string& text)
+    : x(x), y(y), width(width), height(height), text(text),
       idleState(true), hoveredState(false), pressedState(false), disabledState(false),
       onClick(nullptr), onHoverEnter(nullptr)
 {
@@ -43,7 +43,6 @@ int Button::getY() const { return y; }
 int Button::getWidth() const { return width; }
 int Button::getHeight() const { return height; }
 Rectangle Button::getBounds() const { return bounds; }
-Unit::GameEvent Button::getEventToPublish() const { return eventToPublish; }
 
 // --- Logic update ---
 void Button::update(float dt) {
@@ -83,7 +82,6 @@ void Button::triggerHoverEnter() {
 
 void Button::triggerOnClick() {
     if (onClick) onClick();
-    //EventManager::GetInstance().publish(eventToPublish);
 }
 
 // --- Helper ---

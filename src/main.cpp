@@ -15,8 +15,6 @@
 #include "UI/game_state/SoloModeState.hpp"
 #include "UI/game_state/GameStateManager.hpp"
 
-#include "UI/game_state/EventManager.hpp"
-
 int main() {
     const int screenWidth = 1440;
     const int screenHeight = 900;
@@ -38,16 +36,6 @@ int main() {
     // gameStateManager.changeState(std::make_unique<MainMenuState>());
     gameStateManager.changeState(std::make_unique<MainMenuState>(gameStateManager));
     // gameStateManager.processPendingStateChanges();
-
-    EventManager::getInstance().subscribe(Unit::GameEvent{"enter gameplay"}, [&gameStateManager](const Unit::GameEvent&) {
-    // Change state to SoloModeState, etc.
-        gameStateManager.changeState(std::make_unique<SoloModeState>());
-    });
-    
-    EventManager::getInstance().subscribe(Unit::GameEvent{"exit game"}, [](const Unit::GameEvent&) {
-        // Exit the game, etc.
-        std::cout << "Exiting game!" << std::endl;
-    }); 
 
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {

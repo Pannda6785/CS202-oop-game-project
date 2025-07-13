@@ -13,7 +13,7 @@ TestState::~TestState() = default;
 
 void TestState::enter() {
     std::unique_ptr<Button> backButton = std::make_unique<Button>(
-        50, 100, 200, 50, "Back to Main Menu", Unit::GameEvent{"back to main menu"}
+        50, 100, 200, 50, "Back to Main Menu"
     );
     backButton->setOnClickListener([&gsm = gameStateManager]() {
         std::cout << "Returning to Main Menu..." << std::endl;
