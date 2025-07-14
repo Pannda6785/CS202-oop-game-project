@@ -6,6 +6,18 @@ int Bullet::isWhose() const {
     return whose;
 }
 
+Unit::Vec2D Bullet::getPosition() const {
+    if (lifeHitbox) return lifeHitbox->getPosition();
+    if (damagingHitbox) return damagingHitbox->getPosition();
+    if (cleansingHitbox) return cleansingHitbox->getPosition();
+    std::cerr << "Bullet::getPosition() called without any hitbox set." << std::endl;
+    return {0.0f, 0.0f};
+}
+
+Unit::Vec2D Bullet::getVelocity() const {
+    return {0.0f, 0.0f};
+}
+
 float Bullet::getSize() const {
     return size;
 }

@@ -9,6 +9,8 @@
 #include <memory>
 
 class InputBufferer {
+    static constexpr float BUFFER_TIME = 0.4f; // Time in seconds to keep buffer inputs, assumes no move buffers longer that this
+
 public:
     InputBufferer(std::shared_ptr<InputInterpreter> interpreter);
 
@@ -20,8 +22,6 @@ public:
 
 private:
     std::shared_ptr<InputInterpreter> interpreter;
-
-    static constexpr float BUFFER_TIME = 0.4f; // Time in seconds to keep buffer inputs, assumes no move buffers longer that this
     struct BufferedInput {
         Unit::Input input;
         float inputtedTime;

@@ -6,7 +6,8 @@
 #include "../../player/Player.hpp"
 #include "../../player/InputBufferer.hpp"
 
-#include "../../bullet/CommonBullet.hpp"
+#include "../../bullet/StraightBullet.hpp"
+#include "../../bullet/BulletGraphicsComponent.hpp"
 
 #include <cmath>
 #include <memory>
@@ -36,7 +37,7 @@ void DemoCharacter::update(float dt, InputBufferer* input) {
             for (int i = -1; i <= 1; ++i) {
                 float angle = atan2(enemyArrow.y, enemyArrow.x) + i * angleOffset;
                 Unit::Vec2D dir = { cosf(angle), sinf(angle) };
-                auto bullet = std::make_unique<CommonBullet>(
+                auto bullet = std::make_unique<StraightBullet>(
                     player->getPlayerId(), selfPos, dir, radius, baseSpeed, startup, lifetime
                 );
                 player->spawnBullet(std::move(bullet));
@@ -66,7 +67,7 @@ void DemoCharacter::update(float dt, InputBufferer* input) {
         for (int i = 0; i < count; ++i) {
             float angle = angle0 + (i + 0.5f) * angleStep;
             Unit::Vec2D dir = { cosf(angle), sinf(angle) };
-            auto bullet = std::make_unique<CommonBullet>(
+            auto bullet = std::make_unique<StraightBullet>(
                 player->getPlayerId(), selfPos, dir, radius, baseSpeed, startup, lifetime
             );
             player->spawnBullet(std::move(bullet));
@@ -97,7 +98,7 @@ void DemoCharacter::update(float dt, InputBufferer* input) {
                     selfPos.x + dir * offsetX,
                     selfPos.y + (i - 2) * spacingY
                 };
-                auto bullet = std::make_unique<CommonBullet>(
+                auto bullet = std::make_unique<StraightBullet>(
                     player->getPlayerId(), pos, Unit::Vec2D{float(dir), 0}, radius, baseSpeed, startup, lifetime
                 );
                 player->spawnBullet(std::move(bullet));

@@ -15,8 +15,10 @@ public:
     virtual void update(float dt) = 0;
     virtual bool isDone() const = 0;
 
+    virtual Unit::Vec2D getPosition() const;
+    virtual Unit::Vec2D getVelocity() const;
+    
     int isWhose() const;
-
     float getSize() const;
     virtual void resize(float scale);
 

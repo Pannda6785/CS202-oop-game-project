@@ -61,7 +61,6 @@ private:
 
     float size = 1;
 
-    const float flashFrequency = 4;
     Shader* whiteSilhouette = nullptr;
 
     float remainingStaggerTime = 0.0f;

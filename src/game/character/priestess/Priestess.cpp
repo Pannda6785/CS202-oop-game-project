@@ -2,10 +2,10 @@
 
 #include "PriestessGraphicsComponent.hpp"
 
-#include "PriestessBasicHandler.hpp"
-#include "PriestessWideHandler.hpp"
-#include "PriestessOffensiveHandler.hpp"
-#include "PriestessDefensiveHandler.hpp"
+#include "handler/PriestessBasicHandler.hpp"
+#include "handler/PriestessWideHandler.hpp"
+#include "handler/PriestessOffensiveHandler.hpp"
+#include "handler/PriestessDefensiveHandler.hpp"
 
 Priestess::Priestess() : HandlerCharacter("Priestess", 630.0f, 240.0f, std::make_unique<PriestessGraphicsComponent>()) {
     auto priestessGfx = dynamic_cast<PriestessGraphicsComponent*>(graphics.get());

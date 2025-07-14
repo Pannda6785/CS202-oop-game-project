@@ -132,7 +132,7 @@ void CharacterGraphicsComponent::renderUnderlay() const {
     Vector2 center = { pos.x, pos.y };
 
     // Draw health as hearts below player
-    const float heartSpacing = 22;
+    constexpr float heartSpacing = 22;
     for (int i = 0; i < 3; ++i) {
         Vector2 heartPos = { pos.x - 12 - heartSpacing + i * heartSpacing, pos.y + 70 };
         if (i < player->getHealth()) {
@@ -143,7 +143,7 @@ void CharacterGraphicsComponent::renderUnderlay() const {
     }
 
     // Draw stock as small blue circles below hearts
-    const float stockRadius = 6;
+    constexpr float stockRadius = 6;
     for (int i = 0; i < player->getStock(); ++i) {
         Vector2 stockPos = { pos.x - stockRadius - 5 + i * heartSpacing, pos.y + 100 };
         DrawCircleV(stockPos, stockRadius, BLUE);
@@ -229,6 +229,7 @@ void CharacterGraphicsComponent::renderCharacter() const {
     float inv = player->getInvincibility();
 
     if (inv > Unit::EPS) {
+        constexpr float flashFrequency = 4.0f;
         float flashAlpha = 0.5f * (sinf(time * flashFrequency * 2.0f * PI) + 1.0f); // 0.5 * [-1, 1]
         flashAlpha *= 0.7; // to avoid bright flashes
         BeginShaderMode(*whiteSilhouette);
