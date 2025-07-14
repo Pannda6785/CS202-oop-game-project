@@ -8,6 +8,7 @@
 
 CharacterGraphicsComponent::CharacterGraphicsComponent() {
     setVisible(false);
+    layer = Unit::Layer::Character;
     Shader loadedShader = LoadShader(0, "../src/game/character/white_silhouette.fs");
     whiteSilhouette = new Shader(loadedShader);
 }
@@ -26,6 +27,7 @@ void CharacterGraphicsComponent::registerPlayer(Player* playerView) {
 
 void CharacterGraphicsComponent::init() {
     setVisible(true);
+    playAnim("idle");
     if (!player) {
         throw std::runtime_error("CharacterGraphicsComponent::init - CharacterGraphicsComponent must be initialized with a player before calling init()");
     }

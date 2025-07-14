@@ -9,7 +9,7 @@ public:
     virtual ~HoldHandler() = default;
 
     bool tryRegister(InputBufferer* input) override final;
-    void update(float dt) override;
+    void update(float dt, const InputBufferer* input) override;
 
 protected:
     virtual void onHoldStart() = 0;

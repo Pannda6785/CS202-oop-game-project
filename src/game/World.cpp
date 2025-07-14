@@ -110,7 +110,9 @@ void World::handleCollisions() {
                         && player->getPlayerId() != bullets[i]->isWhose() 
                         && dmg->collidesWith(*player->getHitbox())) {
                     hitPlayers.emplace_back(player->getPlayerId());
-                    toDelete[i] = true; 
+                    if (bullets[i]->getLifeHitbox()) {
+                        toDelete[i] = true; 
+                    }
                     break; 
                 }
             }

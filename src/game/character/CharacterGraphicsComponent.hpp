@@ -19,7 +19,7 @@ public:
 
     void registerPlayer(Player* playerView);
 
-    void render() const override;
+    void render() const override final;
     void init();
     void update(float dt);
 

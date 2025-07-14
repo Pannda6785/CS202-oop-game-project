@@ -39,7 +39,7 @@ bool HoldHandler::tryRegister(InputBufferer* input) {
     }
 }
 
-void HoldHandler::update(float dt) {
+void HoldHandler::update(float dt, const InputBufferer* input) {
     if (isHolding) {
         holdingTime += dt;
     }

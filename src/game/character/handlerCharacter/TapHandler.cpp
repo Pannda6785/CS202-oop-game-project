@@ -16,7 +16,7 @@ bool TapHandler::tryRegister(InputBufferer* input) {
     if (lock > Unit::EPS || cooldown > Unit::EPS) return false;
 
     if (input->tryRegister(Unit::moveToInput(move))) {
-        tap();
+        tap(input->isHoldingKey(Unit::Input::Focus));
         return true;
     }
 

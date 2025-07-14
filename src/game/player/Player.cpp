@@ -136,6 +136,7 @@ float Player::getCooldown(Unit::Move move) const {
 }
 
 void Player::applyInvincibility(float duration, bool force) {
+    duration *= modifiers[static_cast<int>(Unit::Modifier::CooldownModifier)].second;
     if (force) {
         invincibility = duration;
     } else {
@@ -144,11 +145,13 @@ void Player::applyInvincibility(float duration, bool force) {
 }
 
 void Player::applyModifier(Unit::Modifier mod, float duration, float value, bool force) {
+    duration *= modifiers[static_cast<int>(Unit::Modifier::CooldownModifier)].second;
     // always force, i guess
     modifiers[static_cast<int>(mod)] = {duration, value};
 }
 
 void Player::applyLock(Unit::Lock lock, float duration, bool force) {
+    duration *= modifiers[static_cast<int>(Unit::Modifier::CooldownModifier)].second;
     if (force) {
         locks[static_cast<int>(lock)] = duration;
     } else {
@@ -157,6 +160,7 @@ void Player::applyLock(Unit::Lock lock, float duration, bool force) {
 }
 
 void Player::applyCooldown(Unit::Move move, float duration, bool force) {
+    duration *= modifiers[static_cast<int>(Unit::Modifier::CooldownModifier)].second;
     if (force) {
         cooldown[static_cast<int>(move)] = duration;
     } else {
@@ -180,7 +184,7 @@ void Player::updateMovement(float dt) {
     if (modifiers[static_cast<int>(Unit::Modifier::MovementModifier)].first > 0.0f) {
         speed *= modifiers[static_cast<int>(Unit::Modifier::MovementModifier)].second;
     }
-    if (locks[static_cast<int>(Unit::Lock::MovementLock)] > 0.0f) {
+    if (locks[static_cast<int>(Unit::Lock::MovementLock)] > Unit::EPS) {
         speed = 0;
     }
     movement = input->getMovement() * speed;
@@ -190,7 +194,7 @@ void Player::updateMovement(float dt) {
 }
 
 void Player::updateArrow(float dt) {
-    if (locks[static_cast<int>(Unit::Lock::ArrowLock)] > 0.0f) {
+    if (locks[static_cast<int>(Unit::Lock::ArrowLock)] > Unit::EPS) {
         return;
     }
 
@@ -225,7 +229,8 @@ void Player::updateArrow(float dt) {
     float cross = arrow.x * targetDir.y - arrow.y * targetDir.x;
     float direction = (cross > 0) ? 1.0f : -1.0f;
 
-    constexpr float turnSpeedScale = 10.0f;
+    float turnSpeedScale = input->isHoldingKey(Unit::Input::Focus) ? 15.0f : 10.0f;
+    turnSpeedScale *= modifiers[static_cast<int>(Unit::Modifier::ArrowModifier)].second;
     float rotateBy = std::min(angleDiff, turnSpeedScale * angleDiff * dt);
 
     float cosA = std::cos(rotateBy);

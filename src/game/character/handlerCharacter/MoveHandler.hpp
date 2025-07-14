@@ -15,7 +15,7 @@ public:
     void registerPlayer(Player* playerRef);
 
     virtual bool tryRegister(InputBufferer* input) = 0;
-    virtual void update(float dt) = 0;
+    virtual void update(float dt, const InputBufferer* input) = 0;
     virtual void listen(Unit::Move move) {} // listen to which move the character registered, used for disrupting combos/holds
 
 protected:

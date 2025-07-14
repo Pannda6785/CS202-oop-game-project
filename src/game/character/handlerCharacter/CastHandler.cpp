@@ -40,7 +40,7 @@ bool CastHandler::tryRegister(InputBufferer* input) {
     }
 }
 
-void CastHandler::update(float dt) {
+void CastHandler::update(float dt, const InputBufferer* input) {
     if (isCasting) {
         castingTime += dt;
     }

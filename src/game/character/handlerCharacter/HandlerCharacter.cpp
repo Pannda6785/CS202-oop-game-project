@@ -37,7 +37,7 @@ void HandlerCharacter::update(float dt, InputBufferer* input) {
             if (registeredMove != Unit::Move::MoveCount) {
                 handler->listen(registeredMove);
             }
-            handler->update(dt);
+            handler->update(dt, input);
         }
     }
 }

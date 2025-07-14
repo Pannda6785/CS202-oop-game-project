@@ -99,6 +99,16 @@ namespace Unit {
     };
     const int NUM_LOCKS = static_cast<int>(Lock::LockCount);
 
+    enum Layer {
+        Background,
+        Bullet,
+        Character,
+        HUD,
+        UI,
+        LayerCount // This should always be the last element
+    };
+    const int NUM_LAYERS = static_cast<int>(Layer::LayerCount);
+
     inline Input moveToInput(Move move) {
         switch (move) {
             case Move::Basic:     return Input::Basic;
