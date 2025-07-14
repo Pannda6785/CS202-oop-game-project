@@ -11,6 +11,7 @@ SunburstGraphicsComponent::SunburstGraphicsComponent(const Sunburst* bullet)
     std::string path = "../assets/sprites/priestess/bullet/";
     inactiveTexture = new Texture(LoadTexture((path + "priest_bullets_6_p1_0001.png").c_str()));
     activeTexture = new Texture(LoadTexture((path + "priest_bullets_3_p1_0002.png").c_str()));
+    BulletGraphicsComponent::registerOwner(bullet);
 }
 
 SunburstGraphicsComponent::~SunburstGraphicsComponent() {
@@ -54,8 +55,6 @@ void SunburstGraphicsComponent::render() const {
     Vector2 origin = { currentTexture.width * scale / 2.0f, currentTexture.height * scale / 2.0f };
 
     Color color = {255, 60, 25, 255};
-    Color tint = color;
-    tint.a = static_cast<unsigned char>(255 * gradient);
 
     DrawTexturePro(
         currentTexture,
@@ -63,10 +62,12 @@ void SunburstGraphicsComponent::render() const {
         destRect,
         origin,
         rotation,
-        (bullet->isStartingUp() ? tint : WHITE)
+        (bullet->isStartingUp() ? Fade(color, static_cast<unsigned char>(255 * gradient)) : WHITE)
     );
 
     float thickness = 5;
-    tint.a = std::min((int)tint.a, 150);
-    DrawRing({pos.x, pos.y}, bullet->getRingRadius() - thickness / 2, bullet->getRingRadius() + thickness / 2, 0, 360, 64, tint);
+    DrawRing({pos.x, pos.y}, bullet->getRingRadius() - thickness / 2, bullet->getRingRadius() + thickness / 2, 
+                0, 360, 128, Fade(color, 150));
+
+    BulletGraphicsComponent::drawHitboxes();
 }

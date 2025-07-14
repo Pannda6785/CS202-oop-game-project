@@ -18,7 +18,7 @@
 class StraightBullet final : public Bullet {
 public:
     StraightBullet(int ownerId, Unit::Vec2D spawnPos, Unit::Vec2D direction,
-                   float radius, float speed, float startup, float lifetime, std::unique_ptr<CommonBulletGraphicsComponent> graphics = nullptr);
+                   float radius, float speed, float startup, float lifetime, std::unique_ptr<CommonBulletGraphicsComponent> graphics);
 
     void update(float dt) override;
     bool isDone() const override;

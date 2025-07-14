@@ -136,7 +136,6 @@ float Player::getCooldown(Unit::Move move) const {
 }
 
 void Player::applyInvincibility(float duration, bool force) {
-    duration *= modifiers[static_cast<int>(Unit::Modifier::CooldownModifier)].second;
     if (force) {
         invincibility = duration;
     } else {
@@ -145,7 +144,6 @@ void Player::applyInvincibility(float duration, bool force) {
 }
 
 void Player::applyModifier(Unit::Modifier mod, float duration, float value, bool force) {
-    duration *= modifiers[static_cast<int>(Unit::Modifier::CooldownModifier)].second;
     // always force, i guess
     modifiers[static_cast<int>(mod)] = {duration, value};
 }
@@ -168,11 +166,11 @@ void Player::applyCooldown(Unit::Move move, float duration, bool force) {
     }
 }
 
-void Player::applyImplicitMoveLock() {
-    applyLock(Unit::Lock::BasicLock, 0.2f);
-    applyLock(Unit::Lock::WideLock, 0.2f);
-    applyLock(Unit::Lock::OffensiveLock, 0.2f);
-    applyLock(Unit::Lock::DefensiveLock, 0.2f);
+void Player::applyImplicitMoveLock(bool force) {
+    applyLock(Unit::Lock::BasicLock, 0.2f, force);
+    applyLock(Unit::Lock::WideLock, 0.2f, force);
+    applyLock(Unit::Lock::OffensiveLock, 0.2f, force);
+    applyLock(Unit::Lock::DefensiveLock, 0.2f, force);
 }
 
 // --- Private helpers ---
@@ -250,9 +248,9 @@ void Player::updateStatus(float dt) {
     for (auto& [duration, value] : modifiers) {
         if (duration > 0.0f) {
             duration = std::max(duration - dt, 0.0f);
-            if (duration < Unit::EPS) {
-                value = 1.0f;
-            }
+        }
+        if (duration < Unit::EPS) {
+            value = 1.0f;
         }
     }
 

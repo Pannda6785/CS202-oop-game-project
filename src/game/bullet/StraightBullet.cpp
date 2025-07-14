@@ -8,7 +8,7 @@ StraightBullet::StraightBullet(int ownerId, Unit::Vec2D spawnPos, Unit::Vec2D di
     : Bullet(ownerId), pos(spawnPos), vel(direction.normalized() * speed), remainingTime(lifetime), remainingStartup(startup),
       startedUp(false), radius(radius), graphics(std::move(graphics))
 {
-    if (!this->graphics) this->graphics = std::make_unique<CommonBulletGraphicsComponent>(this);
+    this->graphics->registerOwner(this);
     lifeHitbox = std::make_unique<CircleHitbox>(pos, radius);
 }
 

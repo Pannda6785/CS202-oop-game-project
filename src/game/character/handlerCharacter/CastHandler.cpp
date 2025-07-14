@@ -12,7 +12,7 @@ bool CastHandler::tryRegister(InputBufferer* input) {
         throw std::runtime_error("CastHandler::tryRegister - CastHandler must be registered with a player and character before use.");
     }
 
-    float lock = player->getLock(static_cast<Unit::Lock>(move));
+    float lock = player->getLock(Unit::moveToLock(move));
     float cooldown = player->getCooldown(move);
     if (lock > Unit::EPS || cooldown > Unit::EPS) return false;
 

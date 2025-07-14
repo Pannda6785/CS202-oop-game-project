@@ -103,6 +103,7 @@ namespace Unit {
         Background,
         Bullet,
         Character,
+        Foreground,
         HUD,
         UI,
         LayerCount // This should always be the last element
@@ -116,6 +117,15 @@ namespace Unit {
             case Move::Offensive: return Input::Offensive;
             case Move::Defensive: return Input::Defensive;
             default:              return Input::InputCount; // Invalid input fallback
+        }
+    }
+    inline Lock moveToLock(Move move) {
+        switch (move) {
+            case Move::Basic:     return Lock::BasicLock;
+            case Move::Wide:      return Lock::WideLock;
+            case Move::Offensive: return Lock::OffensiveLock;
+            case Move::Defensive: return Lock::DefensiveLock;
+            default:              return Lock::LockCount; // Invalid lock fallback
         }
     }
 };

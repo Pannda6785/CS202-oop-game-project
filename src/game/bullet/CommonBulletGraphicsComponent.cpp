@@ -1,16 +1,25 @@
 #include "CommonBulletGraphicsComponent.hpp"
 #include <raylib.h>
+#include <iostream>
+#include <cmath>
 
 #include "Bullet.hpp"
 #include "../hitbox/CircleHitbox.hpp"
 
-CommonBulletGraphicsComponent::CommonBulletGraphicsComponent(const Bullet* bullet, float initialGradient)
-    : bullet(bullet), initialGradient(std::max(0.1f, initialGradient)) {}
+CommonBulletGraphicsComponent::CommonBulletGraphicsComponent(float initialGradient)
+    : initialGradient(std::max(0.1f, initialGradient)) {}
 
-CommonBulletGraphicsComponent::CommonBulletGraphicsComponent(const Bullet* bullet, std::string texturePath, float initialGradient, std::string startupTexturePath)
-    : bullet(bullet), texture(new Texture(LoadTexture(texturePath.c_str()))), initialGradient(std::max(0.1f, initialGradient)) {
+CommonBulletGraphicsComponent::CommonBulletGraphicsComponent(std::string texturePath, float texResize, float initialGradient, 
+    std::string startupTexturePath, float startUpTexResize)
+    : texResize(texResize), startUpTexResize(startUpTexResize),
+      initialGradient(std::max(0.1f, initialGradient)) {
+
+    Texture loadedTex = LoadTexture(texturePath.c_str());
+    texture = new Texture(loadedTex);
+
     if (!startupTexturePath.empty()) {
-        startupTexture = new Texture(LoadTexture(startupTexturePath.c_str()));
+        Texture loadedStartup = LoadTexture(startupTexturePath.c_str());
+        startupTexture = new Texture(loadedStartup);
     }
 }
 
@@ -25,24 +34,50 @@ CommonBulletGraphicsComponent::~CommonBulletGraphicsComponent() {
     }
 }
 
+void CommonBulletGraphicsComponent::registerOwner(const Bullet* bullet) {
+    BulletGraphicsComponent::registerOwner(bullet);
+    this->bullet = bullet;
+}
+
 void CommonBulletGraphicsComponent::render() const {
+    if (!bullet) {
+        std::cerr << "Bullet not registered for CommonBulletGraphicsComponent rendering!" << std::endl;
+        return;
+    }
+
     Color tint = WHITE;
     tint.a = static_cast<unsigned char>(255 * gradient);
+    Unit::Vec2D pos = bullet->getPosition();
+    Unit::Vec2D velocity = bullet->getVelocity();
+
+    float rotation = 0.0f;
+    if (velocity.x != 0.0f || velocity.y != 0.0f) {
+        rotation = std::atan2(velocity.y, velocity.x) * RAD2DEG;
+    }
+
     if (texture) {
-        Unit::Vec2D pos = bullet->getPosition();
+        Texture* texToDraw = texture;
+        float scale = texResize;
+
         if (startupTexture && !bullet->getDamagingHitbox()) {
-            DrawTextureEx(*startupTexture, { pos.x - startupTexture->width/2.0f, pos.y - startupTexture->height/2.0f }, 0.0f, 1.0f, tint);
-        } else {
-            DrawTextureEx(*texture, { pos.x - texture->width/2.0f, pos.y - texture->height/2.0f }, 0.0f, 1.0f, tint);
+            texToDraw = startupTexture;
+            scale = startUpTexResize;
         }
+
+        Rectangle source = { 0, 0, (float)texToDraw->width, (float)texToDraw->height };
+        Rectangle dest = { pos.x, pos.y, source.width * scale, source.height * scale };
+        Vector2 origin = { dest.width / 2.0f, dest.height / 2.0f };
+
+        DrawTexturePro(*texToDraw, source, dest, origin, rotation, tint);
     } else {
         const CircleHitbox* hitbox = dynamic_cast<const CircleHitbox*>(bullet->getLifeHitbox());
         if (!hitbox) return;
-        Vector2 pos = { bullet->getPosition().x, bullet->getPosition().y };
+        Vector2 pos2 = { pos.x, pos.y };
         float radius = hitbox->getRadius();
-        DrawCircleV(pos, radius, tint);
+        DrawCircleV(pos2, radius, tint);
     }
 
+    BulletGraphicsComponent::drawHitboxes();
 }
 
 void CommonBulletGraphicsComponent::update(float dt) {

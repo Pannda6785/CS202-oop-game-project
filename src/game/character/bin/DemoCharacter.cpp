@@ -38,7 +38,8 @@ void DemoCharacter::update(float dt, InputBufferer* input) {
                 float angle = atan2(enemyArrow.y, enemyArrow.x) + i * angleOffset;
                 Unit::Vec2D dir = { cosf(angle), sinf(angle) };
                 auto bullet = std::make_unique<StraightBullet>(
-                    player->getPlayerId(), selfPos, dir, radius, baseSpeed, startup, lifetime
+                    player->getPlayerId(), selfPos, dir, 
+                    radius, baseSpeed, startup, lifetime, std::make_unique<CommonBulletGraphicsComponent>()
                 );
                 player->spawnBullet(std::move(bullet));
             }
@@ -68,7 +69,8 @@ void DemoCharacter::update(float dt, InputBufferer* input) {
             float angle = angle0 + (i + 0.5f) * angleStep;
             Unit::Vec2D dir = { cosf(angle), sinf(angle) };
             auto bullet = std::make_unique<StraightBullet>(
-                player->getPlayerId(), selfPos, dir, radius, baseSpeed, startup, lifetime
+                player->getPlayerId(), selfPos, dir, 
+                radius, baseSpeed, startup, lifetime, std::make_unique<CommonBulletGraphicsComponent>()
             );
             player->spawnBullet(std::move(bullet));
         }
@@ -90,7 +92,7 @@ void DemoCharacter::update(float dt, InputBufferer* input) {
         float radius = 10.0f;
         float baseSpeed = 110.0f;
         float lifetime = 1.0f;
-        float startup = 0.4f;
+        float startup = 0.18f;
 
         for (int dir = -1; dir <= 1; dir += 2) {
             for (int i = 0; i < 5; ++i) {
@@ -99,7 +101,8 @@ void DemoCharacter::update(float dt, InputBufferer* input) {
                     selfPos.y + (i - 2) * spacingY
                 };
                 auto bullet = std::make_unique<StraightBullet>(
-                    player->getPlayerId(), pos, Unit::Vec2D{float(dir), 0}, radius, baseSpeed, startup, lifetime
+                    player->getPlayerId(), pos, Unit::Vec2D{float(dir), 0},
+                    radius, baseSpeed, startup, lifetime, std::make_unique<CommonBulletGraphicsComponent>()
                 );
                 player->spawnBullet(std::move(bullet));
             }
