@@ -102,7 +102,6 @@ void GameStateManager::processPendingStateChanges() {
 void GameStateManager::applyPendingAction() {
     if (hasPendingState) {
         currentState = std::move(pendingState);
-        // if(currentState) currentState->enter();
         hasPendingState =  false;
     }
 }

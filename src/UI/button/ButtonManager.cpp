@@ -1,7 +1,8 @@
 #include "ButtonManager.hpp"
 #include <raylib.h>
 
-ButtonManager::ButtonManager() : hoveredIndex(-1) {}
+ButtonManager::ButtonManager() : hoveredIndex(-1) {
+}
 
 ButtonManager::~ButtonManager() {
     reset();
@@ -9,14 +10,12 @@ ButtonManager::~ButtonManager() {
 
 void ButtonManager::addButton(std::unique_ptr<Button> button) {
     buttons.push_back(std::move(button));
-    // If this is the first enabled button, set hoveredIndex
     if (hoveredIndex == -1 && buttons.back()->isEnabled()) {
         hoveredIndex = static_cast<int>(buttons.size()) - 1;
     }
 }
 
 void ButtonManager::update(float dt) {
-    // 1. Update all buttons (logic, mouse state)
     for(size_t i = 0; i < buttons.size(); ++i) {
         if (buttons[i]->isEnabled()) {
             buttons[i]->update(dt);

@@ -159,7 +159,7 @@ void CharacterGraphicsComponent::renderOverlay() const {
 }
 
 void CharacterGraphicsComponent::renderCharacter() const {
-    assert(toRenderCharacterTexture != nullptr && "Character texture is not set!");
+    if(toRenderCharacterTexture == nullptr) return;
     Texture tex = *toRenderCharacterTexture;
 
     Unit::Vec2D pos = player->getPosition();

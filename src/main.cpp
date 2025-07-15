@@ -20,6 +20,7 @@ int main() {
     const int screenHeight = 900;
 
     InitWindow(screenWidth, screenHeight, "Maiden and CS202");
+    InitAudioDevice();
 
     SetTargetFPS(60);
 
@@ -33,9 +34,7 @@ int main() {
     */
 
     GameStateManager gameStateManager;
-    // gameStateManager.changeState(std::make_unique<MainMenuState>());
     gameStateManager.changeState(std::make_unique<MainMenuState>(gameStateManager));
-    // gameStateManager.processPendingStateChanges();
 
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
@@ -52,7 +51,6 @@ int main() {
 
         GraphicsComponentManager::instance().render(); // Update graphics components
 
-        // gameStateManager.processPendingStateChanges();
 
         EndDrawing();
     }

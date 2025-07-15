@@ -12,6 +12,7 @@ class MainMenuState : public GameState {
 private:
     ButtonManager buttonManager;
     GameStateManager& gameStateManager;
+    Sound buttonHoverSound;
 
 public:
     MainMenuState(GameStateManager& gsm);

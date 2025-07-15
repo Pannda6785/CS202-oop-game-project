@@ -4,28 +4,29 @@
 #include "GameState.hpp"
 #include "../../input/InputInterpreter.hpp"
 #include "../../input/KeyboardInputInterpreter.hpp"
-
 #include "../../game/World.hpp"
 #include "../../game/player/Player.hpp"
-
 #include "../../game/character/DemoCharacter.hpp"
+#include "../button/ButtonManager.hpp"
 #include <memory>
 #include <vector>
 
+class GameStateManager; // Forward declaration
+
 class SoloModeState : public GameState {
 public:
-    SoloModeState();
+    SoloModeState(GameStateManager& gsm);
     ~SoloModeState() override;
 
     void enter() override;
     void update(float dt) override;
     void exit() override;
-    
+
 private:
-    // std::unique_ptr<World> world;
-    std::shared_ptr<World> world;
+    GameStateManager& gameStateManager;
+    std::unique_ptr<World> world;
     std::vector<std::shared_ptr<KeyboardInputInterpreter>> inputInterpreters;
-    // Add more members if needed (e.g., UI overlays, pause state, etc.)
+    ButtonManager buttonManager;
 };
 
 #endif // SOLO_MODE_STATE_HPP
