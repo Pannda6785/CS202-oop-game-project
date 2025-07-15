@@ -9,10 +9,11 @@
 CommonBulletGraphicsComponent::CommonBulletGraphicsComponent(float initialGradient)
     : initialGradient(std::max(0.1f, initialGradient)) {}
 
-CommonBulletGraphicsComponent::CommonBulletGraphicsComponent(std::string texturePath, float texResize, float initialGradient, 
+CommonBulletGraphicsComponent::CommonBulletGraphicsComponent(std::string texturePath, float texResize, float initialGradient, bool useVelocity,
     std::string startupTexturePath, float startUpTexResize)
     : texResize(texResize), startUpTexResize(startUpTexResize),
-      initialGradient(std::max(0.1f, initialGradient)) {
+      initialGradient(std::max(0.1f, initialGradient)),
+      useVelocity(useVelocity) {
 
     Texture loadedTex = LoadTexture(texturePath.c_str());
     texture = new Texture(loadedTex);
@@ -51,8 +52,10 @@ void CommonBulletGraphicsComponent::render() const {
     Unit::Vec2D velocity = bullet->getVelocity();
 
     float rotation = 0.0f;
-    if (velocity.x != 0.0f || velocity.y != 0.0f) {
-        rotation = std::atan2(velocity.y, velocity.x) * RAD2DEG;
+    if (useVelocity) {
+        if (velocity.x != 0.0f || velocity.y != 0.0f) {
+            rotation = std::atan2(velocity.y, velocity.x) * RAD2DEG + 90.0f;
+        }
     }
 
     if (texture) {

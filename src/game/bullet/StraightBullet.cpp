@@ -27,16 +27,28 @@ void StraightBullet::update(float dt) {
     }
     graphics->update(dt);
 }
-
 bool StraightBullet::isDone() const {
     if (remainingTime <= 0.0f) return true;
-    float margin = 2 * radius * size;
-    if (pos.x < -margin || pos.x > Unit::BATTLEFIELD_WIDTH + margin ||
-        pos.y < -margin || pos.y > Unit::BATTLEFIELD_HEIGHT + margin) {
-        return true;
+
+    float margin = 4 * radius * size;
+
+    // check within battlefield bounds
+    float minX = -margin;
+    float maxX = Unit::BATTLEFIELD_WIDTH + margin;
+    float minY = -margin;
+    float maxY = Unit::BATTLEFIELD_HEIGHT + margin;
+    if (pos.x >= minX && pos.x <= maxX &&
+        pos.y >= minY && pos.y <= maxY) {
+        return false;
     }
+
+    // check if can ever re-enter
+    bool movingAwayX = (pos.x < minX && vel.x <= Unit::EPS) || (pos.x > maxX && vel.x >= Unit::EPS);
+    bool movingAwayY = (pos.y < minY && vel.y <= Unit::EPS) || (pos.y > maxY && vel.y >= Unit::EPS);
+    if (movingAwayX || movingAwayY) return true;
     return false;
 }
+
 
 Unit::Vec2D StraightBullet::getPosition() const {
     return pos;

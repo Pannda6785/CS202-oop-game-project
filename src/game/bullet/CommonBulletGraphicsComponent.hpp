@@ -11,7 +11,7 @@ class Bullet;
 class CommonBulletGraphicsComponent : public BulletGraphicsComponent {
 public:
     CommonBulletGraphicsComponent(float initialGradient = 0.4f); // not expected to be used outside of prototyping
-    CommonBulletGraphicsComponent(std::string texturePath, float texResize, float initialGradient, 
+    CommonBulletGraphicsComponent(std::string texturePath, float texResize, float initialGradient, bool useVelocity = false,
                                     std::string startupTexturePath = "", float startUpTexResize = 1.0f);
     ~CommonBulletGraphicsComponent();
 
@@ -28,6 +28,7 @@ private:
     float startUpTexResize = 1.0f; // how much to resize the
     float initialGradient = 0.0f; // for this much second after being born, it will linearly become fully opaque
     float gradient = 0.0f;
+    bool useVelocity; // if true, the bullet will be rotated to face its velocity vector
 
 };
 

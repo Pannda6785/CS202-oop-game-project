@@ -100,15 +100,13 @@ namespace Unit {
     const int NUM_LOCKS = static_cast<int>(Lock::LockCount);
 
     enum Layer {
-        Background,
-        Bullet,
-        Character,
-        Foreground,
-        HUD,
-        UI,
-        LayerCount // This should always be the last element
+        Background = 0,
+        Bullet = 10,
+        Character = 20,
+        Foreground = 30,
+        HUD = 40,
+        UI = 50
     };
-    const int NUM_LAYERS = static_cast<int>(Layer::LayerCount);
 
     inline Input moveToInput(Move move) {
         switch (move) {

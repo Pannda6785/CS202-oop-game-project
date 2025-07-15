@@ -3,6 +3,7 @@
 #include "../../../player/Player.hpp"
 #include "../PriestessGraphicsComponent.hpp"
 #include "../../bullet/StraightBullet.hpp"
+#include "../../bullet/CommonBulletGraphicsComponent.hpp"
 
 PriestessOffensiveHandler::PriestessOffensiveHandler(PriestessGraphicsComponent* graphics)
     : CastHandler(Unit::Move::Offensive, MIN_CASTING_TIME), graphics(graphics) {
@@ -48,7 +49,7 @@ void PriestessOffensiveHandler::onCastRelease() {
     graphics->spin();
     ring->onCastRelease();
 
-    // spawn bullet here, no need cutoff
+    spawnBullet();
 
     float lockDuration = std::max(MIN_ACTION_LOCK, MAX_ACTION_LOCK - castingTime);
     player->applyLock(Unit::Lock::BasicLock, lockDuration);
@@ -67,5 +68,66 @@ void PriestessOffensiveHandler::onCastRelease() {
 }
 
 float PriestessOffensiveHandler::getRingRadius() const {
-    return 150 + std::min(MAX_CASTING_TIME, castingTime) * RING_SPEED;
+    return ADDED_RING_RADIUS + std::min(MAX_CASTING_TIME, castingTime) * RING_SPEED;
+}
+
+void PriestessOffensiveHandler::spawnBullet() {
+    auto getRate = [&](float x) -> float {
+        float t = (x - ADDED_RING_RADIUS) / (RING_SPEED - ADDED_RING_RADIUS);
+        if (t > 1) t = 1;
+        return MAX_NUM_BULLETS_RATIO - DECAY_RATE * t;
+    };
+
+    float radius = getRingRadius();
+    int numBullets = static_cast<int>(getRate(radius) * radius);
+    float angleStep = 360.0f / numBullets;
+
+    Unit::Vec2D center = player->getPosition(); 
+    Unit::Vec2D target = player->getTargetPosition();
+    Unit::Vec2D toTarget = (target - center).normalized();
+
+    // Compute rotation angle in degrees
+    float baseAngleDeg = std::atan2(toTarget.y, toTarget.x) * 180.0f / M_PI;
+
+    for (int i = 0; i < numBullets; ++i) {
+        float angleDeg = baseAngleDeg + (i + 0.5) * angleStep;
+        float angleRad = angleDeg * M_PI / 180.0f;
+
+        Unit::Vec2D direction(std::cos(angleRad), std::sin(angleRad));
+        Unit::Vec2D bulletPosition = center + direction * radius;
+        
+        std::string active = "../assets/sprites/priestess/bullet/priest_bullets_0_p1_0000.png";
+        std::string inactive = "../assets/sprites/priestess/bullet/priest_bullets_5_p1_0000.png";
+        constexpr float resize = 0.5;
+
+        for (int t = 0; t < 2; ++t) {
+            Unit::Vec2D velocity = direction.normalized() * BULLET_SPEED;
+            float x = velocity.x;
+            float y = velocity.y;
+            if (t == 0) {
+                velocity = {y, -x};
+            } else {
+                velocity = {-y, x};
+            }
+            auto graphics = std::make_unique<CommonBulletGraphicsComponent>(
+                active,
+                resize,
+                STARTUP / 2,
+                true,
+                inactive,
+                resize
+            );
+            auto bullet = std::make_unique<StraightBullet>(
+                player->getPlayerId(),
+                bulletPosition,
+                velocity,
+                BULLET_RADIUS,
+                BULLET_SPEED,
+                STARTUP,
+                1e9,
+                std::move(graphics)
+            );
+            player->spawnBullet(std::move(bullet));
+        }
+    }
 }
