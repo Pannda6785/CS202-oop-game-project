@@ -15,6 +15,8 @@
 #include "UI/game_state/SoloModeState.hpp"
 #include "UI/game_state/GameStateManager.hpp"
 
+#include "audio/AudioManager.hpp"
+
 int main() {
     const int screenWidth = 1440;
     const int screenHeight = 900;
@@ -35,6 +37,9 @@ int main() {
 
     GameStateManager gameStateManager;
     gameStateManager.changeState(std::make_unique<MainMenuState>(gameStateManager));
+    
+    AudioManager::getInstance().init(); // Initialize audio manager
+
 
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {

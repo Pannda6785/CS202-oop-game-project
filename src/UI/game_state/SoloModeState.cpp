@@ -1,6 +1,7 @@
 #include "SoloModeState.hpp"
 #include "GameStateManager.hpp"
 #include "MainMenuState.hpp"
+#include "../../audio/AudioManager.hpp"
 
 SoloModeState::SoloModeState(GameStateManager& gsm)
     : gameStateManager(gsm)
@@ -38,9 +39,11 @@ void SoloModeState::enter() {
     backButton->setOnClickListener([&gsm = gameStateManager]() {
         std::cout << "Returning to Main Menu..." << std::endl;
         gsm.changeState(std::make_unique<MainMenuState>(gsm));
+        AudioManager::getInstance().play("tick");
     });
     backButton->setOnHoverEnterListener([]() {
         std::cout << "Hovered over Back button!" << std::endl;
+        AudioManager::getInstance().play("tick");
     });
     buttonManager.addButton(std::move(backButton));
 }
