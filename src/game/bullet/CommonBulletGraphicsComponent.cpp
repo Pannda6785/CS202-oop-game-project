@@ -8,7 +8,7 @@ CommonBulletGraphicsComponent::CommonBulletGraphicsComponent(const CommonBullet*
     : bullet(bullet), texture(nullptr), useTexture(false) {}
 
 CommonBulletGraphicsComponent::CommonBulletGraphicsComponent(const CommonBullet* bullet, const std::string& texturePath)
-    : bullet(bullet), texture(new Texture2D(LoadTexture(texturePath.c_str()))), useTexture(true) {}
+    : bullet(bullet), texture(new Texture(LoadTexture(texturePath.c_str()))), useTexture(true) {}
 
 CommonBulletGraphicsComponent::~CommonBulletGraphicsComponent() {
     if (texture) {
