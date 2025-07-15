@@ -1,67 +1,118 @@
 #include "ButtonManager.hpp"
-#include <algorithm>
-#include <iostream>
+#include <raylib.h>
 
-ButtonManager& ButtonManager::getInstance() {
-    static ButtonManager instance;
-    return instance;
-}
-
-ButtonManager::ButtonManager() {
-    // Không cần lưu GraphicsComponentManager, dùng singleton trực tiếp
-    std::cout << "ButtonManager created." << std::endl;
+ButtonManager::ButtonManager() : hoveredIndex(-1) {
 }
 
 ButtonManager::~ButtonManager() {
-    clearAllButtons();
-    std::cout << "ButtonManager destroyed." << std::endl;
+    reset();
 }
 
-IButtonControl* ButtonManager::createButton(int x, int y, int width, int height, const std::string& text) {
-    auto newButton = std::make_unique<Button>(x, y, width, height, text);
-    IButtonControl* controlPtr = newButton.get();
-
-    // Đăng ký GraphicsComponent của nút với GraphicsComponentManager
-    if (newButton->getGraphicsComponent()) {
-        GraphicsComponentManager::instance().registerComponent(
-            static_cast<const GraphicsComponent*>(newButton->getGraphicsComponent())
-        );
+void ButtonManager::addButton(std::unique_ptr<Button> button) {
+    buttons.push_back(std::move(button));
+    if (hoveredIndex == -1 && buttons.back()->isEnabled()) {
+        hoveredIndex = static_cast<int>(buttons.size()) - 1;
     }
-
-    m_buttons.push_back(std::move(newButton));
-    return controlPtr;
 }
 
-void ButtonManager::updateButtons(float dt) {
-    for (const auto& button : m_buttons) {
-        if (button->isEnabled()) {
-            button->update(dt);
+void ButtonManager::update(float dt) {
+    for(size_t i = 0; i < buttons.size(); ++i) {
+        if (buttons[i]->isEnabled()) {
+            buttons[i]->update(dt);
         }
     }
+
+    // 2. Mouse hover: update hoveredIndex if mouse is over any button
+    updateHoveredByMouse();
+
+    // 3. Keyboard navigation
+    updateHoveredByKeyboard();
 }
 
-void ButtonManager::removeButton(IButtonControl* buttonToRemove) {
-    for (auto it = m_buttons.begin(); it != m_buttons.end(); ++it) {
-        if (it->get() == buttonToRemove) {
-            // Hủy đăng ký GraphicsComponent trước khi xóa nút
-            if ((*it)->getGraphicsComponent()) {
-                GraphicsComponentManager::instance().unregisterComponent(
-                    static_cast<const GraphicsComponent*>((*it)->getGraphicsComponent())
-                );
+void ButtonManager::updateHoveredByMouse() {
+    int mouseX = GetMouseX();
+    int mouseY = GetMouseY();
+    bool found = false;
+    int prevHovered = hoveredIndex;
+    for (size_t i = 0; i < buttons.size(); ++i) {
+        if (buttons[i]->isEnabled() &&
+            CheckCollisionPointRec({(float)mouseX, (float)mouseY}, buttons[i]->getBounds())) {
+            hoveredIndex = static_cast<int>(i);
+            found = true;
+            break;
+        }
+    }
+    if(found){
+        if (hoveredIndex != prevHovered) {
+            // If hoveredIndex changed, update states
+            if (prevHovered != -1 && prevHovered < (int)buttons.size()) {
+                buttons[prevHovered]->setToState("idle");
             }
-            m_buttons.erase(it);
-            return;
+            buttons[hoveredIndex]->setToState("hovered");
+        }
+    }
+
+    // If mouse leaves all buttons, hoveredIndex is preserved (do nothing)
+}
+
+void ButtonManager::updateHoveredByKeyboard() {
+    if (buttons.empty()) return;
+
+    int prevHovered = hoveredIndex;
+
+    // Navigation: UP/DOWN
+    if (IsKeyPressed(KEY_UP)) {
+        int idx = hoveredIndex;
+        int next = findNextEnabled(idx, -1);
+        if (next != -1) hoveredIndex = next;
+    }
+    if (IsKeyPressed(KEY_DOWN)) {
+        int idx = hoveredIndex;
+        int next = findNextEnabled(idx, 1);
+        if (next != -1) hoveredIndex = next;
+    }
+    buttons[prevHovered]->setToState("idle");
+    buttons[hoveredIndex]->setToState("hovered");
+    if(prevHovered != hoveredIndex) buttons[hoveredIndex]->triggerHoverEnter();
+    // ENTER triggers the current button
+    if (hoveredIndex != -1 && IsKeyPressed(KEY_ENTER)) {
+        triggerCurrentButton();
+    }
+}
+
+int ButtonManager::findNextEnabled(int start, int dir) const {
+    if (buttons.empty()) return -1;
+    int n = static_cast<int>(buttons.size());
+    int idx = start;
+    for (int i = 1; i <= n; ++i) {
+        int next = (idx + dir * i + n) % n;
+        if (buttons[next]->isEnabled()) return next;
+    }
+    return -1;
+}
+
+void ButtonManager::triggerCurrentButton() {
+    if (hoveredIndex >= 0 && hoveredIndex < (int)buttons.size()) {
+        if (buttons[hoveredIndex]->isEnabled()) {
+            buttons[hoveredIndex]->triggerOnClick();
         }
     }
 }
 
-void ButtonManager::clearAllButtons() {
-    for (const auto& button : m_buttons) {
-        if (button->getGraphicsComponent()) {
-            GraphicsComponentManager::instance().unregisterComponent(
-                static_cast<const GraphicsComponent*>(button->getGraphicsComponent())
-            );
-        }
-    }
-    m_buttons.clear();
+void ButtonManager::reset() {
+    buttons.clear();
+    hoveredIndex = -1;
+}
+
+int ButtonManager::getHoveredIndex() const {
+    return hoveredIndex;
+}
+
+int ButtonManager::getButtonCount() const {
+    return static_cast<int>(buttons.size());
+}
+
+Button* ButtonManager::getButton(int idx) {
+    if (idx < 0 || idx >= (int)buttons.size()) return nullptr;
+    return buttons[idx].get();
 }

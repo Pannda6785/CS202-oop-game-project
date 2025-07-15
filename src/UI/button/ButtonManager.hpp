@@ -1,39 +1,31 @@
 #ifndef BUTTON_MANAGER_HPP
 #define BUTTON_MANAGER_HPP
 
-#include "Button.hpp"
-// Đảm bảo đường dẫn đến GraphicsComponentManager.hpp là chính xác trong dự án của bạn
-#include "../../graphics/GraphicsComponentManager.hpp" 
-
 #include <vector>
-#include <memory> // Cho std::unique_ptr
+#include <memory>
+#include <string>
+#include "Button.hpp"
 
 class ButtonManager {
 public:
-    // Singleton pattern
-    static ButtonManager& getInstance();
+    ButtonManager();
+    ~ButtonManager();
 
-    // Ngăn chặn sao chép
-    ButtonManager(const ButtonManager&) = delete;
-    ButtonManager& operator=(const ButtonManager&) = delete;
-
-    // Phương thức để thêm nút mới
-    IButtonControl* createButton(int x, int y, int width, int height, const std::string& text);
-
-    // Phương thức cập nhật tất cả các nút, có dt
-    void updateButtons(float dt);
-
-    // Phương thức để xóa nút
-    void removeButton(IButtonControl* button);
-
-    // Xóa tất cả các nút
-    void clearAllButtons();
+    void addButton(std::unique_ptr<Button> button);
+    void update(float dt);
+    void reset();
+    int getHoveredIndex() const;
+    int getButtonCount() const;
+    Button* getButton(int idx);
 
 private:
-    ButtonManager(); // Constructor private cho Singleton
-    ~ButtonManager(); // Destructor private cho Singleton
+    std::vector<std::unique_ptr<Button>> buttons;
+    int hoveredIndex = -1;
 
-    std::vector<std::unique_ptr<Button>> m_buttons;
+    void updateHoveredByMouse();
+    void updateHoveredByKeyboard();
+    void triggerCurrentButton();
+    int findNextEnabled(int start, int dir) const;
 };
 
 #endif // BUTTON_MANAGER_HPP

@@ -1,10 +1,11 @@
 #include "Button.hpp"
 #include "ButtonGraphicsComponent.hpp"
 #include <raylib.h>
+#include <iostream>
 
 Button::Button(int x, int y, int width, int height, const std::string& text)
     : x(x), y(y), width(width), height(height), text(text),
-      isIdle(true), isHovered(false), isPressed(false), isDisabled(false),
+      idleState(true), hoveredState(false), pressedState(false), disabledState(false),
       onClick(nullptr), onHoverEnter(nullptr)
 {
     bounds = { (float)x, (float)y, (float)width, (float)height };
@@ -14,8 +15,13 @@ Button::Button(int x, int y, int width, int height, const std::string& text)
 Button::~Button() = default;
 
 // --- IButtonControl methods ---
-void Button::enable() { isDisabled = false; }
-void Button::disable() { isDisabled = true; }
+void Button::enable() { disabledState = false; }
+void Button::disable() { disabledState = true; }
+void Button::setToState(std::string state) {
+    idleState = state == "idle";
+    hoveredState = state == "hovered";
+    pressedState = state == "pressed";
+}
 void Button::setText(const std::string& newText) { text = newText; }
 void Button::setPosition(int newX, int newY) { 
     x = newX; 
@@ -27,22 +33,23 @@ void Button::setOnClickListener(std::function<void()> callback) { onClick = call
 void Button::setOnHoverEnterListener(std::function<void()> callback) { onHoverEnter = callback; }
 
 // --- IButtonView methods ---
-bool Button::isIdle() const { return isIdle; }
-bool Button::isHovered() const { return isHovered; }
-bool Button::isPressed() const { return isPressed; }
-bool Button::isEnabled() const { return !isDisabled; }
+bool Button::isIdle() const { return idleState; }
+bool Button::isHovered() const { return hoveredState; }
+bool Button::isPressed() const { return pressedState; }
+bool Button::isEnabled() const { return !disabledState; }
 const std::string& Button::getText() const { return text; }
 int Button::getX() const { return x; }
 int Button::getY() const { return y; }
 int Button::getWidth() const { return width; }
 int Button::getHeight() const { return height; }
+Rectangle Button::getBounds() const { return bounds; }
 
 // --- Logic update ---
 void Button::update(float dt) {
-    if (isDisabled) {
-        isIdle = true;
-        isHovered = false;
-        isPressed = false;
+    if (disabledState) {
+        idleState = true;
+        hoveredState = false;
+        pressedState = false;
         return;
     }
 
@@ -51,22 +58,30 @@ void Button::update(float dt) {
     bool mouseOver = contains(mouseX, mouseY);
 
     if (mouseOver) {
-        if (!isHovered && onHoverEnter) {
+        if (!hoveredState && onHoverEnter) {
             onHoverEnter();
         }
-        isHovered = true;
-        isIdle = false;
+        hoveredState = true;
+        idleState = false;
         if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-            isPressed = true;
-            if (onClick) onClick();
+            pressedState = true;
+            triggerOnClick();
         } else if (!IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
-            isPressed = false;
+            pressedState = false;
         }
     } else {
-        isHovered = false;
-        isPressed = false;
-        isIdle = true;
+        hoveredState = false;
+        pressedState = false;
+        idleState = true;
     }
+}
+
+void Button::triggerHoverEnter() {
+    if (onHoverEnter) onHoverEnter();
+}
+
+void Button::triggerOnClick() {
+    if (onClick) onClick();
 }
 
 // --- Helper ---
