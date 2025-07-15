@@ -2,8 +2,8 @@
 
 #include "../../../player/Player.hpp"
 #include "../PriestessGraphicsComponent.hpp"
-#include "../../bullet/StraightBullet.hpp"
-#include "../../bullet/CommonBulletGraphicsComponent.hpp"
+#include "../../../bullet/StraightBullet.hpp"
+#include "../../../bullet/CommonBulletGraphicsComponent.hpp"
 
 PriestessOffensiveHandler::PriestessOffensiveHandler(PriestessGraphicsComponent* graphics)
     : CastHandler(Unit::Move::Offensive, MIN_CASTING_TIME), graphics(graphics) {

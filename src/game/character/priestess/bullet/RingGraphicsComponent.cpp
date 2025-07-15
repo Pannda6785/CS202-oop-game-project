@@ -10,7 +10,7 @@ RingGraphicsComponent::RingGraphicsComponent(bool isWide) : isWide(isWide) {
 void RingGraphicsComponent::render() const {
     Color orange = {255, 60, 25, 255};
     Color white = WHITE;
-    orange.a = white.a = 110;
+    orange.a = white.a = 140;
     float radii[3] = { radius - SPACING, radius, radius + SPACING };
     Color colors[3];
 

@@ -36,38 +36,39 @@ void SunburstGraphicsComponent::update(float dt) {
 void SunburstGraphicsComponent::render() const {
     if (!bullet) return;
 
-    Texture currentTexture = *(bullet->isStartingUp() ? inactiveTexture : activeTexture);
+    auto draw = [&](Texture currentTexture, bool underlay) -> void {
+        Unit::Vec2D pos = bullet->getPosition();
+        float bulletRadius = underlay ? bullet->getRingRadius() : bullet->getRadius();
 
-    Unit::Vec2D pos = bullet->getPosition();
-    float bulletRadius = bullet->getRadius();
+        constexpr float visibleRatio = 0.78f; 
+        float scale = (bulletRadius * 2.0f) / visibleRatio / currentTexture.width;
 
-    constexpr float visibleRatio = 0.78f; 
-    float scale = (bulletRadius * 2.0f) / visibleRatio / currentTexture.width;
+        Rectangle destRect = {
+            pos.x, pos.y,
+            currentTexture.width * scale,
+            currentTexture.height * scale
+        };
+        
+        Rectangle srcRect = { 0, 0, (float)currentTexture.width * (flipped ? -1.0f : 1.0f), (float)currentTexture.height };
 
-    Rectangle destRect = {
-        pos.x, pos.y,
-        currentTexture.width * scale,
-        currentTexture.height * scale
+        Vector2 origin = { currentTexture.width * scale / 2.0f, currentTexture.height * scale / 2.0f };
+
+        Color color = {255, 60, 25, 255};
+        if (underlay) color.a = static_cast<unsigned char>(255 * gradient);
+        else color = WHITE;
+
+        DrawTexturePro(
+            currentTexture,
+            srcRect,
+            destRect,
+            origin,
+            rotation,
+            color
+        );
     };
-    
-    Rectangle srcRect = { 0, 0, (float)currentTexture.width * (flipped ? -1.0f : 1.0f), (float)currentTexture.height };
 
-    Vector2 origin = { currentTexture.width * scale / 2.0f, currentTexture.height * scale / 2.0f };
-
-    Color color = {255, 60, 25, 255};
-
-    DrawTexturePro(
-        currentTexture,
-        srcRect,
-        destRect,
-        origin,
-        rotation,
-        (bullet->isStartingUp() ? Fade(color, static_cast<unsigned char>(255 * gradient)) : WHITE)
-    );
-
-    float thickness = 5;
-    DrawRing({pos.x, pos.y}, bullet->getRingRadius() - thickness / 2, bullet->getRingRadius() + thickness / 2, 
-                0, 360, 128, Fade(color, 150));
+    draw(*inactiveTexture, true);
+    if (!bullet->isStartingUp()) draw(*activeTexture, false);
 
     BulletGraphicsComponent::drawHitboxes();
 }

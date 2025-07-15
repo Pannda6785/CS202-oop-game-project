@@ -1,7 +1,7 @@
 #include "TapHandler.hpp"
 
-#include "../player/InputBufferer.hpp"
-#include "../player/Player.hpp"
+#include "../../player/InputBufferer.hpp"
+#include "../../player/Player.hpp"
 
 TapHandler::TapHandler(Unit::Move move)
     : move(move) {}

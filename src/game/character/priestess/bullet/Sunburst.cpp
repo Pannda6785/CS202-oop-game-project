@@ -59,7 +59,7 @@ Unit::Vec2D Sunburst::getPosition() const {
 }
 
 bool Sunburst::isStartingUp() const {
-    return startupTime > Unit::EPS;
+    return !startedup;
 }
 
 bool Sunburst::isFocused() const {

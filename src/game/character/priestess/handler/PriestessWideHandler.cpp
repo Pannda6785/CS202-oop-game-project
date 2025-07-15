@@ -2,8 +2,8 @@
 
 #include "../../../player/Player.hpp"
 #include "../PriestessGraphicsComponent.hpp"
-#include "../../bullet/StraightBullet.hpp"
-#include "../../bullet/CommonBulletGraphicsComponent.hpp"
+#include "../../../bullet/StraightBullet.hpp"
+#include "../../../bullet/CommonBulletGraphicsComponent.hpp"
 
 PriestessWideHandler::PriestessWideHandler(PriestessGraphicsComponent* graphics)
     : CastHandler(Unit::Move::Wide, MIN_CASTING_TIME), graphics(graphics) {

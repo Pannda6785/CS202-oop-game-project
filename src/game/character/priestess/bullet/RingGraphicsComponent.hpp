@@ -17,8 +17,8 @@ class RingGraphicsComponent : public BulletGraphicsComponent {
     static constexpr float CIRCLE_RADIUS = 45.0f;
     static constexpr float CIRCLE_THICKNESS = 8.0f;
     static constexpr int NUM_CIRCLES = 12;
-    static constexpr float TIME_FOR_MORE = 0.55f;
-    static constexpr float GRADIENT = 0.15f;
+    static constexpr float TIME_FOR_MORE = 0.35f; // how long until additional circle fill up
+    static constexpr float GRADIENT = 0.15f; // for when circle comes up
 
     // for offensive
     static constexpr int NUM_DIAS = 10;

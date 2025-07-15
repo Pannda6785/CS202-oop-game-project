@@ -1,7 +1,7 @@
 #include "BulletGraphicsComponent.hpp"
-#include "../../bullet/Bullet.hpp"
-#include "../../hitbox/CircleHitbox.hpp"
-#include "../../hitbox/RectangleHitbox.hpp"
+#include "Bullet.hpp"
+#include "../hitbox/CircleHitbox.hpp"
+#include "../hitbox/RectangleHitbox.hpp"
 #include <raylib.h>
 
 BulletGraphicsComponent::BulletGraphicsComponent(bool drawHitbox) : drawHitbox(drawHitbox) {

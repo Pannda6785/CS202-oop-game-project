@@ -1,7 +1,7 @@
 #ifndef PRIESTESS_GRAPHICS_COMPONENT_HPP
 #define PRIESTESS_GRAPHICS_COMPONENT_HPP
 
-#include "CharacterGraphicsComponent.hpp"
+#include "../CharacterGraphicsComponent.hpp"
 
 class PriestessGraphicsComponent : public CharacterGraphicsComponent {
 public:
