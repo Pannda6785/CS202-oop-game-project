@@ -15,7 +15,7 @@ MainMenuState::~MainMenuState(){
 }
 
 void MainMenuState::enter() {
-    std::unique_ptr<Button> startButton = std::make_unique<Button>(50, 50, 200, 50, "Start Game");
+    std::unique_ptr<Button> startButton = std::make_unique<Button>(50, 50, 300, 75, "Start Game");
     startButton->setOnClickListener([this]() {
         AudioManager::getInstance().play("tick");
         gameStateManager.changeState(std::make_unique<SoloModeState>(gameStateManager));
@@ -25,7 +25,7 @@ void MainMenuState::enter() {
         AudioManager::getInstance().play("tick");
     });
     buttonManager.addButton(std::move(startButton));
-    std::unique_ptr<Button> exitButton = std::make_unique<Button>(50, 150, 200, 50, "Exit Game");
+    std::unique_ptr<Button> exitButton = std::make_unique<Button>(50, 200, 300, 75, "Exit Game");
     exitButton->setOnClickListener([this]() {
         std::cout << "Exiting game!" << std::endl;
         AudioManager::getInstance().play("tick");

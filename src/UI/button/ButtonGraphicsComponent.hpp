@@ -12,7 +12,9 @@ class ButtonGraphicsComponent : public GraphicsComponent {
 public:
     // ButtonGraphicsComponent needs a pointer to the logic/view interface
     ButtonGraphicsComponent(const IButtonView* buttonView);
+    ~ButtonGraphicsComponent() override;
 
+    void update(float df);
     void render() const override;
 
     // Optionally, allow changing colors/textures
@@ -20,6 +22,8 @@ public:
     void setHoverColor(Color color);
     void setPressedColor(Color color);
     void setTextColor(Color color);
+    void loadFont(const std::string& fontPath);
+    void unload();
 
 private:
     const IButtonView* buttonView;
@@ -28,7 +32,11 @@ private:
     Color backgroundColor = LIGHTGRAY;
     Color hoverColor = GRAY;
     Color pressedColor = DARKGRAY;
-    Color textColor = BLACK;
+    Color textColor = WHITE;
+    Font font;
+    bool isLoaded = false;
+    float effectRectHeight;
+    float period;
 };
 
 #endif // BUTTON_GRAPHICS_COMPONENT_HPP

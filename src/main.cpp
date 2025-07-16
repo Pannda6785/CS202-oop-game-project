@@ -37,7 +37,6 @@ int main() {
     
     AudioManager::getInstance().init(); // Initialize audio manager
 
-
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
         float dt = GetFrameTime();
@@ -46,7 +45,7 @@ int main() {
         ClearBackground(BLACK);
 
         DrawText("Maiden and Hardcoded Background", 10, 10, 20, DARKGRAY);
-        
+
         gameStateManager.processPendingStateChanges();
 
         gameStateManager.update(dt); // Update game state manager

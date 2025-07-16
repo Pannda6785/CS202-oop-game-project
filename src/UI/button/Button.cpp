@@ -6,7 +6,7 @@
 Button::Button(int x, int y, int width, int height, const std::string& text)
     : x(x), y(y), width(width), height(height), text(text),
       idleState(true), hoveredState(false), pressedState(false), disabledState(false),
-      onClick(nullptr), onHoverEnter(nullptr)
+      onClick(nullptr), onHoverEnter(nullptr), enterHovered(false), exitHovered(false)
 {
     bounds = { (float)x, (float)y, (float)width, (float)height };
     graphic = std::make_unique<ButtonGraphicsComponent>(this);
@@ -18,9 +18,9 @@ Button::~Button() = default;
 void Button::enable() { disabledState = false; }
 void Button::disable() { disabledState = true; }
 void Button::setToState(std::string state) {
-    idleState = state == "idle";
-    hoveredState = state == "hovered";
-    pressedState = state == "pressed";
+    idleState = (state == "idle");
+    hoveredState = (state == "hovered");
+    pressedState = (state == "pressed");
 }
 void Button::setText(const std::string& newText) { text = newText; }
 void Button::setPosition(int newX, int newY) { 
@@ -44,6 +44,14 @@ int Button::getWidth() const { return width; }
 int Button::getHeight() const { return height; }
 Rectangle Button::getBounds() const { return bounds; }
 
+void Button::setEnterHovered(bool enterHovered) {
+    this->enterHovered = enterHovered;
+}
+
+void Button::setExitHovered(bool exitHovered) {
+    this->exitHovered = exitHovered;
+}
+
 // --- Logic update ---
 void Button::update(float dt) {
     if (disabledState) {
@@ -53,27 +61,41 @@ void Button::update(float dt) {
         return;
     }
 
-    int mouseX = GetMouseX();
-    int mouseY = GetMouseY();
-    bool mouseOver = contains(mouseX, mouseY);
-
-    if (mouseOver) {
-        if (!hoveredState && onHoverEnter) {
-            onHoverEnter();
-        }
-        hoveredState = true;
+    if(enterHovered) {
+        if (onHoverEnter) onHoverEnter();
         idleState = false;
-        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-            pressedState = true;
-            triggerOnClick();
-        } else if (!IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
-            pressedState = false;
-        }
-    } else {
-        hoveredState = false;
-        pressedState = false;
-        idleState = true;
+        hoveredState = true;
+        enterHovered = false; // Reset after triggering
     }
+
+    if(exitHovered){
+        hoveredState = false;
+        idleState = true;
+        exitHovered = false; // Reset after triggering
+    }
+
+    // int mouseX = GetMouseX();
+    // int mouseY = GetMouseY();
+    // bool mouseOver = contains(mouseX, mouseY);
+
+    // if (mouseOver) {
+    //     if (!hoveredState && onHoverEnter) {
+    //         onHoverEnter();
+    //     }
+    //     hoveredState = true;
+    //     idleState = false;
+    //     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+    //         pressedState = true;
+    //         triggerOnClick();
+    //     } else if (!IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
+    //         pressedState = false;
+    //     }
+    // } else {
+    //     hoveredState = false;
+    //     pressedState = false;
+    //     idleState = true;
+    // }
+    graphic->update(dt);
 }
 
 void Button::triggerHoverEnter() {
@@ -89,6 +111,6 @@ bool Button::contains(int mouseX, int mouseY) const {
     return CheckCollisionPointRec({ (float)mouseX, (float)mouseY }, bounds);
 }
 
-ButtonGraphicsComponent* Button::getGraphicsComponent() const {
+ButtonGraphicsComponent* Button::getGraphicsComponent(){
     return graphic.get();
 }

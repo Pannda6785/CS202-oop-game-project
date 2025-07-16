@@ -1,5 +1,6 @@
 #include "ButtonManager.hpp"
 #include <raylib.h>
+#include <iostream>
 
 ButtonManager::ButtonManager() : hoveredIndex(-1) {
 }
@@ -10,12 +11,16 @@ ButtonManager::~ButtonManager() {
 
 void ButtonManager::addButton(std::unique_ptr<Button> button) {
     buttons.push_back(std::move(button));
+    // buttons.back()->getGraphicsComponent()->loadFont("../assets/fonts/Redressed.ttf");
     if (hoveredIndex == -1 && buttons.back()->isEnabled()) {
-        hoveredIndex = static_cast<int>(buttons.size()) - 1;
+        hoveredIndex = 0;
+        buttons[hoveredIndex]->setToState("hovered");
     }
 }
 
 void ButtonManager::update(float dt) {
+    std::cout << hoveredIndex << std::endl;
+    if(!buttons[hoveredIndex]->isHovered()) std::cout << "HUHU" << std::endl;
     for(size_t i = 0; i < buttons.size(); ++i) {
         if (buttons[i]->isEnabled()) {
             buttons[i]->update(dt);
@@ -46,9 +51,9 @@ void ButtonManager::updateHoveredByMouse() {
         if (hoveredIndex != prevHovered) {
             // If hoveredIndex changed, update states
             if (prevHovered != -1 && prevHovered < (int)buttons.size()) {
-                buttons[prevHovered]->setToState("idle");
+                buttons[prevHovered]->setExitHovered(true);
             }
-            buttons[hoveredIndex]->setToState("hovered");
+            buttons[hoveredIndex]->setEnterHovered(true);
         }
     }
 
@@ -71,9 +76,10 @@ void ButtonManager::updateHoveredByKeyboard() {
         int next = findNextEnabled(idx, 1);
         if (next != -1) hoveredIndex = next;
     }
-    buttons[prevHovered]->setToState("idle");
-    buttons[hoveredIndex]->setToState("hovered");
-    if(prevHovered != hoveredIndex) buttons[hoveredIndex]->triggerHoverEnter();
+    if(prevHovered != hoveredIndex){
+        buttons[hoveredIndex]->setEnterHovered(true);
+        buttons[prevHovered]->setExitHovered(true);
+    }
     // ENTER triggers the current button
     if (hoveredIndex != -1 && IsKeyPressed(KEY_ENTER)) {
         triggerCurrentButton();
@@ -100,6 +106,9 @@ void ButtonManager::triggerCurrentButton() {
 }
 
 void ButtonManager::reset() {
+    for(auto& button : buttons) {
+        button->getGraphicsComponent()->unload();
+    }
     buttons.clear();
     hoveredIndex = -1;
 }

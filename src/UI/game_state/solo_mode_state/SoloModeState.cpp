@@ -2,6 +2,7 @@
 #include "../GameStateManager.hpp"
 #include "../main_menu_state/MainMenuState.hpp"
 #include "../../../audio/AudioManager.hpp"
+#include <iostream>
 
 SoloModeState::SoloModeState(GameStateManager& gsm)
     : gameStateManager(gsm)
@@ -30,11 +31,13 @@ SoloModeState::SoloModeState(GameStateManager& gsm)
     enter();
 }
 
-SoloModeState::~SoloModeState() = default;
+SoloModeState::~SoloModeState(){
+    std::cout << "SoloModeState destructor called." << std::endl;
+}
 
 void SoloModeState::enter() {
     std::unique_ptr<Button> backButton = std::make_unique<Button>(
-        50, 50, 200, 50, "Back to Main Menu"
+        50, 50, 300, 75, "Back to Main Menu"
     );
     backButton->setOnClickListener([&gsm = gameStateManager]() {
         std::cout << "Returning to Main Menu..." << std::endl;

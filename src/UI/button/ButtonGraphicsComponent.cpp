@@ -1,13 +1,32 @@
 #include "ButtonGraphicsComponent.hpp"
 #include "IButtonView.hpp"
 #include <raylib.h>
+#include <iostream>
 
-ButtonGraphicsComponent::ButtonGraphicsComponent(const IButtonView* buttonView)
-    : buttonView(buttonView) {}
+ButtonGraphicsComponent::ButtonGraphicsComponent(const IButtonView* buttonView) : buttonView(buttonView) {
+    font = LoadFontEx("../assets/fonts/Redressed.ttf", 100, 0, 0);
+    isLoaded = true;
+    effectRectHeight = 0.0f;
+    period = 0.3f;
+}
 
-void ButtonGraphicsComponent::render() const {
-    if (!buttonView || !isVisible()) return;
+ButtonGraphicsComponent::~ButtonGraphicsComponent() {
+}
 
+void ButtonGraphicsComponent::loadFont(const std::string& fontPath) {
+    font = LoadFont(fontPath.c_str());
+    isLoaded = true;
+}
+
+void ButtonGraphicsComponent::unload() {
+    if (isLoaded) {
+        UnloadFont(font);
+        isLoaded = false;
+    }
+    // std::cout << "ButtonGraphicsComponent unloaded." << std::endl;
+}
+
+void ButtonGraphicsComponent::update(float dt){
     // Determine color based on state
     Color currentColor = backgroundColor;
     if (buttonView->isEnabled()) {
@@ -15,28 +34,49 @@ void ButtonGraphicsComponent::render() const {
             currentColor = pressedColor;
         } else if (buttonView->isHovered()) {
             currentColor = hoverColor;
+            // s = buttonView->getHeight / 2;
+            // period
+            // -> v = s / period
+            // _v = v * (GetFrameTime() / period)
+            float delta = buttonView->getHeight() / 2.0f / period * dt / period;
+            effectRectHeight = std::min(effectRectHeight + delta, buttonView->getHeight() / 2.0f);
+        } else{
+            float delta = buttonView->getHeight() / 2.0f / period * dt / period;
+            effectRectHeight = std::max(effectRectHeight - delta, 0.0f);
         }
     } else {
         currentColor = { currentColor.r / 2, currentColor.g / 2, currentColor.b / 2, currentColor.a };
     }
+}
+
+void ButtonGraphicsComponent::render() const {
+    if (!buttonView || !isVisible()) return;
 
     Rectangle bounds = {
         (float)buttonView->getX(),
-        (float)buttonView->getY(),
+        (float)buttonView->getY() + buttonView->getHeight() / 2.0f - effectRectHeight,
         (float)buttonView->getWidth(),
-        (float)buttonView->getHeight()
+        effectRectHeight * 2.0f
     };
-
-    DrawRectangleRec(bounds, currentColor);
-    DrawRectangleLinesEx(bounds, 2, BLACK);
+    DrawRectangleRec(bounds, WHITE);
+    // DrawRectangleLinesEx(bounds, 2, BLACK);
 
     // Draw button label centered
-    int fontSize = 20;
-    const std::string& label = buttonView->getText();
-    int textWidth = MeasureText(label.c_str(), fontSize);
-    int textX = bounds.x + (bounds.width - textWidth) / 2;
-    int textY = bounds.y + (bounds.height - fontSize) / 2;
-    DrawText(label.c_str(), textX, textY, fontSize, textColor);
+    if (isLoaded) {
+        int fontSize = 40;
+        const std::string& label = buttonView->getText();
+        Vector2 textSize = MeasureTextEx(font, label.c_str(), fontSize, 2);
+        int textX = bounds.x + (bounds.width - textSize.x) / 2;
+        int textY = bounds.y + (bounds.height - textSize.y) / 2;
+        DrawTextEx(font, label.c_str(), { (float)textX, (float)textY }, fontSize, 1.0f, buttonView->isHovered() ? BLACK : WHITE);
+    } else {
+        int fontSize = 20;
+        const std::string& label = buttonView->getText();
+        int textWidth = MeasureText(label.c_str(), fontSize);
+        int textX = bounds.x + (bounds.width - textWidth) / 2;
+        int textY = bounds.y + (bounds.height - fontSize) / 2;
+        DrawText(label.c_str(), textX, textY, fontSize, textColor);
+    }
 }
 
 void ButtonGraphicsComponent::setBackgroundColor(Color color) { backgroundColor = color; }
