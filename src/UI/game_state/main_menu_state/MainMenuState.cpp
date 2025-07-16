@@ -3,14 +3,17 @@
 #include "../solo_mode_state/SoloModeState.hpp"
 #include "../../../audio/AudioManager.hpp"
 
-MainMenuState::MainMenuState(GameStateManager& gsm)
-    : gameStateManager(gsm)
+MainMenuState::MainMenuState(GameStateManager& gsm) : gameStateManager(gsm)
 {
+    // , background("../assets/background/main_menu_background.png")
+    background.loadTexture("../assets/background/main_menu_background_new.png");
     enter();
 }
 
 MainMenuState::~MainMenuState(){
+
 }
+
 void MainMenuState::enter() {
     std::unique_ptr<Button> startButton = std::make_unique<Button>(50, 50, 200, 50, "Start Game");
     startButton->setOnClickListener([this]() {

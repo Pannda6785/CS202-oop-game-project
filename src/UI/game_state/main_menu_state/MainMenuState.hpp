@@ -4,6 +4,7 @@
 #include "../../button/ButtonManager.hpp"
 #include "../GameState.hpp"
 #include "../../button/Button.hpp"
+#include "MainMenuBackground.hpp"
 #include <memory>
 
 class GameStateManager;
@@ -12,6 +13,7 @@ class MainMenuState : public GameState {
 private:
     ButtonManager buttonManager;
     GameStateManager& gameStateManager;
+    MainMenuBackground background;
 
 public:
     MainMenuState(GameStateManager& gsm);
