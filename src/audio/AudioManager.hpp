@@ -12,8 +12,11 @@ public:
     // Initialize with a map of sound names to file paths
     void init();
 
-    // Play a sound by its name
     void play(const std::string& soundName);
+    void playThemMusic();
+    void update(float dt);
+    void loadThemeMusic(const std::string& musicPath);
+    void unloadThemeMusic();
 
     // Unload all loaded sounds
     void unload();
@@ -28,7 +31,9 @@ private:
 
     std::map<std::string, Sound> sounds;
     std::map<std::string, std::string> soundPaths;
+    Music themeMusic;
     bool initialized = false;
+    bool initializedThemeMusic = false;
 };
 
 #endif // AUDIO_MANAGER_HPP

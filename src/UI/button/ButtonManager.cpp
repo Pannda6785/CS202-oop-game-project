@@ -2,7 +2,7 @@
 #include <raylib.h>
 #include <iostream>
 
-ButtonManager::ButtonManager() : hoveredIndex(-1) {
+ButtonManager::ButtonManager() : hoveredIndex(-1), isTriggerCurrentButton(false) {
 }
 
 ButtonManager::~ButtonManager() {
@@ -11,7 +11,6 @@ ButtonManager::~ButtonManager() {
 
 void ButtonManager::addButton(std::unique_ptr<Button> button) {
     buttons.push_back(std::move(button));
-    // buttons.back()->getGraphicsComponent()->loadFont("../assets/fonts/Redressed.ttf");
     if (hoveredIndex == -1 && buttons.back()->isEnabled()) {
         hoveredIndex = 0;
         buttons[hoveredIndex]->setToState("hovered");
@@ -19,8 +18,6 @@ void ButtonManager::addButton(std::unique_ptr<Button> button) {
 }
 
 void ButtonManager::update(float dt) {
-    std::cout << hoveredIndex << std::endl;
-    if(!buttons[hoveredIndex]->isHovered()) std::cout << "HUHU" << std::endl;
     for(size_t i = 0; i < buttons.size(); ++i) {
         if (buttons[i]->isEnabled()) {
             buttons[i]->update(dt);
@@ -32,6 +29,12 @@ void ButtonManager::update(float dt) {
 
     // 3. Keyboard navigation
     updateHoveredByKeyboard();
+
+    // 4. Trigger the current button if ENTER is pressed
+    if (hoveredIndex != -1 && isTriggerCurrentButton) {
+        triggerCurrentButton();
+        isTriggerCurrentButton = false; // Reset trigger state
+    }
 }
 
 void ButtonManager::updateHoveredByMouse() {
@@ -44,6 +47,7 @@ void ButtonManager::updateHoveredByMouse() {
             CheckCollisionPointRec({(float)mouseX, (float)mouseY}, buttons[i]->getBounds())) {
             hoveredIndex = static_cast<int>(i);
             found = true;
+            isTriggerCurrentButton = IsMouseButtonPressed(MOUSE_LEFT_BUTTON);
             break;
         }
     }
@@ -82,7 +86,7 @@ void ButtonManager::updateHoveredByKeyboard() {
     }
     // ENTER triggers the current button
     if (hoveredIndex != -1 && IsKeyPressed(KEY_ENTER)) {
-        triggerCurrentButton();
+        isTriggerCurrentButton = true;
     }
 }
 

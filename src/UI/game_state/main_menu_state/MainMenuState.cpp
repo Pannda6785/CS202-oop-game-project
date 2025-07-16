@@ -11,34 +11,36 @@ MainMenuState::MainMenuState(GameStateManager& gsm) : gameStateManager(gsm)
 }
 
 MainMenuState::~MainMenuState(){
-
+    AudioManager::getInstance().unloadThemeMusic();
 }
 
 void MainMenuState::enter() {
-    std::unique_ptr<Button> startButton = std::make_unique<Button>(50, 50, 300, 75, "Start Game");
+    std::unique_ptr<Button> startButton = std::make_unique<Button>(0, 50, 700, 100, "Start Game");
     startButton->setOnClickListener([this]() {
-        AudioManager::getInstance().play("tick");
+        AudioManager::getInstance().play("ClickButton");
         gameStateManager.changeState(std::make_unique<SoloModeState>(gameStateManager));
     });
     startButton->setOnHoverEnterListener([this]() {
         std::cout << "Hovered over Start Game button!" << std::endl;
-        AudioManager::getInstance().play("tick");
+        AudioManager::getInstance().play("MenuCursor");
     });
     buttonManager.addButton(std::move(startButton));
-    std::unique_ptr<Button> exitButton = std::make_unique<Button>(50, 200, 300, 75, "Exit Game");
+    std::unique_ptr<Button> exitButton = std::make_unique<Button>(0, 150, 700, 100, "Exit Game");
     exitButton->setOnClickListener([this]() {
         std::cout << "Exiting game!" << std::endl;
-        AudioManager::getInstance().play("tick");
+        AudioManager::getInstance().play("ClickButton");
     });
     exitButton->setOnHoverEnterListener([this]() {
         std::cout << "Hovered over Exit Game button!" << std::endl;
-        AudioManager::getInstance().play("tick");
+        AudioManager::getInstance().play("MenuCursor");
     });
     buttonManager.addButton(std::move(exitButton));
+    AudioManager::getInstance().loadThemeMusic("../assets/audio/music_mainthema.ogg");
 }
 
 void MainMenuState::update(float dt) {
     buttonManager.update(dt);
+    AudioManager::getInstance().update(dt);
 }
 
 void MainMenuState::exit() {
