@@ -11,8 +11,6 @@
 
 #include <iostream>
 
-#include "UI/game_state/MainMenuState.hpp"
-#include "UI/game_state/SoloModeState.hpp"
 #include "UI/game_state/GameStateManager.hpp"
 
 #include "audio/AudioManager.hpp"
@@ -36,7 +34,6 @@ int main() {
     */
 
     GameStateManager gameStateManager;
-    gameStateManager.changeState(std::make_unique<MainMenuState>(gameStateManager));
     
     AudioManager::getInstance().init(); // Initialize audio manager
 

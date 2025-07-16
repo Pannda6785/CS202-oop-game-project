@@ -1,9 +1,9 @@
 #ifndef MAIN_MENU_STATE_HPP
 #define MAIN_MENU_STATE_HPP
 
-#include "../button/ButtonManager.hpp"
-#include "GameState.hpp"
-#include "../button/Button.hpp"
+#include "../../button/ButtonManager.hpp"
+#include "../GameState.hpp"
+#include "../../button/Button.hpp"
 #include <memory>
 
 class GameStateManager;

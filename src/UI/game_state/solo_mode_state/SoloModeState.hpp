@@ -1,13 +1,13 @@
 #ifndef SOLO_MODE_STATE_HPP
 #define SOLO_MODE_STATE_HPP
 
-#include "GameState.hpp"
-#include "../../input/InputInterpreter.hpp"
-#include "../../input/KeyboardInputInterpreter.hpp"
-#include "../../game/World.hpp"
-#include "../../game/player/Player.hpp"
-#include "../../game/character/DemoCharacter.hpp"
-#include "../button/ButtonManager.hpp"
+#include "../GameState.hpp"
+#include "../../../input/InputInterpreter.hpp"
+#include "../../../input/KeyboardInputInterpreter.hpp"
+#include "../../../game/World.hpp"
+#include "../../../game/player/Player.hpp"
+#include "../../../game/character/DemoCharacter.hpp"
+#include "../../button/ButtonManager.hpp"
 #include <memory>
 #include <vector>
 

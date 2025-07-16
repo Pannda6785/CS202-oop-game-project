@@ -1,7 +1,7 @@
 #include "SoloModeState.hpp"
-#include "GameStateManager.hpp"
-#include "MainMenuState.hpp"
-#include "../../audio/AudioManager.hpp"
+#include "../GameStateManager.hpp"
+#include "../main_menu_state/MainMenuState.hpp"
+#include "../../../audio/AudioManager.hpp"
 
 SoloModeState::SoloModeState(GameStateManager& gsm)
     : gameStateManager(gsm)
