@@ -5,7 +5,7 @@
 #include <raylib.h>
 
 BulletGraphicsComponent::BulletGraphicsComponent(bool drawHitbox) : drawHitbox(drawHitbox) {
-    layer = 1;
+    setLayer(Unit::Layer::Bullet);
 }
 
 void BulletGraphicsComponent::registerOwner(const Bullet* bullet) {
@@ -33,4 +33,7 @@ void BulletGraphicsComponent::drawHitboxes() const {
     drawHitbox(owner->getLifeHitbox(), GREEN);
     drawHitbox(owner->getDamagingHitbox(), RED);
     drawHitbox(owner->getCleansingHitbox(), BLUE);
+    for (const auto& [hitbox, id, duration] : owner->getInvincibilityHitboxes()) {
+        drawHitbox(hitbox, YELLOW);
+    }
 }

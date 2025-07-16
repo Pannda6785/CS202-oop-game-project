@@ -4,7 +4,8 @@
 #include <cmath>
 
 RingGraphicsComponent::RingGraphicsComponent(bool isWide) : isWide(isWide) {
-    visible = false;
+    setVisible(false);
+    setLayer(Unit::Layer::Bullet + 5);
 }
 
 void RingGraphicsComponent::render() const {

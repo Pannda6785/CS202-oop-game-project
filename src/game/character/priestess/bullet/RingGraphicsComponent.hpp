@@ -1,11 +1,12 @@
 #ifndef RING_GRAPHICS_COMPONENT_HPP
 #define RING_GRAPHICS_COMPONENT_HPP
 
-#include "../../../bullet/BulletGraphicsComponent.hpp"
+#include "../../../../graphics/GraphicsComponent.hpp"
+#include "../../../../Unit.hpp"
 
 class PriestessWideHandler;
 
-class RingGraphicsComponent : public BulletGraphicsComponent {
+class RingGraphicsComponent : public GraphicsComponent {
     // for ring
     static constexpr float THICKNESS = 6.5f;
     static constexpr float SPACING = 25.0f;

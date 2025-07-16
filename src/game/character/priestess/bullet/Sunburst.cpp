@@ -36,8 +36,8 @@ void Sunburst::update(float dt) {
         return;
     }
     if (!startedup) { // trigger the startup
-        damagingHitbox = std::make_unique<CircleHitbox>(pos, getRadius());
         startedup = true;
+        damagingHitbox = std::make_unique<CircleHitbox>(pos, getRadius());
     }
     if (bloomTime > Unit::EPS) { // waiting to bloom
         float d = std::min(dt, bloomTime);
@@ -68,12 +68,12 @@ bool Sunburst::isFocused() const {
 
 float Sunburst::getRadius() const {
     if (!startedup) {
-        return BASE_RADIUS * size;
+        return 0;
     } else {
-        return (BASE_RADIUS - BASE_RADIUS * bloomTime / (BLOOM_TIME * 2.5f)) * size;
+        return (BASE_RADIUS - BASE_RADIUS * pow(bloomTime / (BLOOM_TIME * 2.2f), 1.8f)) * getSize();
     }
 }   
 
 float Sunburst::getRingRadius() const {
-    return BASE_RADIUS * size;
+    return BASE_RADIUS * getSize();
 }

@@ -22,10 +22,10 @@ public:
     float getSize() const;
     virtual void resize(float scale);
 
-    virtual const Hitbox* getLifeHitbox() const;
-    virtual const Hitbox* getDamagingHitbox() const;
-    virtual const Hitbox* getCleansingHitbox() const;
-    virtual const std::vector<std::tuple<Hitbox*, int, float>> getInvincibilityHitboxes() const;
+    const Hitbox* getLifeHitbox() const;
+    const Hitbox* getDamagingHitbox() const;
+    const Hitbox* getCleansingHitbox() const;
+    const std::vector<std::tuple<const Hitbox*, int, float>> getInvincibilityHitboxes() const;
 
 protected:
     int whose;

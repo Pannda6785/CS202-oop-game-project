@@ -23,8 +23,8 @@ void PriestessBasicHandler::listen(Unit::Move move) {
 
 void PriestessBasicHandler::tap(bool isFocusing) {
     graphics->useBasic();
-    player->spawnBullet(std::unique_ptr<Sunburst>(
-        new Sunburst(player->getPlayerId(), player->getPosition(), player->getArrow(), player->getTargetPosition(), isFocusing)));
+    player->spawnBullet(std::make_unique<Sunburst>(player->getPlayerId(), player->getPosition(), 
+                        player->getArrow(), player->getTargetPosition(), isFocusing));
 
     step++;
     player->applyImplicitMoveLock();

@@ -22,7 +22,7 @@ public:
     bool addTag(const std::string& tag);
     bool removeTag(const std::string& tag);
 
-protected:
+private:
     bool visible = true;
     int layer = 0;
     std::vector<std::string> tags;

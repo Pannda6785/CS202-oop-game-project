@@ -2,15 +2,17 @@
 
 #include "../../../player/Player.hpp"
 #include "../PriestessGraphicsComponent.hpp"
+#include "../bullet/NoviDispel.hpp"
 
 PriestessDefensiveHandler::PriestessDefensiveHandler(PriestessGraphicsComponent* graphics)
     : TapHandler(Unit::Move::Defensive), graphics(graphics) {}
 
 void PriestessDefensiveHandler::tap(bool isFocusing) {
     graphics->yell(0.8f);
-    player->applyInvincibility(3.0f);
 
-    player->applyImplicitMoveLock();
-    player->applyCooldown(move, 15.0f);
-    player->applyLock(Unit::Lock::MovementLock, 0.5f);
+    player->spawnBullet(std::make_unique<NoviDispel>(player->getPlayerId(), player->getPosition()));
+
+    player->applyImplicitMoveLock(true);
+    player->applyCooldown(move, COOLDOWN);
+    player->applyLock(Unit::Lock::MovementLock, MOVEMENT_LOCK);
 }

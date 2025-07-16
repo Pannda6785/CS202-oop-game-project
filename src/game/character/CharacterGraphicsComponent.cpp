@@ -8,7 +8,7 @@
 
 CharacterGraphicsComponent::CharacterGraphicsComponent() {
     setVisible(false);
-    layer = Unit::Layer::Character;
+    setLayer(Unit::Layer::Character);
     Shader loadedShader = LoadShader(0, "../src/game/character/white_silhouette.fs");
     whiteSilhouette = new Shader(loadedShader);
 }
