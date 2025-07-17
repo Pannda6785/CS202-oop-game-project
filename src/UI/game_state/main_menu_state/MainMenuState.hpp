@@ -5,6 +5,7 @@
 #include "../GameState.hpp"
 #include "../../button/Button.hpp"
 #include "MainMenuBackground.hpp"
+#include "MovingTileGraphicsComponent.hpp"
 #include <memory>
 
 class GameStateManager;
@@ -14,6 +15,7 @@ private:
     ButtonManager buttonManager;
     GameStateManager& gameStateManager;
     MainMenuBackground background;
+    MovingTileGraphicsComponent movingTileEffect[2];
 
 public:
     MainMenuState(GameStateManager& gsm);

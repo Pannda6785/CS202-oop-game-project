@@ -14,6 +14,7 @@
 #include "UI/game_state/GameStateManager.hpp"
 
 #include "audio/AudioManager.hpp"
+#include "UI/custom_cursor/CustomCursor.hpp"
 
 int main() {
     const int screenWidth = 1440;
@@ -33,9 +34,13 @@ int main() {
         + audio
     */
 
+    HideCursor(); // Hide the default cursor
+
     GameStateManager gameStateManager;
     
+    
     AudioManager::getInstance().init(); // Initialize audio manager
+    CustomCursor::getInstance().init(); // Initialize custom cursor
 
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
