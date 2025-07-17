@@ -4,23 +4,41 @@
 
 MainMenuBackground::MainMenuBackground() = default;
 
-void MainMenuBackground::loadTexture(const std::string& texturePath) {
-    backgroundTexture = LoadTexture(texturePath.c_str());
-    loaded = backgroundTexture.id != 0;
-    setLayer(0);
+void MainMenuBackground::loadCharTexture(const std::string& texturePath) {
+    charTexture = LoadTexture(texturePath.c_str());
+    loadedChar = charTexture.id != 0;
+}
+
+void MainMenuBackground::loadTitleTexture(const std::string& texturePath) {
+    titleTexture = LoadTexture(texturePath.c_str());
+    loadedTitle = titleTexture.id != 0;
+}
+
+void MainMenuBackground::loadDecorationTexture(const std::string& texturePath) {
+    decorationTexture = LoadTexture(texturePath.c_str());
+    loadedDecoration = decorationTexture.id != 0;
 }
 
 MainMenuBackground::~MainMenuBackground() {
-    if (loaded) {
-        UnloadTexture(backgroundTexture);
+    if (loadedChar) {
+        UnloadTexture(charTexture);
+    }
+    if (loadedTitle) {
+        UnloadTexture(titleTexture);
+    }
+    if (loadedDecoration) {
+        UnloadTexture(decorationTexture);
     }
 }
 
 void MainMenuBackground::render() const {
-    if (loaded) {
-        DrawTexture(backgroundTexture, 0, 0, WHITE);
-    } else{
-        // Fallback rendering if texture failed to load
-        DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), DARKGRAY);
+    if (loadedChar) {
+        DrawTexture(charTexture, 900, 150, WHITE);
+    }
+    if (loadedTitle) {
+        DrawTexture(titleTexture, 830, 350, WHITE);
+    }
+    if (loadedDecoration) {
+        DrawTexture(decorationTexture, 900, 150, WHITE);
     }
 }

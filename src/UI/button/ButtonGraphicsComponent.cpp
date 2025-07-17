@@ -4,7 +4,7 @@
 #include <iostream>
 
 ButtonGraphicsComponent::ButtonGraphicsComponent(const IButtonView* buttonView) : buttonView(buttonView) {
-    font = LoadFontEx("../assets/fonts/Redressed.ttf", 150, 0, 0);
+    font = LoadFontEx("../assets/fonts/Redressed.ttf", 256, 0, 0);
     isLoaded = true;
     effectRectHeight = 0.0f;
     period = 0.3f;
@@ -63,7 +63,7 @@ void ButtonGraphicsComponent::render() const {
 
     // Draw button label centered
     if (isLoaded) {
-        int fontSize = 75;
+        int fontSize = 50;
         const std::string& label = buttonView->getText();
         Vector2 textSize = MeasureTextEx(font, label.c_str(), fontSize, 2);
         int textX = bounds.x + (bounds.width - textSize.x) / 2;
@@ -74,7 +74,7 @@ void ButtonGraphicsComponent::render() const {
         }
         DrawTextEx(font, label.c_str(), { (float)textX, (float)textY }, fontSize, 1.0f, buttonView->isHovered() ? BLACK : WHITE);
     } else {
-        int fontSize = 20;
+        int fontSize = 10;
         const std::string& label = buttonView->getText();
         int textWidth = MeasureText(label.c_str(), fontSize);
         int textX = bounds.x + (bounds.width - textWidth) / 2;

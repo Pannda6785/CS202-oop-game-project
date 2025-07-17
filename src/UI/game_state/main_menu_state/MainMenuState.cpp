@@ -5,13 +5,12 @@
 
 MainMenuState::MainMenuState(GameStateManager& gsm) : gameStateManager(gsm)
 {
-    background.loadTexture("../assets/background/main_menu_background_new.png");
-    // background.loadTexture("../assets/background/tile_pattern.png");
+    background.loadCharTexture("../assets/background/main_menu_char.png");
+    background.loadTitleTexture("../assets/background/main_menu_title.png");
+    background.loadDecorationTexture("../assets/background/main_menu_decoration.png");
     movingTileEffect[0].loadTexture("../assets/background/tile_pattern_0.png");
     movingTileEffect[0].loadSideLines("../assets/background/side_lines.png");
     movingTileEffect[1].loadTexture("../assets/background/tile_pattern_1.png");
-    // movingTileEffect.loadTexture("../assets/background/tile_pattern.png");
-    // movingTileEffect.loadTexture("../assets/background/main_menu_background_new.png");
     enter();
 }
 
@@ -44,14 +43,13 @@ void MainMenuState::enter() {
     });
     buttonManager.addButton(std::move(exitButton));
     AudioManager::getInstance().loadThemeMusic("../assets/audio/music_mainthema.ogg");
-    movingTileEffect[0].init({350, 0}, 20.0f, 100.0f, 10);
-    movingTileEffect[1].init({400, 0}, 30.0f, 120.0f, 9);
+    movingTileEffect[0].init({500, 0}, 10.0f, 100.0f, 10);
+    movingTileEffect[1].init({550, 0}, 6.0f, 120.0f, 9);
 }
 
 void MainMenuState::update(float dt) {
     buttonManager.update(dt);
     for(int i = 0; i < 2; i++) movingTileEffect[i].update(dt);
-    // movingTileEffect[0].update(dt);
     AudioManager::getInstance().update(dt);
 }
 
