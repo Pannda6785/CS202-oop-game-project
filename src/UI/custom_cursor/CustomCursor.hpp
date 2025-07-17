@@ -7,6 +7,7 @@ class CustomCursor{
 public:
     static CustomCursor& getInstance();
     void init();
+    void update(float dt);
 private:
     CustomCursor() = default;
     ~CustomCursor() = default;

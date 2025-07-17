@@ -23,7 +23,7 @@ int main() {
     InitWindow(screenWidth, screenHeight, "Maiden and CS202");
     InitAudioDevice();
 
-    SetTargetFPS(60);
+    SetTargetFPS(200);
 
     /*
         MAIN GAME LOOP
@@ -54,6 +54,7 @@ int main() {
         gameStateManager.processPendingStateChanges();
 
         gameStateManager.update(dt); // Update game state manager
+        CustomCursor::getInstance().update(dt); // Update custom cursor
 
         GraphicsComponentManager::instance().render(); // Update graphics components
 
