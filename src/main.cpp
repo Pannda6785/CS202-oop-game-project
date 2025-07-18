@@ -49,8 +49,6 @@ int main() {
         BeginDrawing();
         ClearBackground(BLACK);
 
-        DrawText("Maiden and Hardcoded Background", 10, 10, 20, DARKGRAY);
-
         gameStateManager.processPendingStateChanges();
 
         gameStateManager.update(dt); // Update game state manager

@@ -8,6 +8,7 @@ ButtonGraphicsComponent::ButtonGraphicsComponent(const IButtonView* buttonView) 
     isLoaded = true;
     effectRectHeight = 0.0f;
     period = 0.3f;
+    setLayer(10);
 }
 
 ButtonGraphicsComponent::~ButtonGraphicsComponent() {
@@ -23,7 +24,6 @@ void ButtonGraphicsComponent::unload() {
         UnloadFont(font);
         isLoaded = false;
     }
-    // std::cout << "ButtonGraphicsComponent unloaded." << std::endl;
 }
 
 void ButtonGraphicsComponent::update(float dt){
@@ -34,10 +34,6 @@ void ButtonGraphicsComponent::update(float dt){
             currentColor = pressedColor;
         } else if (buttonView->isHovered()) {
             currentColor = hoverColor;
-            // s = buttonView->getHeight / 2;
-            // period
-            // -> v = s / period
-            // _v = v * (GetFrameTime() / period)
             float delta = buttonView->getHeight() / 2.0f / period * dt / period;
             effectRectHeight = std::min(effectRectHeight + delta, buttonView->getHeight() / 2.0f);
         } else{

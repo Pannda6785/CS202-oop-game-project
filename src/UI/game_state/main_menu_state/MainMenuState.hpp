@@ -6,6 +6,7 @@
 #include "../../button/Button.hpp"
 #include "MainMenuBackground.hpp"
 #include "MovingTileGraphicsComponent.hpp"
+#include "BehindDots.hpp"
 #include <memory>
 
 class GameStateManager;
@@ -16,6 +17,7 @@ private:
     GameStateManager& gameStateManager;
     MainMenuBackground background;
     MovingTileGraphicsComponent movingTileEffect[2];
+    BehindDots behindDots;
 
 public:
     MainMenuState(GameStateManager& gsm);

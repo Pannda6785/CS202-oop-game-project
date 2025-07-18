@@ -11,6 +11,7 @@ MainMenuState::MainMenuState(GameStateManager& gsm) : gameStateManager(gsm)
     movingTileEffect[0].loadTexture("../assets/background/tile_pattern_0.png");
     movingTileEffect[0].loadSideLines("../assets/background/side_lines.png");
     movingTileEffect[1].loadTexture("../assets/background/tile_pattern_1.png");
+    behindDots.loadDotTexture("../assets/UI_sprites/arround_dot.png");
     enter();
 }
 
@@ -45,12 +46,14 @@ void MainMenuState::enter() {
     AudioManager::getInstance().loadThemeMusic("../assets/audio/music_mainthema.ogg");
     movingTileEffect[0].init({500, 0}, 10.0f, 100.0f, 10);
     movingTileEffect[1].init({550, 0}, 6.0f, 120.0f, 9);
+    behindDots.init();
 }
 
 void MainMenuState::update(float dt) {
     buttonManager.update(dt);
     for(int i = 0; i < 2; i++) movingTileEffect[i].update(dt);
     AudioManager::getInstance().update(dt);
+    behindDots.update(dt);
 }
 
 void MainMenuState::exit() {

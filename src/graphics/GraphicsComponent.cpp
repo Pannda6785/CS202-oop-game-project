@@ -2,6 +2,7 @@
 #include "GraphicsComponentManager.hpp"
 
 #include <algorithm>
+#include <iostream>
 
 GraphicsComponent::GraphicsComponent() {
     GraphicsComponentManager::instance().registerComponent(this);
