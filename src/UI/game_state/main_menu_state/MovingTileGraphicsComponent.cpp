@@ -1,32 +1,31 @@
 #include "MovingTileGraphicsComponent.hpp"
-#include <iostream>
 #include <cmath>
 #include <cassert>
 
 MovingTileGraphicsComponent::MovingTileGraphicsComponent() = default;
 
 MovingTileGraphicsComponent::~MovingTileGraphicsComponent() {
-    if(loaded){
-        UnloadTexture(tilePattern);
-        if(sideLines.id != 0) UnloadTexture(sideLines);
-    }
+    unloadTextures();
 }
 
 void MovingTileGraphicsComponent::loadTexture(const std::string& texturePath){
     tilePattern = LoadTexture(texturePath.c_str());
-    loaded = tilePattern.id != 0;
-    if(!loaded){
-        std::cerr << "Failed to load texture from: " << texturePath << std::endl;
-        assert(false); // Ensure that the texture is loaded successfully
+    loadedTilePattern = (tilePattern.id != 0);
+}
+
+void MovingTileGraphicsComponent::unloadTextures() {
+    if (loadedTilePattern) {
+        UnloadTexture(tilePattern);
+        loadedTilePattern = false;
+    }
+    if (loadedSideLines) {
+        UnloadTexture(sideLines);
+        loadedSideLines = false;
     }
 }
 
 void MovingTileGraphicsComponent::loadSideLines(const std::string& sideLinesPath) {
     sideLines = LoadTexture(sideLinesPath.c_str());
-    if (sideLines.id == 0) {
-        std::cerr << "Failed to load side lines texture from: " << sideLinesPath << std::endl;
-        assert(false); // Ensure that the texture is loaded successfully
-    }
 }
 
 void MovingTileGraphicsComponent::init(Vector2 _startPosition, float _angle, float _speed, int layer) {

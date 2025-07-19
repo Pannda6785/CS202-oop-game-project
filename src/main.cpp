@@ -54,6 +54,11 @@ int main() {
         gameStateManager.update(dt); // Update game state manager
         CustomCursor::getInstance().update(dt); // Update custom cursor
 
+        if(gameStateManager.isEmpty()) {
+            std::cerr << "GameStateManager is empty! Exiting..." << std::endl;
+            break; // Exit if no game state is present
+        }
+
         GraphicsComponentManager::instance().render(); // Update graphics components
 
 

@@ -24,6 +24,12 @@ void CustomCursorGraphicsComponent::loadArroundDotTexture(const std::string &tex
     isArroundDotLoaded = arroundDotTexture.id != 0;
 }
 
+void CustomCursorGraphicsComponent::unloadTextures() {
+    if(isNormalLoaded) UnloadTexture(normalCursorTexture);
+    if(isClickLoaded) UnloadTexture(clickCursorTexture);
+    if(isArroundDotLoaded) UnloadTexture(arroundDotTexture);
+}
+
 void CustomCursorGraphicsComponent::render() const{
     Vector2 pos = GetMousePosition();
     for(auto &dot : arroundDots) {

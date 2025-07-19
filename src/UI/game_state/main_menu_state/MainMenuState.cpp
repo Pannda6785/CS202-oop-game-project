@@ -17,6 +17,7 @@ MainMenuState::MainMenuState(GameStateManager& gsm) : gameStateManager(gsm)
 
 MainMenuState::~MainMenuState(){
     AudioManager::getInstance().unloadThemeMusic();
+    behindDots.unloadDotTexture();
 }
 
 void MainMenuState::enter() {
@@ -84,6 +85,7 @@ void MainMenuState::enter() {
     exitButton->setOnClickListener([this]() {
         std::cout << "Exiting game!" << std::endl;
         AudioManager::getInstance().play("ClickButton");
+        gameStateManager.popState();
     });
     exitButton->setOnHoverEnterListener([this]() {
         std::cout << "Hovered over Exit Game button!" << std::endl;

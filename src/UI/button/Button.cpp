@@ -13,7 +13,11 @@ Button::Button(int x, int y, int width, int height, const std::string& text, int
     graphic->init(fontSize, offset, inMiddle);
 }
 
-Button::~Button() = default;
+Button::~Button(){
+    if (graphic) {
+        graphic->unload();
+    }
+}
 
 // --- IButtonControl methods ---
 void Button::enable() { disabledState = false; }

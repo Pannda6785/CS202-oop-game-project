@@ -22,16 +22,23 @@ void MainMenuBackground::loadDecorationTexture(const std::string& texturePath) {
     setLayer(10);
 }
 
-MainMenuBackground::~MainMenuBackground() {
+void MainMenuBackground::unloadTextures() {
     if (loadedChar) {
         UnloadTexture(charTexture);
+        loadedChar = false;
     }
     if (loadedTitle) {
         UnloadTexture(titleTexture);
+        loadedTitle = false;
     }
     if (loadedDecoration) {
         UnloadTexture(decorationTexture);
+        loadedDecoration = false;
     }
+}
+
+MainMenuBackground::~MainMenuBackground() {
+    unloadTextures();
 }
 
 void MainMenuBackground::render() const {

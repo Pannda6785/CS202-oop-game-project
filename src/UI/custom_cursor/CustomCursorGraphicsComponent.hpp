@@ -13,6 +13,7 @@ public:
     void loadNormalTexture(const std::string& texturePath);
     void loadClickTexture(const std::string& texturePath);
     void loadArroundDotTexture(const std::string& texturePath);
+    void unloadTextures();
     void render() const override;
     void update(float dt);
 private:

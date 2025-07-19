@@ -11,6 +11,7 @@ public:
     void loadCharTexture(const std::string& texturePath);
     void loadTitleTexture(const std::string& texturePath);
     void loadDecorationTexture(const std::string& texturePath);
+    void unloadTextures();
     ~MainMenuBackground();
 
     void render() const override;

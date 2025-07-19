@@ -11,6 +11,7 @@ public:
     ~BehindDots();
 
     void loadDotTexture(const std::string& texturePath);
+    void unloadDotTexture();
     void init();
     void update(float dt);
 private:
