@@ -8,7 +8,7 @@ ButtonGraphicsComponent::ButtonGraphicsComponent(const IButtonView* buttonView) 
     isLoaded = true;
     effectRectHeight = 0.0f;
     period = 0.3f;
-    setLayer(10);
+    setLayer(5);
 }
 
 ButtonGraphicsComponent::~ButtonGraphicsComponent() {
@@ -24,6 +24,12 @@ void ButtonGraphicsComponent::unload() {
         UnloadFont(font);
         isLoaded = false;
     }
+}
+
+void ButtonGraphicsComponent::init(int _fontSize, int _offsetRightSide, bool _inMiddle){
+    fontSize = _fontSize;
+    offsetRightSide = _offsetRightSide;
+    inMiddle = _inMiddle;
 }
 
 void ButtonGraphicsComponent::update(float dt){
@@ -59,10 +65,9 @@ void ButtonGraphicsComponent::render() const {
 
     // Draw button label centered
     if (isLoaded) {
-        int fontSize = 50;
         const std::string& label = buttonView->getText();
         Vector2 textSize = MeasureTextEx(font, label.c_str(), fontSize, 2);
-        int textX = bounds.x + (bounds.width - textSize.x) / 2;
+        int textX = inMiddle ? bounds.x + (bounds.width - textSize.x) / 2 : buttonView->getX() + buttonView->getWidth() - offsetRightSide - textSize.x;
         int textY = bounds.y + (bounds.height - textSize.y) / 2;
         if(buttonView->isHovered()){
             textX -= 10.0f;

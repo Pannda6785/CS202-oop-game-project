@@ -11,7 +11,7 @@
 
 class Button : public IButtonControl, public IButtonView {
 public:
-    Button(int x, int y, int width, int height, const std::string& text);
+    Button(int x, int y, int width, int height, const std::string& text, int fontSize, int offset, bool inMiddle);
     ~Button();
 
     void enable() override;

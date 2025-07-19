@@ -20,20 +20,67 @@ MainMenuState::~MainMenuState(){
 }
 
 void MainMenuState::enter() {
-    int buttonWidth = 700;
-    int buttonHeight = 75;
+    int buttonWidth = 720;
+    int buttonHeight = 100;
     int coordYFirstButton = 50;
-    std::unique_ptr<Button> startButton = std::make_unique<Button>(0, coordYFirstButton += buttonHeight, buttonWidth, buttonHeight, "Start Game");
-    startButton->setOnClickListener([this]() {
+    int offset = 250;
+    int deltaOffset = 15;
+    int fontSize = 70;
+    // Story button
+    std::unique_ptr<Button> storyButton = std::make_unique<Button>(0, coordYFirstButton += buttonHeight, buttonWidth, buttonHeight, "STORY", fontSize, offset -= deltaOffset, false);
+    storyButton->setOnClickListener([this]() {
+        AudioManager::getInstance().play("ClickButton");
+        std::cout << "Story" << std::endl;
+    });
+    storyButton->setOnHoverEnterListener([this]() {
+        std::cout << "Hovered over Story button!" << std::endl;
+        AudioManager::getInstance().play("MenuCursor");
+    });
+    buttonManager.addButton(std::move(storyButton));
+    // Versus button
+    std::unique_ptr<Button> versusButton = std::make_unique<Button>(0, coordYFirstButton += buttonHeight, buttonWidth, buttonHeight, "VERSUS", fontSize, offset -= deltaOffset, false);
+    versusButton->setOnClickListener([this]() {
         AudioManager::getInstance().play("ClickButton");
         gameStateManager.changeState(std::make_unique<SoloModeState>(gameStateManager));
     });
-    startButton->setOnHoverEnterListener([this]() {
-        std::cout << "Hovered over Start Game button!" << std::endl;
+    versusButton->setOnHoverEnterListener([this]() {
+        std::cout << "Hovered over Versus button!" << std::endl;
         AudioManager::getInstance().play("MenuCursor");
     });
-    buttonManager.addButton(std::move(startButton));
-    std::unique_ptr<Button> exitButton = std::make_unique<Button>(0, coordYFirstButton += buttonHeight, buttonWidth, buttonHeight, "Exit Game");
+    buttonManager.addButton(std::move(versusButton));
+    // Network button
+    std::unique_ptr<Button> networkButton = std::make_unique<Button>(0, coordYFirstButton += buttonHeight, buttonWidth, buttonHeight, "NETWORK", fontSize, offset -= deltaOffset, false);
+    networkButton->setOnClickListener([this]() {
+        AudioManager::getInstance().play("ClickButton");
+    });
+    networkButton->setOnHoverEnterListener([this]() {
+        std::cout << "Hovered over Network button!" << std::endl;
+        AudioManager::getInstance().play("MenuCursor");
+    });
+    buttonManager.addButton(std::move(networkButton));
+    // Extras button
+    std::unique_ptr<Button> extrasButton = std::make_unique<Button>(0, coordYFirstButton += buttonHeight, buttonWidth, buttonHeight, "EXTRAS", fontSize, offset -= deltaOffset, false);
+    extrasButton->setOnClickListener([this]() {
+        AudioManager::getInstance().play("ClickButton");
+    });
+    extrasButton->setOnHoverEnterListener([this]() {
+        std::cout << "Hovered over Extra button!" << std::endl;
+        AudioManager::getInstance().play("MenuCursor");
+    });
+    buttonManager.addButton(std::move(extrasButton));
+    // Options button
+    std::unique_ptr<Button> optionsButton = std::make_unique<Button>(0, coordYFirstButton += buttonHeight, buttonWidth, buttonHeight, "OPTIONS", fontSize, offset -= deltaOffset, false);
+    optionsButton->setOnClickListener([this]() {
+        AudioManager::getInstance().play("ClickButton");
+    });
+    optionsButton->setOnHoverEnterListener([this]() {
+        std::cout << "Hovered over Extra button!" << std::endl;
+        AudioManager::getInstance().play("MenuCursor");
+    });
+    buttonManager.addButton(std::move(optionsButton));
+
+    // Exit button
+    std::unique_ptr<Button> exitButton = std::make_unique<Button>(0, coordYFirstButton += buttonHeight, buttonWidth, buttonHeight, "EXIT GAME", fontSize, offset -= deltaOffset, false);
     exitButton->setOnClickListener([this]() {
         std::cout << "Exiting game!" << std::endl;
         AudioManager::getInstance().play("ClickButton");

@@ -37,7 +37,7 @@ SoloModeState::~SoloModeState(){
 
 void SoloModeState::enter() {
     std::unique_ptr<Button> backButton = std::make_unique<Button>(
-        50, 50, 300, 75, "Back to Main Menu"
+        50, 50, 300, 75, "Back to Main Menu", 50, 50, true
     );
     backButton->setOnClickListener([&gsm = gameStateManager]() {
         std::cout << "Returning to Main Menu..." << std::endl;
