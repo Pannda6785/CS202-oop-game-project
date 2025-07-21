@@ -29,7 +29,7 @@ void CustomCursorGraphicsComponent::render() const{
     for(auto &dot : arroundDots) {
         if(isArroundDotLoaded) {
             // DrawTexture(arroundDotTexture, pos.x * 50.0f * (arroundDots - dot.second) / arroundDots + dot.first.first.x, pos.y * 50.0f * (arroundDots - dot.second) / arroundDots + dot.first.y, (Color){255, 255, 255, dot.second / arroundDotTime * 255});
-            DrawTexture(arroundDotTexture, dot.first.first.x, dot.first.first.y, (Color){255, 255, 255, dot.second / arroundDotTime * 255});
+            DrawTexture(arroundDotTexture, dot.first.first.x, dot.first.first.y, (Color){255, 255, 255, (unsigned char)(dot.second / arroundDotTime * 255)});
         }
     }
     if(IsMouseButtonDown(MOUSE_BUTTON_LEFT)){

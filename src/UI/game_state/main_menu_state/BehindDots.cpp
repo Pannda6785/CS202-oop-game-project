@@ -29,9 +29,9 @@ void BehindDots::addNewDot(){
     static std::uniform_real_distribution<> randLifeTime(3.0f, 7.0f);
     dots.emplace_back(std::make_unique<BehindDotsGraphicsComponent>());
     dots.back()->init(&dotTexture, 
-                    {randPosX(gen), randPosY(gen)},
+                    {(float)randPosX(gen), (float)randPosY(gen)},
                     randScale(gen),
-                    {randOffset(gen), randOffset(gen)},
+                    {(float)randOffset(gen), (float)randOffset(gen)},
                     randLifeTime(gen),
                     RED);
 }

@@ -6,7 +6,6 @@
 #include "../../../input/KeyboardInputInterpreter.hpp"
 #include "../../../game/World.hpp"
 #include "../../../game/player/Player.hpp"
-#include "../../../game/character/DemoCharacter.hpp"
 #include "../../button/ButtonManager.hpp"
 #include <memory>
 #include <vector>

@@ -47,7 +47,10 @@ void ButtonGraphicsComponent::update(float dt){
             effectRectHeight = std::max(effectRectHeight - delta, 0.0f);
         }
     } else {
-        currentColor = { currentColor.r / 2, currentColor.g / 2, currentColor.b / 2, currentColor.a };
+        currentColor = { (unsigned char)(currentColor.r / 2), 
+                         (unsigned char)(currentColor.g / 2), 
+                         (unsigned char)(currentColor.b / 2), 
+                         currentColor.a };
     }
 }
 
