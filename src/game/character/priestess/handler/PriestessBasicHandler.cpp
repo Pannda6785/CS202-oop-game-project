@@ -28,7 +28,7 @@ void PriestessBasicHandler::tap(bool isFocusing) {
 
     step++;
     player->applyImplicitMoveLock();
-    player->applyCooldown(move, step < 3 ? SHORT_COOLDOWN : LONG_COOLDOWN);
+    player->applyLock(Unit::moveToLock(move), step < 3 ? SHORT_LOCK : LONG_LOCK);
     player->applyModifier(Unit::Modifier::MovementModifier, MOVEMENT_MODIFIER_DURATION, MOVEMENT_MODIFIER_AMOUNT);
     player->applyModifier(Unit::Modifier::ArrowModifier, step < 3 ? SHORT_ARROW_MODIFIER_DURATION : LONG_ARROW_MODIFIER_DURATION, ARROW_MODIFIER_AMOUNT);
     if (step < 3) {

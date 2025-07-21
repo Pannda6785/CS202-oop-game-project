@@ -7,8 +7,8 @@ class PriestessGraphicsComponent;
 
 class PriestessBasicHandler : public TapHandler {
     static constexpr float COMBO_HOLD = 2.0f;
-    static constexpr float SHORT_COOLDOWN = 0.5f;
-    static constexpr float LONG_COOLDOWN = 1.3f;
+    static constexpr float SHORT_LOCK = 0.5f;
+    static constexpr float LONG_LOCK = 1.3f;
 
     static constexpr float MOVEMENT_MODIFIER_DURATION = 0.6f;
     static constexpr float MOVEMENT_MODIFIER_AMOUNT = 0.7f;
