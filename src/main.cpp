@@ -4,25 +4,26 @@
 
 #include "graphics/GraphicsComponentManager.hpp"
 
-#include "input/InputInterpreter.hpp"
-#include "input/KeyboardInputInterpreter.hpp"
-
-#include "game/World.hpp"
-#include "game/player/Player.hpp"
-
-#include "game/character/bin/DemoCharacter.hpp"
-#include "game/character/priestess/Priestess.hpp"
+#include "UI/button/ButtonManager.hpp"
 
 #include <memory>
 #include <vector>
+
+#include <iostream>
+
+#include "UI/game_state/GameStateManager.hpp"
+
+#include "audio/AudioManager.hpp"
+#include "UI/custom_cursor/CustomCursor.hpp"
 
 int main() {
     const int screenWidth = 1440;
     const int screenHeight = 900;
 
     InitWindow(screenWidth, screenHeight, "Maiden and CS202");
+    InitAudioDevice();
 
-    SetTargetFPS(60);
+    SetTargetFPS(200);
 
     /*
         MAIN GAME LOOP
@@ -33,26 +34,13 @@ int main() {
         + audio
     */
 
-    std::vector<std::shared_ptr<KeyboardInputInterpreter>> inputInterpreters = { std::make_shared<KeyboardInputInterpreter>(), std::make_shared<KeyboardInputInterpreter>() };
-    inputInterpreters[1]->setKeyMapping(Unit::Input::MoveUp, KEY_W);
-    inputInterpreters[1]->setKeyMapping(Unit::Input::MoveDown, KEY_S); 
-    inputInterpreters[1]->setKeyMapping(Unit::Input::MoveLeft, KEY_A);
-    inputInterpreters[1]->setKeyMapping(Unit::Input::MoveRight, KEY_D);
+    HideCursor(); // Hide the default cursor
 
-    inputInterpreters[1]->setKeyMapping(Unit::Input::Basic, KEY_ONE);
-    inputInterpreters[1]->setKeyMapping(Unit::Input::Wide, KEY_TWO); 
-    inputInterpreters[1]->setKeyMapping(Unit::Input::Offensive, KEY_THREE);
-    inputInterpreters[1]->setKeyMapping(Unit::Input::Defensive, KEY_FOUR);
-
-    std::unique_ptr<World> world = std::make_unique<World>();
-
-    std::unique_ptr<Player> player1 = std::make_unique<Player>(0, world.get(), world.get(), std::make_unique<Priestess>(), inputInterpreters[0]);
-    std::unique_ptr<Player> player2 = std::make_unique<Player>(1, world.get(), world.get(), std::make_unique<Priestess>(), inputInterpreters[1]);
-
-    world->addPlayer(std::move(player1));
-    world->addPlayer(std::move(player2));
-
-    world->init();
+    GameStateManager gameStateManager;
+    
+    
+    AudioManager::getInstance().init(); // Initialize audio manager
+    CustomCursor::getInstance().init(); // Initialize custom cursor
 
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
@@ -61,19 +49,18 @@ int main() {
         BeginDrawing();
         ClearBackground(BLACK);
 
-        DrawText("Maiden and Hardcoded Background", 10, 10, 20, DARKGRAY);
-        
-        for (int i = 0; i < 2; i++)
-        inputInterpreters[i]->update(dt); // Update input interpreters
-        
-        world->update(dt); // Update game world logic
+        gameStateManager.processPendingStateChanges();
+
+        gameStateManager.update(dt); // Update game state manager
+        CustomCursor::getInstance().update(dt); // Update custom cursor
 
         GraphicsComponentManager::instance().render(); // Update graphics components
+
 
         EndDrawing();
     }
 
-    CloseWindow();        
+    CloseWindow();
 
     return 0;
 }

@@ -1,0 +1,31 @@
+#ifndef MAIN_MENU_STATE_HPP
+#define MAIN_MENU_STATE_HPP
+
+#include "../../button/ButtonManager.hpp"
+#include "../GameState.hpp"
+#include "../../button/Button.hpp"
+#include "MainMenuBackground.hpp"
+#include "MovingTileGraphicsComponent.hpp"
+#include "BehindDots.hpp"
+#include <memory>
+
+class GameStateManager;
+
+class MainMenuState : public GameState {
+private:
+    ButtonManager buttonManager;
+    GameStateManager& gameStateManager;
+    MainMenuBackground background;
+    MovingTileGraphicsComponent movingTileEffect[2];
+    BehindDots behindDots;
+
+public:
+    MainMenuState(GameStateManager& gsm);
+    ~MainMenuState();
+
+    void enter() override;
+    void update(float dt) override;
+    void exit() override;
+};
+
+#endif // MAIN_MENU_STATE_HPP
