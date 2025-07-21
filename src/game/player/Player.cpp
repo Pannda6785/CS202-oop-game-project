@@ -20,7 +20,7 @@ Player::Player(int playerId, IWorldView* worldView, IBulletSpawner* bulletSpawne
     health = 3;
     stock = 2;
 
-    pos = {500 + playerId * 500.0f, 300 + playerId * 100.0f};
+    setPosition({500 + playerId * 500.0f, 300 + playerId * 100.0f});
     arrow = {0.0f, 1.0f};
     movement = {0.0f, 0.0f};
     
@@ -116,6 +116,8 @@ Unit::Vec2D Player::getTargetPosition() const {
 
 void Player::setPosition(const Unit::Vec2D& newPos) {
     pos = newPos;
+    pos.x = std::clamp(pos.x, 0.0f, Unit::BATTLEFIELD_WIDTH);
+    pos.y = std::clamp(pos.y, 0.0f, Unit::BATTLEFIELD_HEIGHT);
 }
 
 // --- Status data ---
@@ -187,7 +189,7 @@ void Player::updateMovement(float dt) {
         speed = 0;
     }
     movement = input->getMovement() * speed;
-    pos += movement * dt;
+    setPosition(pos + movement * dt);
 
     hitbox->setPosition(pos);
 }

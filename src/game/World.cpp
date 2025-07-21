@@ -58,17 +58,6 @@ void World::spawnBullet(std::unique_ptr<Bullet> bullet) {
 }
 
 void World::handleCollisions() {
-    /* Clamp player positions to battlefield boundaries */  
-    for (auto& player : players) {
-        if (player->getPosition().x < 0 || player->getPosition().x > Unit::BATTLEFIELD_WIDTH ||
-            player->getPosition().y < 0 || player->getPosition().y > Unit::BATTLEFIELD_HEIGHT) {
-            player->setPosition({
-                std::clamp(player->getPosition().x, 0.0f, Unit::BATTLEFIELD_WIDTH),
-                std::clamp(player->getPosition().y, 0.0f, Unit::BATTLEFIELD_HEIGHT)
-            });
-        }
-    }
-    
     /* Bullet vs Bullet */ 
     std::vector<bool> toDelete(bullets.size(), false);
     for (size_t i = 0; i < bullets.size(); ++i) {
