@@ -42,12 +42,12 @@ public:
     void setPosition(const Unit::Vec2D& pos);
     
     // Status data
-    float getInvincibility() const;
+    float getInvincibility(bool major = false) const;
     std::pair<float, float> getModifier(Unit::Modifier mod) const;
     float getLock(Unit::Lock lock) const;
     float getCooldown(Unit::Move move) const;
 
-    void applyInvincibility(float duration, bool force = false);
+    void applyInvincibility(float duration, bool major, bool force = false);
     void applyModifier(Unit::Modifier mod, float duration, float value, bool force = false);
     void applyLock(Unit::Lock lock, float duration, bool force = false);
     void applyCooldown(Unit::Move move, float duration, bool force = false);
@@ -73,7 +73,7 @@ private:
     Unit::Vec2D movement;
 
     // Status data
-    float invincibility;
+    std::array<float, 2> invincibility;
     std::array<std::pair<float, float>, Unit::NUM_MODIFIERS> modifiers{}; // duration and values
     std::array<float, Unit::NUM_LOCKS> locks{};
     std::array<float, Unit::NUM_MOVES> cooldown{};

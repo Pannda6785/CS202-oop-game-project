@@ -120,7 +120,7 @@ void DemoCharacter::update(float dt, InputBufferer* input) {
             player->getCooldown(Unit::Move::Defensive) < Unit::EPS &&
             player->getLock(Unit::Lock::DefensiveLock) < Unit::EPS)
     {
-        player->applyInvincibility(3.0f);
+        player->applyInvincibility(3.0f, false);
 
         player->applyCooldown(Unit::Move::Defensive, 8.0f);
         player->applyLock(Unit::Lock::BasicLock, 0.2f);

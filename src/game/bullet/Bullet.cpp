@@ -41,10 +41,18 @@ const Hitbox* Bullet::getCleansingHitbox() const {
     return cleansingHitbox.get();
 }
 
-const std::vector<std::tuple<const Hitbox*, int, float>> Bullet::getInvincibilityHitboxes() const {
-    std::vector<std::tuple<const Hitbox*, int, float>> result;
-    for (const auto& [hitbox, who, duration] : invincibilityHitboxes) {
-        result.emplace_back(hitbox.get(), who, duration);
+const std::vector<std::tuple<const Hitbox*, bool, int, float>> Bullet::getInvincibilityHitboxes() const {
+    std::vector<std::tuple<const Hitbox*, bool, int, float>> result;
+    for (const auto& [hitbox, major, who, duration] : invincibilityHitboxes) {
+        result.emplace_back(hitbox.get(), major, who, duration);
+    }
+    return result;
+}
+
+const std::vector<std::tuple<const Hitbox*, Unit::Modifier, int, float, float>> Bullet::getModifierHitboxes() const {
+    std::vector<std::tuple<const Hitbox*, Unit::Modifier, int, float, float>> result;
+    for (const auto& [hitbox, modifier, who, duration, amount] : modifierHitboxes) {
+        result.emplace_back(hitbox.get(), modifier, who, duration, amount);
     }
     return result;
 }

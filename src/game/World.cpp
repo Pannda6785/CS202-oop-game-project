@@ -88,11 +88,24 @@ void World::handleCollisions() {
     /* Bullet vs Player: Invincibility applying */
     for (size_t i = 0; i < bullets.size(); ++i) {
         if (toDelete[i] || bullets[i]->isDone()) continue;
-        for (const auto& [hb, who, duration] : bullets[i]->getInvincibilityHitboxes()) {
+        for (const auto& [hb, major, who, duration] : bullets[i]->getInvincibilityHitboxes()) {
             if (!hb) continue;
             for (auto& player : players) {
                 if (player->getPlayerId() == who && hb->collidesWith(*player->getHitbox())) {
-                    player->applyInvincibility(duration);
+                    player->applyInvincibility(duration, major);
+                }
+            }
+        }
+    }
+
+    /* Bullet vs Player: Modifier applying */
+    for (size_t i = 0; i < bullets.size(); ++i) {
+        if (toDelete[i] || bullets[i]->isDone()) continue;
+        for (const auto& [hb, mod, who, duration, value] : bullets[i]->getModifierHitboxes()) {
+            if (!hb) continue;
+            for (auto& player : players) {
+                if (player->getPlayerId() == who && player->getInvincibility(true) < Unit::EPS && hb->collidesWith(*player->getHitbox())) {
+                    player->applyModifier(mod, duration, value);
                 }
             }
         }

@@ -50,7 +50,7 @@ void Player::takeHit() {
     health = std::max(health - 1, 0);
     if (health == 0 && stock > 0) stock--;
 
-    applyInvincibility(3.0f);
+    applyInvincibility(3.0f, true);
     applyModifier(Unit::Modifier::MovementModifier, 2.0f * modifiers[static_cast<int>(Unit::Modifier::StaggerModifier)].second, 0.5f);
     applyLock(Unit::Lock::MovementLock, 1.5f * modifiers[static_cast<int>(Unit::Modifier::StaggerModifier)].second);
     applyLock(Unit::Lock::BasicLock, 1.6f * modifiers[static_cast<int>(Unit::Modifier::StaggerModifier)].second);
@@ -61,7 +61,7 @@ void Player::takeHit() {
 }
 
 void Player::confirmHit() {
-    applyInvincibility(1.2f);
+    applyInvincibility(1.2f, false);
 }
 
 void Player::roundReset() {
@@ -119,8 +119,9 @@ void Player::setPosition(const Unit::Vec2D& newPos) {
 }
 
 // --- Status data ---
-float Player::getInvincibility() const {
-    return invincibility;
+float Player::getInvincibility(bool major) const {
+    if (major) return invincibility[major];
+    return std::max(invincibility[0], invincibility[1]);
 }
 
 std::pair<float, float> Player::getModifier(Unit::Modifier mod) const {
@@ -135,11 +136,11 @@ float Player::getCooldown(Unit::Move move) const {
     return cooldown[static_cast<int>(move)];
 }
 
-void Player::applyInvincibility(float duration, bool force) {
+void Player::applyInvincibility(float duration, bool major, bool force) {
     if (force) {
-        invincibility = duration;
+        invincibility[0] = invincibility[1] = duration;
     } else {
-        invincibility = std::max(invincibility, duration);
+        invincibility[major] = std::max(invincibility[major], duration);
     }
 }
 
@@ -243,7 +244,8 @@ void Player::updateArrow(float dt) {
 }
 
 void Player::updateStatus(float dt) {
-    invincibility = std::max(0.0f, invincibility - dt);
+    invincibility[0] = std::max(0.0f, invincibility[0] - dt);
+    invincibility[1] = std::max(0.0f, invincibility[1] - dt);
 
     for (auto& [duration, value] : modifiers) {
         if (duration > 0.0f) {

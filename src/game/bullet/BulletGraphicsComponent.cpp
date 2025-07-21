@@ -33,7 +33,7 @@ void BulletGraphicsComponent::drawHitboxes() const {
     drawHitbox(owner->getLifeHitbox(), GREEN);
     drawHitbox(owner->getDamagingHitbox(), RED);
     drawHitbox(owner->getCleansingHitbox(), BLUE);
-    for (const auto& [hitbox, id, duration] : owner->getInvincibilityHitboxes()) {
+    for (const auto& [hitbox, major, id, duration] : owner->getInvincibilityHitboxes()) {
         drawHitbox(hitbox, YELLOW);
     }
 }
