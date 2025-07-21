@@ -5,6 +5,8 @@
 #include "../../../bullet/StraightBullet.hpp"
 #include "../../../bullet/CommonBulletGraphicsComponent.hpp"
 
+constexpr float PI = 3.14159265358979323846f;
+
 PriestessOffensiveHandler::PriestessOffensiveHandler(PriestessGraphicsComponent* graphics)
     : CastHandler(Unit::Move::Offensive, MIN_CASTING_TIME), graphics(graphics) {
     ring = std::make_unique<RingGraphicsComponent>(false); // isWide = false
@@ -87,11 +89,11 @@ void PriestessOffensiveHandler::spawnBullet() {
     Unit::Vec2D toTarget = (target - center).normalized();
 
     // Compute rotation angle in degrees
-    float baseAngleDeg = std::atan2(toTarget.y, toTarget.x) * 180.0f / M_PI;
+    float baseAngleDeg = std::atan2(toTarget.y, toTarget.x) * 180.0f / PI;
 
     for (int i = 0; i < numBullets; ++i) {
         float angleDeg = baseAngleDeg + (i + 0.5) * angleStep;
-        float angleRad = angleDeg * M_PI / 180.0f;
+        float angleRad = angleDeg * PI / 180.0f;
 
         Unit::Vec2D direction(std::cos(angleRad), std::sin(angleRad));
         Unit::Vec2D bulletPosition = center + direction * radius;
