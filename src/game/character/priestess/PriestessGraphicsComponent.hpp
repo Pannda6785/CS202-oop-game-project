@@ -16,7 +16,7 @@ public:
 
 protected:
     void loadTextures() override;
-    void unloadTextures() override;
+    void unloadTextures() override {};
     bool characterSpecificUpdate(float dt) override;
 
 private:

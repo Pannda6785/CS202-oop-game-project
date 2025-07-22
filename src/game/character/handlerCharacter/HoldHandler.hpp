@@ -13,7 +13,7 @@ public:
 
 protected:
     virtual void onHoldStart() = 0;
-    virtual void onHoldRelease() = 0;
+    virtual void onHoldRelease(bool isInterupted = false) = 0;
 
 protected:
     Unit::Move move;

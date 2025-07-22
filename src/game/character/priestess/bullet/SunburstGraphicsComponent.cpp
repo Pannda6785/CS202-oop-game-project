@@ -1,24 +1,18 @@
 #include "SunburstGraphicsComponent.hpp"
 #include "Sunburst.hpp"
-#include "raylib.h"
-
-#include <string>
 
 #include "../../../hitbox/CircleHitbox.hpp"
+#include "../../../../graphics/TextureManager.hpp"
+
+#include "raylib.h"
+#include <string>
 
 SunburstGraphicsComponent::SunburstGraphicsComponent(const Sunburst* bullet)
     : bullet(bullet) {
     std::string path = "../assets/sprites/priestess/bullet/";
-    inactiveTexture = new Texture(LoadTexture((path + "priest_bullets_6_p1_0001.png").c_str()));
-    activeTexture = new Texture(LoadTexture((path + "priest_bullets_3_p1_0002.png").c_str()));
+    inactiveTexture = TextureManager::instance().getTexture(path + "priest_bullets_6_p1_0001.png");
+    activeTexture = TextureManager::instance().getTexture(path + "priest_bullets_3_p1_0002.png");
     BulletGraphicsComponent::registerOwner(bullet);
-}
-
-SunburstGraphicsComponent::~SunburstGraphicsComponent() {
-    UnloadTexture(*inactiveTexture);
-    UnloadTexture(*activeTexture);
-    delete inactiveTexture;
-    delete activeTexture;
 }
 
 void SunburstGraphicsComponent::update(float dt) {

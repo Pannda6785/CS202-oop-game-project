@@ -46,11 +46,13 @@ void PriestessOffensiveHandler::onCastStart() {
     ring->onCastStart();
 }
 
-void PriestessOffensiveHandler::onCastRelease() {
+void PriestessOffensiveHandler::onCastRelease(bool isInterupted) {
     graphics->stopCasting();
-    graphics->spin();
     ring->onCastRelease();
-
+    
+    if (isInterupted) return;
+    
+    graphics->spin();
     spawnBullet();
 
     float lockDuration = std::max(MIN_ACTION_LOCK, MAX_ACTION_LOCK - castingTime);

@@ -13,7 +13,6 @@ public:
     CommonBulletGraphicsComponent(float initialGradient = 0.4f); // not expected to be used outside of prototyping
     CommonBulletGraphicsComponent(std::string texturePath, float texResize, float initialGradient, bool useVelocity = false,
                                     std::string startupTexturePath = "", float startUpTexResize = 1.0f);
-    ~CommonBulletGraphicsComponent();
 
     void registerOwner(const Bullet* bullet);
     void render() const override;
@@ -22,8 +21,8 @@ public:
 private:
     const Bullet* bullet;
 
-    Texture* texture = nullptr;
-    Texture* startupTexture = nullptr; // if this is not null, this will be rendered instead until damaging hitbox is set
+    const Texture* texture = nullptr;
+    const Texture* startupTexture = nullptr; // if this is not null, this will be rendered instead until damaging hitbox is set
     float texResize = 1.0f; // how much to resize the texture
     float startUpTexResize = 1.0f; // how much to resize the
     float initialGradient = 0.0f; // for this much second after being born, it will linearly become fully opaque

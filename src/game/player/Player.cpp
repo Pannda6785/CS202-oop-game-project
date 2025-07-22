@@ -19,6 +19,7 @@ Player::Player(int playerId, IWorldView* worldView, IBulletSpawner* bulletSpawne
 
     health = 3;
     stock = 2;
+    invincibility = {0, 0};
 
     setPosition({500 + playerId * 500.0f, 300 + playerId * 100.0f});
     arrow = {0.0f, 1.0f};

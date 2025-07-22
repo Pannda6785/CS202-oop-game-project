@@ -12,7 +12,6 @@ class SunburstGraphicsComponent : public BulletGraphicsComponent {
 
 public:
     explicit SunburstGraphicsComponent(const Sunburst* bullet);
-    ~SunburstGraphicsComponent();
 
     void render() const override;
     void update(float dt);
@@ -20,8 +19,8 @@ public:
 private:
     const Sunburst* bullet;
 
-    Texture* inactiveTexture;
-    Texture* activeTexture;
+    const Texture* inactiveTexture;
+    const Texture* activeTexture;
 
     float gradient = 0.0f;
     float rotationTimer = 0.0f;

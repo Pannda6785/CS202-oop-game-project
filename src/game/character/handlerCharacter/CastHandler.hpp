@@ -13,7 +13,7 @@ public:
 
 protected:
     virtual void onCastStart() = 0;
-    virtual void onCastRelease() = 0;
+    virtual void onCastRelease(bool isInterupted = false) = 0;
     
 protected:
     Unit::Move move;

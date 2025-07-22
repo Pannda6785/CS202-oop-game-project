@@ -2,26 +2,21 @@
 #include "NoviDispel.hpp"
 #include "../../../hitbox/CircleHitbox.hpp"
 
+#include "../../../../graphics/TextureManager.hpp"
 #include <raylib.h>
 
 NoviDispelGraphicsComponent::NoviDispelGraphicsComponent(const NoviDispel* bullet)
     : bullet(bullet)
 {
     std::string path = "../assets/sprites/priestess/bullet/dispel.png";
-    texture = new Texture(LoadTexture(path.c_str()));
+    texture = TextureManager::instance().getTexture(path);
     BulletGraphicsComponent::registerOwner(bullet);
-}
-
-NoviDispelGraphicsComponent::~NoviDispelGraphicsComponent() {
-    if (texture) {
-        UnloadTexture(*texture);
-        delete texture;
-    }
 }
 
 void NoviDispelGraphicsComponent::render() const {
     if (!bullet || !texture) return;
 
+    // Draw the feathery zone
     Unit::Vec2D pos = bullet->getPosition();
 
     float radius = dynamic_cast<const CircleHitbox*>(std::get<0>(bullet->getInvincibilityHitboxes()[0]))->getRadius();
@@ -34,6 +29,25 @@ void NoviDispelGraphicsComponent::render() const {
 
     DrawTexturePro(*texture, srcRect, destRect, origin, rotation, WHITE);
 
+      // Render the ripple
+    if (rippleActive) {
+        float alpha = 1.0f - (rippleTimer / RIPPLE_DURATION); // fade out
+        for (int i = 0; i < RIPPLE_COUNT; ++i) {
+            float t = (float)i / RIPPLE_COUNT;
+            float progress = (rippleTimer / RIPPLE_DURATION) + t;
+            if (progress > 1.0f) continue;
+            float rippleRadius = radius * 0.97 + (progress * RIPPLE_SPREAD);
+            Color ringColor = Fade(WHITE, alpha * (1.0f - t));
+            DrawRing(
+                { pos.x, pos.y },
+                rippleRadius - RIPPLE_WIDTH,
+                rippleRadius,
+                0.0f, 360.0f, 64,
+                ringColor
+            );
+        }
+    }
+
     BulletGraphicsComponent::drawHitboxes();
 }
 
@@ -44,5 +58,11 @@ void NoviDispelGraphicsComponent::update(float dt) {
         rotation += (float)randStep;
         if (rotation >= 360) rotation -= 360;
         rotationTimer -= 1 / ROTATE_FPS;
+    }
+    if (rippleActive) {
+        rippleTimer += dt;
+        if (rippleTimer >= RIPPLE_DURATION) {
+            rippleActive = false;
+        }
     }
 }
