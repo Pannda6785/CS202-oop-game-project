@@ -30,11 +30,13 @@ void PriestessWideHandler::onCastStart() {
     ring->onCastStart();
 }
 
-void PriestessWideHandler::onCastRelease() {
+void PriestessWideHandler::onCastRelease(bool isInterupted) {
     graphics->stopCasting();
-    graphics->yell();
     ring->onCastRelease();
+    
+    if (isInterupted) return;
 
+    graphics->yell();
     spawnBullet();
 
     player->applyModifier(Unit::Modifier::MovementModifier, 0.01, 1, true);

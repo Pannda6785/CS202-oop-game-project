@@ -43,11 +43,11 @@ protected:
     const Player* player;
 
     struct Animation {
-        std::vector<Texture*> frames;
+        std::vector<const Texture*> frames;
         float fps;
         bool loop;
         Animation() = default;
-        Animation(std::vector<Texture*> frames, float fps, bool loop)
+        Animation(std::vector<const Texture*> frames, float fps, bool loop)
             : frames(std::move(frames)), fps(fps), loop(loop) {}
     };
     std::unordered_map<std::string, Animation> animations;

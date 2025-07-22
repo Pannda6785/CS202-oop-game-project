@@ -34,7 +34,7 @@ public:
 
 protected:
     void onCastStart() override;
-    void onCastRelease() override;
+    void onCastRelease(bool isInterupted) override;
 
 private:
     PriestessGraphicsComponent* graphics;

@@ -5,6 +5,7 @@
 
 #include "Bullet.hpp"
 #include "../hitbox/CircleHitbox.hpp"
+#include "../../graphics/TextureManager.hpp"
 
 CommonBulletGraphicsComponent::CommonBulletGraphicsComponent(float initialGradient)
     : initialGradient(std::max(0.1f, initialGradient)) {}
@@ -15,23 +16,9 @@ CommonBulletGraphicsComponent::CommonBulletGraphicsComponent(std::string texture
       initialGradient(std::max(0.1f, initialGradient)),
       useVelocity(useVelocity) {
 
-    Texture loadedTex = LoadTexture(texturePath.c_str());
-    texture = new Texture(loadedTex);
-
+    texture = TextureManager::instance().getTexture(texturePath);
     if (!startupTexturePath.empty()) {
-        Texture loadedStartup = LoadTexture(startupTexturePath.c_str());
-        startupTexture = new Texture(loadedStartup);
-    }
-}
-
-CommonBulletGraphicsComponent::~CommonBulletGraphicsComponent() {
-    if (texture) {
-        UnloadTexture(*texture);
-        delete texture;
-    }
-    if (startupTexture) {
-        UnloadTexture(*startupTexture);
-        delete startupTexture;
+        startupTexture = TextureManager::instance().getTexture(startupTexturePath);
     }
 }
 
@@ -59,7 +46,7 @@ void CommonBulletGraphicsComponent::render() const {
     }
 
     if (texture) {
-        Texture* texToDraw = texture;
+        const Texture* texToDraw = texture;
         float scale = texResize;
 
         if (startupTexture && !bullet->getDamagingHitbox()) {

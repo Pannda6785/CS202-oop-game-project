@@ -14,7 +14,14 @@ bool CastHandler::tryRegister(InputBufferer* input) {
 
     float lock = player->getLock(Unit::moveToLock(move));
     float cooldown = player->getCooldown(move);
-    if (lock > Unit::EPS || cooldown > Unit::EPS) return false;
+    if (lock > Unit::EPS || cooldown > Unit::EPS) {
+        if (isCasting) { // a disruption! (stun, hit, etc.)
+            onCastRelease(true);
+            isCasting = false;
+            character->neutralize();
+        }
+        return false;
+    }
 
     Unit::Input inputKey = Unit::moveToInput(move);
     if (!isCasting) {
