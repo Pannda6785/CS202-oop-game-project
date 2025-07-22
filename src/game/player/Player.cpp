@@ -148,8 +148,14 @@ void Player::applyInvincibility(float duration, bool major, bool force) {
 }
 
 void Player::applyModifier(Unit::Modifier mod, float duration, float value, bool force) {
-    // always force, i guess
-    modifiers[static_cast<int>(mod)] = {duration, value};
+    if (force) {
+        modifiers[static_cast<int>(mod)] = {duration, value};
+    } else {
+        // only if the previous duration is very long should the previous effect be continued
+        if (modifiers[static_cast<int>(mod)].first < 10) {
+            modifiers[static_cast<int>(mod)] = {duration, value};
+        }
+    }
 }
 
 void Player::applyLock(Unit::Lock lock, float duration, bool force) {
