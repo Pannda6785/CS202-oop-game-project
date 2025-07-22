@@ -4,6 +4,7 @@
 #include "../../../audio/AudioManager.hpp"
 #include "../../../game/player/Player.hpp"
 #include "../../../game/character/priestess/Priestess.hpp"
+#include "../../../game/pattern/DemoPattern.hpp"
 #include <iostream>
 
 SoloModeState::SoloModeState(GameStateManager& gsm)
@@ -27,6 +28,8 @@ SoloModeState::SoloModeState(GameStateManager& gsm)
 
     world->addPlayer(std::move(player1));
     world->addPlayer(std::move(player2));
+
+    world->addPattern(std::make_unique<DemoPattern>(world.get()));
 
     world->init();
 

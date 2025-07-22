@@ -6,6 +6,9 @@ void World::update(float dt) {
     for (auto& player : players) {
         player->update(dt);
     }
+    for (auto& pattern : patterns) {
+        pattern->update(dt);
+    }
     for (auto& bullet : bullets) {
         bullet->update(dt);
     }
@@ -15,6 +18,9 @@ void World::update(float dt) {
 void World::init() {
     for (auto & player : players) {
         player->init();
+    }
+    for (auto & pattern : patterns) {
+        pattern->init();
     }
 }
 
@@ -51,6 +57,10 @@ std::vector<const Bullet*> World::getBullets() const {
 
 void World::addPlayer(std::unique_ptr<Player> player) {
     players.push_back(std::move(player));
+}
+
+void World::addPattern(std::unique_ptr<Pattern> pattern) {
+    patterns.push_back(std::move(pattern));
 }
 
 void World::spawnBullet(std::unique_ptr<Bullet> bullet) {

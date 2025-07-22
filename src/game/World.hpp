@@ -5,6 +5,7 @@
 #include "IBulletSpawner.hpp"
 #include "player/Player.hpp"
 #include "bullet/Bullet.hpp"
+#include "pattern/Pattern.hpp"
 
 #include <memory>
 
@@ -18,11 +19,13 @@ public:
     std::vector<const Bullet*> getBullets() const override;
 
     void addPlayer(std::unique_ptr<Player> player);
+    void addPattern(std::unique_ptr<Pattern> pattern);
     void spawnBullet(std::unique_ptr<Bullet> bullet);
 
 private:
     std::vector<std::unique_ptr<Player>> players;
     std::vector<std::unique_ptr<Bullet>> bullets;
+    std::vector<std::unique_ptr<Pattern>> patterns;
 
     void handleCollisions();
 };
