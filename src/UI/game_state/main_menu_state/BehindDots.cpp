@@ -13,7 +13,7 @@ void BehindDots::loadDotTexture(const std::string& texturePath) {
     assert(loadedDotTexture);
 }
 
-void BehindDots::unloadDotTexture() {
+void BehindDots::unloadTexture() {
     if (loadedDotTexture) {
         UnloadTexture(dotTexture);
         loadedDotTexture = false;

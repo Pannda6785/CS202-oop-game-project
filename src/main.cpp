@@ -50,6 +50,7 @@ int main() {
         ClearBackground(BLACK);
 
         gameStateManager.processPendingStateChanges();
+        AudioManager::getInstance().update(dt);
 
         gameStateManager.update(dt); // Update game state manager
         CustomCursor::getInstance().update(dt); // Update custom cursor
@@ -60,7 +61,6 @@ int main() {
         }
 
         GraphicsComponentManager::instance().render(); // Update graphics components
-
 
         EndDrawing();
     }

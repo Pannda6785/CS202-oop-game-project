@@ -3,14 +3,16 @@
 #include <raylib.h>
 #include <iostream>
 
-Button::Button(int x, int y, int width, int height, const std::string& text, int fontSize, int offset, bool inMiddle)
+Button::Button(int x, int y, int width, int height, const std::string& text, int fontSize, int offset, int side, const std::string &fontPath, bool labelShift)
     : x(x), y(y), width(width), height(height), text(text),
       idleState(true), hoveredState(false), pressedState(false), disabledState(false),
       onClick(nullptr), onHoverEnter(nullptr), enterHovered(false), exitHovered(false)
 {
     bounds = { (float)x, (float)y, (float)width, (float)height };
     graphic = std::make_unique<ButtonGraphicsComponent>(this);
-    graphic->init(fontSize, offset, inMiddle);
+    graphic->init(fontSize, offset, side);
+    graphic->loadFont(fontPath);
+    graphic->setLabelShift(labelShift);
 }
 
 Button::~Button(){

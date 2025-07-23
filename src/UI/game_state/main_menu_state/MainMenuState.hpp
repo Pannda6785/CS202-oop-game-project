@@ -4,7 +4,8 @@
 #include "../../button/ButtonManager.hpp"
 #include "../GameState.hpp"
 #include "../../button/Button.hpp"
-#include "MainMenuBackground.hpp"
+#include "../state_heading/StateHeading.hpp"
+#include "ArtworkTitle.hpp"
 #include "MovingTileGraphicsComponent.hpp"
 #include "BehindDots.hpp"
 #include <memory>
@@ -15,9 +16,13 @@ class MainMenuState : public GameState {
 private:
     ButtonManager buttonManager;
     GameStateManager& gameStateManager;
-    MainMenuBackground background;
+    ArtworkTitle artworkTitle;
     MovingTileGraphicsComponent movingTileEffect[2];
     BehindDots behindDots;
+    StateHeading heading;
+    bool isVisible = true;
+
+    void setVisible(bool visible);
 
 public:
     MainMenuState(GameStateManager& gsm);

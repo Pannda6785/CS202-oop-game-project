@@ -18,12 +18,13 @@ public:
     void render() const override;
 
     // Optionally, allow changing colors/textures
-    void init(int _fontSize, int _offsetRightSide, bool _inMiddle);
+    void init(int _fontSize, int _offset, int side);
     void setBackgroundColor(Color color);
     void setHoverColor(Color color);
     void setPressedColor(Color color);
     void setTextColor(Color color);
     void setRectangle(Rectangle rec);
+    void setLabelShift(bool labelShift);
     void loadFont(const std::string& fontPath);
     void unload();
 
@@ -40,8 +41,9 @@ private:
     float effectRectHeight;
     float period;
     int fontSize;
-    int offsetRightSide;
-    bool inMiddle;
+    int offset;
+    int side;
+    bool labelShift;
 };
 
 #endif // BUTTON_GRAPHICS_COMPONENT_HPP

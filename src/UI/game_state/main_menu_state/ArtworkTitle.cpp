@@ -1,28 +1,28 @@
-#include "MainMenuBackground.hpp"
+#include "ArtworkTitle.hpp"
 #include <raylib.h>
 #include "../../../Unit.hpp"
 
-MainMenuBackground::MainMenuBackground() = default;
+ArtworkTitle::ArtworkTitle() = default;
 
-void MainMenuBackground::loadCharTexture(const std::string& texturePath) {
+void ArtworkTitle::loadCharTexture(const std::string& texturePath) {
     charTexture = LoadTexture(texturePath.c_str());
     loadedChar = charTexture.id != 0;
     setLayer(10);
 }
 
-void MainMenuBackground::loadTitleTexture(const std::string& texturePath) {
+void ArtworkTitle::loadTitleTexture(const std::string& texturePath) {
     titleTexture = LoadTexture(texturePath.c_str());
     loadedTitle = titleTexture.id != 0;
     setLayer(10);
 }
 
-void MainMenuBackground::loadDecorationTexture(const std::string& texturePath) {
+void ArtworkTitle::loadDecorationTexture(const std::string& texturePath) {
     decorationTexture = LoadTexture(texturePath.c_str());
     loadedDecoration = decorationTexture.id != 0;
     setLayer(10);
 }
 
-void MainMenuBackground::unloadTextures() {
+void ArtworkTitle::unloadTextures() {
     if (loadedChar) {
         UnloadTexture(charTexture);
         loadedChar = false;
@@ -37,11 +37,10 @@ void MainMenuBackground::unloadTextures() {
     }
 }
 
-MainMenuBackground::~MainMenuBackground() {
-    unloadTextures();
+ArtworkTitle::~ArtworkTitle() {
 }
 
-void MainMenuBackground::render() const {
+void ArtworkTitle::render() const {
     if (loadedChar) {
         DrawTexture(charTexture, 900, 150, WHITE);
     }

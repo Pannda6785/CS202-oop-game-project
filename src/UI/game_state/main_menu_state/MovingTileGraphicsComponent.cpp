@@ -5,7 +5,6 @@
 MovingTileGraphicsComponent::MovingTileGraphicsComponent() = default;
 
 MovingTileGraphicsComponent::~MovingTileGraphicsComponent() {
-    unloadTextures();
 }
 
 void MovingTileGraphicsComponent::loadTexture(const std::string& texturePath){
