@@ -2,6 +2,7 @@
 #define GAME_STATE_MANAGER_HPP
 
 #include <memory>
+#include <stack>
 #include "GameState.hpp"
 
 class GameStateManager {
@@ -11,6 +12,8 @@ public:
 
     // State operations (deferred)
     void changeState(std::unique_ptr<GameState> state);
+    void pushState(std::unique_ptr<GameState> state);
+    void popState();
 
     // Main loop delegation
     void update(float dt);
@@ -25,13 +28,21 @@ public:
     void processPendingStateChanges();
 
 private:
-    std::unique_ptr<GameState> currentState = nullptr;
-
+    std::stack<std::unique_ptr<GameState>> stateStack;
+    
     // Deferred state change mechanism
-    bool hasPendingState = false;
+    enum class StateAction {
+        ChangeState,
+        PushState,
+        PopState,
+        None
+    };
+    StateAction currentAction = StateAction::None;
     std::unique_ptr<GameState> pendingState = nullptr;
 
-    void applyPendingAction();
+    void applyChangeState();
+    void applyPushState();
+    void applyPopState();
 };
 
 #endif // GAME_STATE_MANAGER_HPP

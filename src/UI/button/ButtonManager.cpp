@@ -6,7 +6,6 @@ ButtonManager::ButtonManager() : hoveredIndex(-1), isTriggerCurrentButton(false)
 }
 
 ButtonManager::~ButtonManager() {
-    reset();
 }
 
 void ButtonManager::addButton(std::unique_ptr<Button> button) {
@@ -128,4 +127,10 @@ int ButtonManager::getButtonCount() const {
 Button* ButtonManager::getButton(int idx) {
     if (idx < 0 || idx >= (int)buttons.size()) return nullptr;
     return buttons[idx].get();
+}
+
+void ButtonManager::setVisible(bool visible){
+    for(auto &button : buttons){
+        button->getGraphicsComponent()->setVisible(visible);
+    }
 }

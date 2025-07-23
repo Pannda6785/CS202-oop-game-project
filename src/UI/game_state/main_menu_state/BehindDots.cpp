@@ -5,17 +5,19 @@
 #include <iostream>
 
 BehindDots::BehindDots() = default;
-
-BehindDots::~BehindDots() {
-    if (loadedDotTexture) {
-        UnloadTexture(dotTexture);
-    }
-}
+BehindDots::~BehindDots() = default;
 
 void BehindDots::loadDotTexture(const std::string& texturePath) {
     dotTexture = LoadTexture(texturePath.c_str());
     loadedDotTexture = dotTexture.id != 0; // Check if the texture is loaded
     assert(loadedDotTexture);
+}
+
+void BehindDots::unloadTexture() {
+    if (loadedDotTexture) {
+        UnloadTexture(dotTexture);
+        loadedDotTexture = false;
+    }
 }
 
 void BehindDots::addNewDot(){

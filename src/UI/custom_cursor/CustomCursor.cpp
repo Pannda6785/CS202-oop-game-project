@@ -5,6 +5,10 @@ CustomCursor& CustomCursor::getInstance() {
     return instance;
 }
 
+CustomCursor::~CustomCursor() {
+    graphic.unloadTextures();
+}
+
 void CustomCursor::init(){
     graphic.loadClickTexture("../assets/UI_sprites/new_click_cursor.png");
     graphic.loadNormalTexture("../assets/UI_sprites/new_normal_cursor.png");

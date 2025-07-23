@@ -50,12 +50,17 @@ int main() {
         ClearBackground(BLACK);
 
         gameStateManager.processPendingStateChanges();
+        AudioManager::getInstance().update(dt);
 
         gameStateManager.update(dt); // Update game state manager
         CustomCursor::getInstance().update(dt); // Update custom cursor
 
-        GraphicsComponentManager::instance().render(); // Update graphics components
+        if(gameStateManager.isEmpty()) {
+            std::cerr << "GameStateManager is empty! Exiting..." << std::endl;
+            break; // Exit if no game state is present
+        }
 
+        GraphicsComponentManager::instance().render(); // Update graphics components
 
         EndDrawing();
     }

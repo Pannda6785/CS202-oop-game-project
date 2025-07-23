@@ -10,6 +10,35 @@ AudioManager& AudioManager::getInstance() {
     return instance;
 }
 
+void AudioManager::setMasterVolume(float volume) {
+    masterVolume = volume;
+    SetMasterVolume(masterVolume);
+}
+
+void AudioManager::setMusicVolume(float volume) {
+    musicVolume = volume;
+    SetMusicVolume(themeMusic, musicVolume);
+}
+
+void AudioManager::setSfxVolume(float volume) {
+    sfxVolume = volume;
+    for (auto& pair : sounds) {
+        SetSoundVolume(pair.second, sfxVolume);
+    }
+}
+
+float AudioManager::getMasterVolume() const {
+    return masterVolume;
+}
+
+float AudioManager::getMusicVolume() const {
+    return musicVolume;
+}
+
+float AudioManager::getSfxVolume() const {
+    return sfxVolume;
+}
+
 void AudioManager::init() {
     unload();
     Sound clickButtonSound = LoadSound("../assets/audio/sound_tick.wav");
@@ -31,7 +60,7 @@ void AudioManager::unloadThemeMusic() {
     initializedThemeMusic = false;
 }
 
-void AudioManager::play(const std::string& soundName) {
+void AudioManager::playSound(const std::string& soundName) {
     auto it = sounds.find(soundName);
     if (it != sounds.end()) {
         PlaySound(it->second);
@@ -41,6 +70,10 @@ void AudioManager::play(const std::string& soundName) {
 }
 
 void AudioManager::update(float dt) {
+    if(!IsWindowFocused()){
+        SetMusicVolume(themeMusic, 0.0f);
+        return;
+    }
     if (IsMusicStreamPlaying(themeMusic)) {
         UpdateMusicStream(themeMusic);
     } else {

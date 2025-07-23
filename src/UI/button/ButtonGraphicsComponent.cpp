@@ -4,7 +4,7 @@
 #include <iostream>
 
 ButtonGraphicsComponent::ButtonGraphicsComponent(const IButtonView* buttonView) : buttonView(buttonView) {
-    font = LoadFontEx("../assets/fonts/Redressed.ttf", 256, 0, 0);
+    // font = LoadFontEx("../assets/fonts/Redressed.ttf", 256, 0, 0);
     isLoaded = true;
     effectRectHeight = 0.0f;
     period = 0.3f;
@@ -15,7 +15,7 @@ ButtonGraphicsComponent::~ButtonGraphicsComponent() {
 }
 
 void ButtonGraphicsComponent::loadFont(const std::string& fontPath) {
-    font = LoadFont(fontPath.c_str());
+    font = LoadFontEx(fontPath.c_str(), 256, 0, 0);
     isLoaded = true;
 }
 
@@ -26,10 +26,10 @@ void ButtonGraphicsComponent::unload() {
     }
 }
 
-void ButtonGraphicsComponent::init(int _fontSize, int _offsetRightSide, bool _inMiddle){
+void ButtonGraphicsComponent::init(int _fontSize, int _offset, int _side){
     fontSize = _fontSize;
-    offsetRightSide = _offsetRightSide;
-    inMiddle = _inMiddle;
+    offset = _offset;
+    side = _side;
 }
 
 void ButtonGraphicsComponent::update(float dt){
@@ -70,9 +70,17 @@ void ButtonGraphicsComponent::render() const {
     if (isLoaded) {
         const std::string& label = buttonView->getText();
         Vector2 textSize = MeasureTextEx(font, label.c_str(), fontSize, 2);
-        int textX = inMiddle ? bounds.x + (bounds.width - textSize.x) / 2 : buttonView->getX() + buttonView->getWidth() - offsetRightSide - textSize.x;
+        // int textX = inMiddle ? bounds.x + (bounds.width - textSize.x) / 2 : buttonView->getX() + buttonView->getWidth() - offsetRightSide - textSize.x;
+        float textX = 0.0f;
+        if (side == -1) { // Left
+            textX = bounds.x + offset;
+        } else if (side == 0) { // Center
+            textX = bounds.x + (bounds.width - textSize.x) / 2;
+        } else if (side == 1) { // Right
+            textX = bounds.x + bounds.width - textSize.x - offset;
+        }
         int textY = bounds.y + (bounds.height - textSize.y) / 2;
-        if(buttonView->isHovered()){
+        if(buttonView->isHovered() && labelShift){
             textX -= 10.0f;
             textY -= 10.0f;
         }
@@ -91,3 +99,4 @@ void ButtonGraphicsComponent::setBackgroundColor(Color color) { backgroundColor 
 void ButtonGraphicsComponent::setHoverColor(Color color) { hoverColor = color; }
 void ButtonGraphicsComponent::setPressedColor(Color color) { pressedColor = color; }
 void ButtonGraphicsComponent::setTextColor(Color color) { textColor = color; }
+void ButtonGraphicsComponent::setLabelShift(bool labelShift) { this->labelShift = labelShift; }

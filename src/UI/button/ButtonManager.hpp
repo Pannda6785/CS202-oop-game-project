@@ -17,6 +17,7 @@ public:
     int getHoveredIndex() const;
     int getButtonCount() const;
     Button* getButton(int idx);
+    void setVisible(bool visible);
 
 private:
     std::vector<std::unique_ptr<Button>> buttons;
