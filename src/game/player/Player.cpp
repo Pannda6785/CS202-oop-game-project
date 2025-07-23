@@ -4,11 +4,11 @@
 #include "../IBulletSpawner.hpp"
 #include "../bullet/Bullet.hpp"
 
-#include "../hitbox/CircleHitbox.hpp"
 #include "../character/CharacterGraphicsComponent.hpp"
 
 #include <algorithm>
 #include <cmath>
+#include <random>
 
 Player::Player(int playerId, IWorldView* worldView, IBulletSpawner* bulletSpawner,
             std::unique_ptr<Character> character, std::shared_ptr<InputInterpreter> inputInterpreter) 
@@ -21,11 +21,15 @@ Player::Player(int playerId, IWorldView* worldView, IBulletSpawner* bulletSpawne
     stock = 2;
     invincibility = {0, 0};
 
-    setPosition({500 + playerId * 500.0f, 300 + playerId * 100.0f});
+    static std::mt19937 gen(std::random_device{}());
+    std::uniform_real_distribution<float> distX(0, Unit::BATTLEFIELD_WIDTH);
+    std::uniform_real_distribution<float> distY(0, Unit::BATTLEFIELD_HEIGHT);
+    setPosition({distX(gen), distY(gen)});
+    
     arrow = {0.0f, 1.0f};
     movement = {0.0f, 0.0f};
     
-    hitbox = std::make_unique<CircleHitbox>(pos, 6.0f);
+    hitbox = std::make_unique<CircleHitbox>(pos, HITBOX_RADIUS);
 }
 
 // --- Update methods ---
@@ -73,6 +77,7 @@ void Player::roundReset() {
 
 // --- Operations ---
 void Player::spawnBullet(std::unique_ptr<Bullet> bullet) {
+    bullet->resize(modifiers[static_cast<int>(Unit::Modifier::BulletSizeModifier)].second);
     bulletSpawner->spawnBullet(move(bullet));
 }
 
@@ -89,7 +94,7 @@ int Player::getStock() const {
     return stock;
 }
 
-const Hitbox* Player::getHitbox() const {
+const CircleHitbox* Player::getHitbox() const {
     return hitbox.get();
 }
 
@@ -274,5 +279,10 @@ void Player::updateStatus(float dt) {
         if (cd > 0.0f) 
             cd = std::max(cd - dt, 0.0f);
     }
+
+    float scale = modifiers[static_cast<int>(Unit::Modifier::SizeModifier)].second;
+    float shouldBeRadius = HITBOX_RADIUS * scale;
+    hitbox->resize(shouldBeRadius / hitbox->getRadius());
+    character->getGraphics()->resize(scale / character->getGraphics()->getSize());
 }
 

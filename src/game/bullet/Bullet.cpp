@@ -27,6 +27,8 @@ void Bullet::resize(float scale) {
     if (lifeHitbox) lifeHitbox->resize(scale);
     if (damagingHitbox) damagingHitbox->resize(scale);
     if (cleansingHitbox) cleansingHitbox->resize(scale);
+    for (auto& [hitbox, major, who, duration] : invincibilityHitboxes) hitbox->resize(scale);
+    for (auto& [hitbox, modifier, who, duration, amount] : modifierHitboxes) hitbox->resize(scale);
 }
 
 const Hitbox* Bullet::getLifeHitbox() const {

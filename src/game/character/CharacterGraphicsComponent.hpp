@@ -25,6 +25,7 @@ public:
 
     // Event based
     void resize(float scale);
+    float getSize() const { return size; }
     void takeHit(float staggerTime);
 
 protected:

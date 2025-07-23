@@ -23,7 +23,7 @@ int main() {
     InitWindow(screenWidth, screenHeight, "Maiden and CS202");
     InitAudioDevice();
 
-    SetTargetFPS(200);
+    SetTargetFPS(120);
 
     /*
         MAIN GAME LOOP

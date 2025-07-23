@@ -24,8 +24,8 @@ void PriestessGraphicsComponent::loadTextures() {
 
     std::string character_path = "../assets/sprites/priestess/";
     animations["idle"] = Animation(loadAnim(character_path + "movement/idle", 2), 4, true);
-    animations["walk"] = Animation(loadAnim(character_path + "movement/walk", 2), 4, true);
-    animations["back"] = Animation(loadAnim(character_path + "movement/back", 2), 4, true);
+    animations["walk"] = Animation(loadAnim(character_path + "movement/walk", 2), 8, true);
+    animations["back"] = Animation(loadAnim(character_path + "movement/back", 2), 8, true);
 
     animations["stagger"] = Animation(loadAnim(character_path + "hit/stagger", 2), 6, true);
     animations["wake"] = Animation(loadAnim(character_path + "hit/wake", 6), 6, false);

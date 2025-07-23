@@ -8,6 +8,7 @@
 NoviDispelGraphicsComponent::NoviDispelGraphicsComponent(const NoviDispel* bullet)
     : bullet(bullet)
 {
+    setLayer(Unit::Layer::Underlay);
     std::string path = "../assets/sprites/priestess/bullet/dispel.png";
     texture = TextureManager::instance().getTexture(path);
     BulletGraphicsComponent::registerOwner(bullet);

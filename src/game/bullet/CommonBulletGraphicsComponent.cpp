@@ -48,11 +48,11 @@ void CommonBulletGraphicsComponent::render() const {
     if (texture) {
         const Texture* texToDraw = texture;
         float scale = texResize;
-
         if (startupTexture && !bullet->getDamagingHitbox()) {
             texToDraw = startupTexture;
             scale = startUpTexResize;
         }
+        scale *= bullet->getSize();
 
         Rectangle source = { 0, 0, (float)texToDraw->width, (float)texToDraw->height };
         Rectangle dest = { pos.x, pos.y, source.width * scale, source.height * scale };

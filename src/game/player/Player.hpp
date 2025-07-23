@@ -3,7 +3,7 @@
 
 #include "InputBufferer.hpp"
 #include "../character/Character.hpp"
-#include "../hitbox/Hitbox.hpp"
+#include "../hitbox/CircleHitbox.hpp"
 
 #include <array>
 #include <memory>
@@ -14,6 +14,8 @@ class IBulletSpawner;
 class Bullet;
 
 class Player {
+    static constexpr float HITBOX_RADIUS = 1.5f;
+
 public:
     Player(int playerId, IWorldView* worldView, IBulletSpawner* bulletSpawner,
             std::unique_ptr<Character> character, std::shared_ptr<InputInterpreter> inputInterpreter);
@@ -32,7 +34,7 @@ public:
     int getPlayerId() const;
     int getHealth() const;
     int getStock() const;
-    const Hitbox* getHitbox() const;
+    const CircleHitbox* getHitbox() const;
     
     // Positional data
     Unit::Vec2D getPosition() const;
@@ -65,7 +67,7 @@ private:
     int playerId;
     int health;
     int stock;
-    std::unique_ptr<Hitbox> hitbox;
+    std::unique_ptr<CircleHitbox> hitbox;
 
     // Positional data
     Unit::Vec2D pos;

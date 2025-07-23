@@ -4,10 +4,10 @@
 
 NoviDispel::NoviDispel(int id, Unit::Vec2D pos)
     : Bullet(id), timeLeft(ACTIVE_TIME) {
-    cleansingHitbox = std::make_unique<CircleHitbox>(pos, BASE_RADIUS * getSize());
-    invincibilityHitboxes.emplace_back(std::make_unique<CircleHitbox>(pos, BASE_RADIUS * getSize()), true, id, INVINCIBILITY_DURATION); 
-    invincibilityHitboxes.emplace_back(std::make_unique<CircleHitbox>(pos, BASE_RADIUS * getSize()), false, id ^ 1, INVINCIBILITY_DURATION);
-    modifierHitboxes.emplace_back(std::make_unique<CircleHitbox>(pos, BASE_RADIUS * getSize()), Unit::Modifier::MovementModifier,
+    cleansingHitbox = std::make_unique<CircleHitbox>(pos, CLEANSE_RADIUS);
+    invincibilityHitboxes.emplace_back(std::make_unique<CircleHitbox>(pos, BASE_RADIUS), true, id, INVINCIBILITY_DURATION); 
+    invincibilityHitboxes.emplace_back(std::make_unique<CircleHitbox>(pos, BASE_RADIUS), false, id ^ 1, INVINCIBILITY_DURATION);
+    modifierHitboxes.emplace_back(std::make_unique<CircleHitbox>(pos, BASE_RADIUS), Unit::Modifier::MovementModifier,
                                   id ^ 1, MOVEMENT_MODIFIER_DURATION, MOVEMENT_MODIFIER_AMOUNT);
     graphics = std::make_unique<NoviDispelGraphicsComponent>(this);
 }

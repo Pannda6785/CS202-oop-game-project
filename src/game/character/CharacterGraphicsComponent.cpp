@@ -177,7 +177,7 @@ void CharacterGraphicsComponent::renderUnderlay() const {
 
     // Draw arrow
     Unit::Vec2D arrow = player->getArrow();
-    Vector2 arrowEnd = { pos.x + arrow.x * 40, pos.y + arrow.y * 40 };
+    Vector2 arrowEnd = { pos.x + arrow.x * 80, pos.y + arrow.y * 80 };
     DrawLineEx(center, arrowEnd, 3.0f, RED);
     Vector2 perp = { -arrow.y, arrow.x };  // perpendicular vector
     Vector2 tip = arrowEnd;
@@ -196,7 +196,8 @@ void CharacterGraphicsComponent::renderOverlay() const {
         Unit::Vec2D pos = hitbox->getPosition();
         Vector2 center = { pos.x, pos.y };
         float radius = hitbox->getRadius();
-        DrawCircleV(center, radius, RED);
+        DrawCircleV(center, radius * 4, Fade(RED, 0.7f));
+        DrawCircleV(center, radius, BLACK);
     }
 }
 

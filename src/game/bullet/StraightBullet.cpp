@@ -18,7 +18,7 @@ void StraightBullet::update(float dt) {
     remainingStartup -= dt;
     if (remainingStartup < 0.0f && !startedUp) {
         startedUp = true;
-        damagingHitbox = std::make_unique<CircleHitbox>(pos, radius);
+        damagingHitbox = std::make_unique<CircleHitbox>(pos, radius * getSize());
     }
     pos += vel * dt;
     lifeHitbox->setPosition(pos);
@@ -30,7 +30,7 @@ void StraightBullet::update(float dt) {
 bool StraightBullet::isDone() const {
     if (remainingTime <= 0.0f) return true;
 
-    float margin = 4 * radius * size;
+    float margin = 4 * radius * getSize();
 
     // check within battlefield bounds
     float minX = -margin;
