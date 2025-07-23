@@ -12,11 +12,17 @@ public:
     // Initialize with a map of sound names to file paths
     void init();
 
-    void play(const std::string& soundName);
+    void playSound(const std::string& soundName);
     void playThemMusic();
     void update(float dt);
     void loadThemeMusic(const std::string& musicPath);
     void unloadThemeMusic();
+    void setMasterVolume(float volume);
+    void setMusicVolume(float volume);
+    void setSfxVolume(float volume);
+    float getMasterVolume() const;
+    float getMusicVolume() const;
+    float getSfxVolume() const;
 
     // Unload all loaded sounds
     void unload();
@@ -34,6 +40,9 @@ private:
     Music themeMusic;
     bool initialized = false;
     bool initializedThemeMusic = false;
+    float masterVolume = 1.0f;
+    float musicVolume = 1.0f;
+    float sfxVolume = 1.0f;
 };
 
 #endif // AUDIO_MANAGER_HPP

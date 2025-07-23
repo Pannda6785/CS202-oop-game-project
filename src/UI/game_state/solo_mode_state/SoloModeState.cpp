@@ -51,11 +51,11 @@ void SoloModeState::enter() {
     backButton->setOnClickListener([&gsm = gameStateManager]() {
         std::cout << "Returning to Main Menu..." << std::endl;
         gsm.changeState(std::make_unique<MainMenuState>(gsm));
-        AudioManager::getInstance().play("tick");
+        AudioManager::getInstance().playSound("tick");
     });
     backButton->setOnHoverEnterListener([]() {
         std::cout << "Hovered over Back button!" << std::endl;
-        AudioManager::getInstance().play("tick");
+        AudioManager::getInstance().playSound("tick");
     });
     buttonManager.addButton(std::move(backButton));
 }

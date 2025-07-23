@@ -43,12 +43,12 @@ void MainMenuState::enter() {
         true
     );
     storyButton->setOnClickListener([this]() {
-        AudioManager::getInstance().play("ClickButton");
+        AudioManager::getInstance().playSound("ClickButton");
         std::cout << "Story" << std::endl;
     });
     storyButton->setOnHoverEnterListener([this]() {
         std::cout << "Hovered over Story button!" << std::endl;
-        AudioManager::getInstance().play("MenuCursor");
+        AudioManager::getInstance().playSound("MenuCursor");
     });
     buttonManager.addButton(std::move(storyButton));
     // Versus button
@@ -64,12 +64,12 @@ void MainMenuState::enter() {
         true
     );
     versusButton->setOnClickListener([this]() {
-        AudioManager::getInstance().play("ClickButton");
+        AudioManager::getInstance().playSound("ClickButton");
         gameStateManager.changeState(std::make_unique<SoloModeState>(gameStateManager));
     });
     versusButton->setOnHoverEnterListener([this]() {
         std::cout << "Hovered over Versus button!" << std::endl;
-        AudioManager::getInstance().play("MenuCursor");
+        AudioManager::getInstance().playSound("MenuCursor");
     });
     buttonManager.addButton(std::move(versusButton));
     // Network button
@@ -86,11 +86,11 @@ void MainMenuState::enter() {
         true
     );
     networkButton->setOnClickListener([this]() {
-        AudioManager::getInstance().play("ClickButton");
+        AudioManager::getInstance().playSound("ClickButton");
     });
     networkButton->setOnHoverEnterListener([this]() {
         std::cout << "Hovered over Network button!" << std::endl;
-        AudioManager::getInstance().play("MenuCursor");
+        AudioManager::getInstance().playSound("MenuCursor");
     });
     buttonManager.addButton(std::move(networkButton));
     // Extras button
@@ -107,11 +107,11 @@ void MainMenuState::enter() {
         true
     );
     extrasButton->setOnClickListener([this]() {
-        AudioManager::getInstance().play("ClickButton");
+        AudioManager::getInstance().playSound("ClickButton");
     });
     extrasButton->setOnHoverEnterListener([this]() {
         std::cout << "Hovered over Extra button!" << std::endl;
-        AudioManager::getInstance().play("MenuCursor");
+        AudioManager::getInstance().playSound("MenuCursor");
     });
     buttonManager.addButton(std::move(extrasButton));
 
@@ -129,14 +129,14 @@ void MainMenuState::enter() {
         true
     );
     optionsButton->setOnClickListener([this]() {
-        AudioManager::getInstance().play("ClickButton");
+        AudioManager::getInstance().playSound("ClickButton");
         setVisible(false);
         isVisible = false;
         gameStateManager.pushState(std::make_unique<OptionsState>(gameStateManager, behindDots));
     });
     optionsButton->setOnHoverEnterListener([this]() {
         std::cout << "Hovered over Extra button!" << std::endl;
-        AudioManager::getInstance().play("MenuCursor");
+        AudioManager::getInstance().playSound("MenuCursor");
     });
     buttonManager.addButton(std::move(optionsButton));
 
@@ -155,12 +155,12 @@ void MainMenuState::enter() {
     );
     exitButton->setOnClickListener([this]() {
         std::cout << "Exiting game!" << std::endl;
-        AudioManager::getInstance().play("ClickButton");
+        AudioManager::getInstance().playSound("ClickButton");
         gameStateManager.popState();
     });
     exitButton->setOnHoverEnterListener([this]() {
         std::cout << "Hovered over Exit Game button!" << std::endl;
-        AudioManager::getInstance().play("MenuCursor");
+        AudioManager::getInstance().playSound("MenuCursor");
     });
     buttonManager.addButton(std::move(exitButton));
     AudioManager::getInstance().loadThemeMusic("../assets/audio/music_mainthema.ogg");

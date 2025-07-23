@@ -9,6 +9,7 @@
 class VolumeBar {
 public:
     VolumeBar(Rectangle barRect, float initialVolume, IButtonView* buttonView);
+    ~VolumeBar() = default;
 
     void setVolume(float v); // 0.0f - 1.0f
     float getVolume() const;

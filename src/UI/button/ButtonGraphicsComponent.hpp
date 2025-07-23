@@ -14,7 +14,7 @@ public:
     ButtonGraphicsComponent(const IButtonView* buttonView);
     ~ButtonGraphicsComponent() override;
 
-    void update(float df);
+    void update(float dt);
     void render() const override;
 
     // Optionally, allow changing colors/textures

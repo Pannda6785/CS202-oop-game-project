@@ -61,6 +61,7 @@ void SoundOptions::enter() {
         buttonManager.getButton(0)
     );
     masterVolumeBar->setFont(&font);
+    masterVolumeBar->setVolume(AudioManager::getInstance().getMasterVolume());
     volumeBarManager.addVolumeBar(std::move(masterVolumeBar));
 
     // Music Volume button
@@ -85,6 +86,7 @@ void SoundOptions::enter() {
         buttonManager.getButton(1)
     );
     musicVolumeBar->setFont(&font);
+    musicVolumeBar->setVolume(AudioManager::getInstance().getMusicVolume());
     volumeBarManager.addVolumeBar(std::move(musicVolumeBar));
 
     // Sfx Volume button
@@ -109,22 +111,8 @@ void SoundOptions::enter() {
         buttonManager.getButton(2)
     );
     sfxVolumeBar->setFont(&font);
+    sfxVolumeBar->setVolume(AudioManager::getInstance().getSfxVolume());
     volumeBarManager.addVolumeBar(std::move(sfxVolumeBar));
-
-    // Mute Music On Tab Out Volume button
-    std::unique_ptr<Button> muteMusicOnTabOutButton = std::make_unique<Button>(
-        0,
-        coordYFirstButton += buttonHeight + buttonSpacing,
-        buttonWidth,
-        buttonHeight,
-        "MUTE MUSIC ON TAB OUT",
-        fontSize,
-        offset -= deltaOffset,
-        -1,
-        "../assets/fonts/18thCentury.ttf",
-        false
-    );
-    buttonManager.addButton(std::move(muteMusicOnTabOutButton));
 
     // Graphics options button
     std::unique_ptr<Button> backButton = std::make_unique<Button>(
@@ -140,13 +128,13 @@ void SoundOptions::enter() {
         false
     );
     backButton->setOnClickListener([this]() {
-        AudioManager::getInstance().play("ClickButton");
+        AudioManager::getInstance().playSound("ClickButton");
         gameStateManager.popState();
         std::cout << "Back" << std::endl;
     });
     backButton->setOnHoverEnterListener([this]() {
         std::cout << "Hovered over Graphics Options button!" << std::endl;
-        AudioManager::getInstance().play("MenuCursor");
+        AudioManager::getInstance().playSound("MenuCursor");
     });
     buttonManager.addButton(std::move(backButton));
 }
@@ -156,6 +144,12 @@ void SoundOptions::update(float dt) {
     buttonManager.update(dt);
     volumeBarManager.setHoveredIndex(buttonManager.getHoveredIndex());
     volumeBarManager.update(dt);
+    float masterVolume = volumeBarManager.getBar(0)->getVolume();
+    AudioManager::getInstance().setMasterVolume(masterVolume);
+    float musicVolume = volumeBarManager.getBar(1)->getVolume();
+    AudioManager::getInstance().setMusicVolume(musicVolume);
+    float sfxVolume = volumeBarManager.getBar(2)->getVolume();
+    AudioManager::getInstance().setSfxVolume(sfxVolume);
     behindDots.update(dt);
 }
 
