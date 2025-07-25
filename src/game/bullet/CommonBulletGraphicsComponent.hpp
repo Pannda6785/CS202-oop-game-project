@@ -16,7 +16,7 @@ public:
 
     void registerOwner(const Bullet* bullet);
     void render() const override;
-    void update(float dt);
+    void update(float dt) override;
 
 private:
     const Bullet* bullet;

@@ -1,23 +1,39 @@
-// #ifndef WYRM_WIDE_HANDLER_HPP
-// #define WYRM_WIDE_HANDLER_HPP
+#ifndef WYRM_WIDE_HANDLER_HPP
+#define WYRM_WIDE_HANDLER_HPP
 
-// #include "../../handlerCharacter/TapHandler.hpp"
+#include "../../handlerCharacter/TapHandler.hpp"
 
-// class WyrmGraphicsComponent;
+class WyrmGraphicsComponent;
 
-// class WyrmWideHandler : public TapHandler {
-// public:
-//     WyrmWideHandler(WyrmGraphicsComponent* graphics);
+class WyrmWideHandler : public TapHandler {
+    // bullet
+    static constexpr float STARTUP = 0.240f;
+    static constexpr float RADIUS = 32;
+    static constexpr float SPEED_IN = 1050;
+    static constexpr float SPEED_OUT = 1230;
+    static constexpr float SPAWN_RADIUS = 25; // where to spawn
+    static constexpr int NUM_BULLETS = 10;
 
-//     void update(float dt, const InputBufferer* input) override;
-//     void listen(Unit::Move move) override;
+    // move control
+    static constexpr float MOVEMENT_LOCK_DURATION = 0.180f;
+    static constexpr float ARROW_MODIFIER_AMOUNT = 0.0f;
+    static constexpr float ARROW_MODIFIER_DURATION = 0.180f;
+    static constexpr float ATTACK_LOCK = 0.425f;
+    static constexpr float SPELL_LOCK = 0.300f;
 
-// protected:
-//     void tap(bool isFocusing) override;
+public:
+    WyrmWideHandler(WyrmGraphicsComponent* graphics);
 
-// private:
-//     WyrmGraphicsComponent* graphics;
+    void update(float dt, const InputBufferer* input) override;
+
+protected:
+    void tap(bool isFocusing) override;
+
+private:
+    WyrmGraphicsComponent* graphics;
     
-// };
+    void spawnBullet();
 
-// #endif // WYRM_WIDE_HANDLER_HPP
+};
+
+#endif // WYRM_BASIC_HANDLER_HPP

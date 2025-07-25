@@ -30,7 +30,8 @@ void WyrmBasicHandler::tap(bool isFocusing) {
     spawnBullet();
 
     player->applyImplicitMoveLock();
-    player->applyLock(Unit::moveToLock(move), step < STEP_COUNT - 1 ? SHORT_LOCK : LONG_LOCK);
+    player->applyLock(Unit::Lock::BasicLock, step < STEP_COUNT - 1 ? SHORT_LOCK : LONG_LOCK);
+    player->applyLock(Unit::Lock::WideLock, step < STEP_COUNT - 1 ? SHORT_LOCK : LONG_LOCK);
     player->applyModifier(Unit::Modifier::MovementModifier, MOVEMENT_MODIFIER_DURATION, MOVEMENT_MODIFIER_AMOUNT);
     player->applyModifier(Unit::Modifier::ArrowModifier, ARROW_MODIFIER_DURATION, ARROW_MODIFIER_AMOUNT);
 
@@ -44,17 +45,18 @@ void WyrmBasicHandler::tap(bool isFocusing) {
 }
 
 void WyrmBasicHandler::spawnBullet() {
-    Unit::Vec2D pos = player->getPosition();
-    Unit::Vec2D target = player->getTargetPosition();
-    Unit::Vec2D baseDir = (target - pos).normalized();
+    constexpr float PI = 3.14159265358979323846f;
 
-    float baseAngle = std::atan2(baseDir.y, baseDir.x) * 180.0f / static_cast<float>(M_PI);
+    Unit::Vec2D pos = player->getPosition();
+    Unit::Vec2D baseDir = player->getArrow();
+
+    float baseAngle = std::atan2(baseDir.y, baseDir.x) * 180.0f / static_cast<float>(PI);
     int clampedStep = std::min(step, STEP_COUNT - 1);
 
     for (int i = 0; i < NUM_BULLETS[clampedStep]; ++i) {
         float angleDeg = OFFSET[clampedStep] + i * BULLET_SPACING;
         float finalAngle = baseAngle + angleDeg;
-        float rad = finalAngle * static_cast<float>(M_PI) / 180.0f;
+        float rad = finalAngle * static_cast<float>(PI) / 180.0f;
 
         Unit::Vec2D dir(std::cos(rad), std::sin(rad));
         Unit::Vec2D velocity = dir * SPEED;
@@ -67,7 +69,7 @@ void WyrmBasicHandler::spawnBullet() {
         auto gfx = std::make_unique<CommonBulletGraphicsComponent>(
             bulletTexture,
             resize,
-            STARTUP * 0.8f,
+            STARTUP,
             true
         );
 

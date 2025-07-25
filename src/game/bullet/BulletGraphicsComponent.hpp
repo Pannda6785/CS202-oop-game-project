@@ -13,6 +13,7 @@ public:
     virtual void registerOwner(const Bullet* owner);
 
     virtual void render() const = 0;
+    virtual void update(float dt) {}
 
 protected:
     void drawHitboxes() const;

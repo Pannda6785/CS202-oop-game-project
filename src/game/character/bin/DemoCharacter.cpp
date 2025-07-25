@@ -7,7 +7,7 @@
 #include "../../player/InputBufferer.hpp"
 
 #include "../../bullet/StraightBullet.hpp"
-#include "../../bullet/BulletGraphicsComponent.hpp"
+#include "../../bullet/CommonBulletGraphicsComponent.hpp"
 
 #include <cmath>
 #include <memory>

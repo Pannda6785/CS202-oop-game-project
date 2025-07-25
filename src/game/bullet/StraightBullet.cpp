@@ -4,7 +4,7 @@
 
 StraightBullet::StraightBullet(int ownerId, Unit::Vec2D spawnPos, Unit::Vec2D direction,
                                  float radius, float speed, float startup, float lifetime,
-                                 std::unique_ptr<CommonBulletGraphicsComponent> graphics)
+                                 std::unique_ptr<BulletGraphicsComponent> graphics)
     : Bullet(ownerId), pos(spawnPos), vel(direction.normalized() * speed), remainingTime(lifetime), remainingStartup(startup),
       startedUp(false), radius(radius), graphics(std::move(graphics))
 {

@@ -14,7 +14,7 @@ public:
     explicit SunburstGraphicsComponent(const Sunburst* bullet);
 
     void render() const override;
-    void update(float dt);
+    void update(float dt) override;
 
 private:
     const Sunburst* bullet;

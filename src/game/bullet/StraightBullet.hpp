@@ -2,7 +2,7 @@
 #define COMMON_BULLET_HPP
 
 #include "Bullet.hpp"
-#include "CommonBulletGraphicsComponent.hpp"
+#include "BulletGraphicsComponent.hpp"
 
 #include <memory>
 
@@ -12,13 +12,13 @@
     + Bullet are deleted after a certain time or after going out of bounds.
     + Bullet has life during startup, so bullet can be erased.
     + Bullet has a radius, from which both hitbox (damaging and life) use.
-    + This use CommonBulletGraphicsComponent for graphics (or none at all, in which case it uses raylib circle, but that's for demo)
+    + This requires feeding in a BulletGraphicsComponent for graphics
 */
 
 class StraightBullet final : public Bullet {
 public:
     StraightBullet(int ownerId, Unit::Vec2D spawnPos, Unit::Vec2D direction,
-                   float radius, float speed, float startup, float lifetime, std::unique_ptr<CommonBulletGraphicsComponent> graphics);
+                   float radius, float speed, float startup, float lifetime, std::unique_ptr<BulletGraphicsComponent> graphics);
 
     void update(float dt) override;
     bool isDone() const override;
@@ -35,7 +35,7 @@ private:
     float remainingStartup;
     bool startedUp = false;
 
-    std::unique_ptr<CommonBulletGraphicsComponent> graphics;
+    std::unique_ptr<BulletGraphicsComponent> graphics;
 };
 
-#endif // COMMON_BULLET_HPP
+#endif // STRAIGHT_BULLET_HPP

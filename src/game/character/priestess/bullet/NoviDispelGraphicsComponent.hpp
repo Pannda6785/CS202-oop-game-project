@@ -19,7 +19,7 @@ public:
     explicit NoviDispelGraphicsComponent(const NoviDispel* bullet);
 
     void render() const override;
-    void update(float dt);
+    void update(float dt) override;
 
 private:
     const NoviDispel* bullet;
