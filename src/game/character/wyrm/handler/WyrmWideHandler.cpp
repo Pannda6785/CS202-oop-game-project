@@ -53,12 +53,6 @@ void WyrmWideHandler::spawnBullet() {
             Unit::Vec2D dir(std::cos(angleRad), std::sin(angleRad));
             Unit::Vec2D velocity = dir * speed;
 
-            auto gfx = std::make_unique<CommonBulletGraphicsComponent>(
-                bulletTexture,
-                resize,
-                STARTUP
-            );
-
             auto bullet = std::make_unique<StraightBullet>(
                 player->getPlayerId(),
                 pos + dir * SPAWN_RADIUS,
@@ -66,9 +60,15 @@ void WyrmWideHandler::spawnBullet() {
                 RADIUS,
                 speed,
                 STARTUP,
-                1000,
-                std::move(gfx)
+                1e9
             );
+            auto gfx = std::make_unique<CommonBulletGraphicsComponent>(
+                bullet.get(),
+                bulletTexture,
+                resize,
+                STARTUP
+            );
+            bullet->addBulletGraphics(std::move(gfx));
 
             player->spawnBullet(std::move(bullet));
         }

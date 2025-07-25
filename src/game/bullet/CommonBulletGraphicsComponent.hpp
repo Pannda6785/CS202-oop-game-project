@@ -10,17 +10,14 @@ class Bullet;
 
 class CommonBulletGraphicsComponent : public BulletGraphicsComponent {
 public:
-    CommonBulletGraphicsComponent(float initialGradient = 0.4f); // not expected to be used outside of prototyping
-    CommonBulletGraphicsComponent(std::string texturePath, float texResize, float initialGradient, bool useVelocity = false,
+    CommonBulletGraphicsComponent(const Bullet* bullet, float initialGradient = 0.4f); // not expected to be used outside of prototyping
+    CommonBulletGraphicsComponent(const Bullet* bullet, std::string texturePath, float texResize, float initialGradient, bool useVelocity = false,
                                     std::string startupTexturePath = "", float startUpTexResize = 1.0f);
 
-    void registerOwner(const Bullet* bullet);
     void render() const override;
     void update(float dt) override;
 
 private:
-    const Bullet* bullet;
-
     const Texture* texture = nullptr;
     const Texture* startupTexture = nullptr; // if this is not null, this will be rendered instead until damaging hitbox is set
     float texResize = 1.0f; // how much to resize the texture

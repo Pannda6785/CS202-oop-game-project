@@ -3,7 +3,7 @@
 
 #include "../../../bullet/BulletGraphicsComponent.hpp"
 
-class NoviDispel;
+class Bullet;
 class Texture;
 
 class NoviDispelGraphicsComponent : public BulletGraphicsComponent {
@@ -16,13 +16,12 @@ class NoviDispelGraphicsComponent : public BulletGraphicsComponent {
     static constexpr float RIPPLE_SPREAD = 50.0f;  // how far ripples expand beyond the texture edge
 
 public:
-    explicit NoviDispelGraphicsComponent(const NoviDispel* bullet);
+    NoviDispelGraphicsComponent(const Bullet* bullet);
 
     void render() const override;
     void update(float dt) override;
 
 private:
-    const NoviDispel* bullet;
     const Texture* texture = nullptr;
 
     float rotationTimer = 0.0f;

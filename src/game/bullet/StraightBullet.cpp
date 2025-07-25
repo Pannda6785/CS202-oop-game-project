@@ -3,13 +3,15 @@
 #include "../hitbox/CircleHitbox.hpp"
 
 StraightBullet::StraightBullet(int ownerId, Unit::Vec2D spawnPos, Unit::Vec2D direction,
-                                 float radius, float speed, float startup, float lifetime,
-                                 std::unique_ptr<BulletGraphicsComponent> graphics)
+                                 float radius, float speed, float startup, float lifetime)
     : Bullet(ownerId), pos(spawnPos), vel(direction.normalized() * speed), remainingTime(lifetime), remainingStartup(startup),
-      startedUp(false), radius(radius), graphics(std::move(graphics))
+      startedUp(false), radius(radius)
 {
-    this->graphics->registerOwner(this);
-    lifeHitbox = std::make_unique<CircleHitbox>(pos, radius);
+    lifeHitbox = std::make_unique<CircleHitbox>(pos, radius * getSize());
+}
+
+void StraightBullet::addBulletGraphics(std::unique_ptr<BulletGraphicsComponent> g) {
+    graphics = std::move(g);
 }
 
 void StraightBullet::update(float dt) {
@@ -25,7 +27,7 @@ void StraightBullet::update(float dt) {
     if (damagingHitbox) {
         damagingHitbox->setPosition(pos);
     }
-    graphics->update(dt);
+    if (graphics) graphics->update(dt);
 }
 bool StraightBullet::isDone() const {
     if (remainingTime <= 0.0f) return true;

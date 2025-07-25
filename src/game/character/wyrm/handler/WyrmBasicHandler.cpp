@@ -65,14 +65,7 @@ void WyrmBasicHandler::spawnBullet() {
         constexpr float visibleRatio = 0.14f;
         constexpr float textureWidth = 256;
         constexpr float resize = (RADIUS * 2) / (textureWidth * visibleRatio);
-
-        auto gfx = std::make_unique<CommonBulletGraphicsComponent>(
-            bulletTexture,
-            resize,
-            STARTUP,
-            true
-        );
-
+        
         auto bullet = std::make_unique<StraightBullet>(
             player->getPlayerId(),
             pos + dir * RADIUS,
@@ -80,10 +73,17 @@ void WyrmBasicHandler::spawnBullet() {
             RADIUS,
             SPEED,
             STARTUP,
-            1000,
-            std::move(gfx)
+            1e9
         );
-
+        auto gfx = std::make_unique<CommonBulletGraphicsComponent>(
+            bullet.get(),
+            bulletTexture,
+            resize,
+            STARTUP,
+            true
+        );
+        bullet->addBulletGraphics(std::move(gfx));
+        
         player->spawnBullet(std::move(bullet));
     }
 }

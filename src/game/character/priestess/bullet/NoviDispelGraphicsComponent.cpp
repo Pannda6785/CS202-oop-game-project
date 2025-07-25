@@ -1,17 +1,15 @@
 #include "NoviDispelGraphicsComponent.hpp"
-#include "NoviDispel.hpp"
-#include "../../../hitbox/CircleHitbox.hpp"
 
+#include "../../../bullet/Bullet.hpp"
+#include "../../../hitbox/CircleHitbox.hpp"
 #include "../../../../graphics/TextureManager.hpp"
+
 #include <raylib.h>
 
-NoviDispelGraphicsComponent::NoviDispelGraphicsComponent(const NoviDispel* bullet)
-    : bullet(bullet)
-{
+NoviDispelGraphicsComponent::NoviDispelGraphicsComponent(const Bullet* bullet) : BulletGraphicsComponent(bullet) {
     setLayer(Unit::Layer::Underlay);
     std::string path = "../assets/sprites/priestess/bullet/dispel.png";
     texture = TextureManager::instance().getTexture(path);
-    BulletGraphicsComponent::registerOwner(bullet);
 }
 
 void NoviDispelGraphicsComponent::render() const {

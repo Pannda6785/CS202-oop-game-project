@@ -4,6 +4,7 @@
 #include "../../../audio/AudioManager.hpp"
 #include "../../../game/player/Player.hpp"
 
+#include "../../../game/character/bin/DemoCharacter.hpp"
 #include "../../../game/character/arcanist/Arcanist.hpp"
 #include "../../../game/character/depth/Depth.hpp"
 #include "../../../game/character/hero/Hero.hpp"
@@ -34,21 +35,21 @@ SoloModeState::SoloModeState(GameStateManager& gsm)
 
     std::unique_ptr<Player> player1 = std::make_unique<Player>(0, world.get(), world.get(), std::make_unique<Wyrm>(), inputInterpreters[0]);
     std::unique_ptr<Player> player2 = std::make_unique<Player>(1, world.get(), world.get(), std::make_unique<Priestess>(), inputInterpreters[1]);
-    std::unique_ptr<Player> player3 = std::make_unique<Player>(2, world.get(), world.get(), std::make_unique<Arcanist>(), inputInterpreters[1]);
-    std::unique_ptr<Player> player4 = std::make_unique<Player>(3, world.get(), world.get(), std::make_unique<Depth>(), inputInterpreters[1]);
-    std::unique_ptr<Player> player5 = std::make_unique<Player>(4, world.get(), world.get(), std::make_unique<Hero>(), inputInterpreters[1]);
-    std::unique_ptr<Player> player6 = std::make_unique<Player>(5, world.get(), world.get(), std::make_unique<Redhood>(), inputInterpreters[1]);
-    std::unique_ptr<Player> player7 = std::make_unique<Player>(6, world.get(), world.get(), std::make_unique<Stormbeast>(), inputInterpreters[1]);
-    std::unique_ptr<Player> player8 = std::make_unique<Player>(7, world.get(), world.get(), std::make_unique<Lich>(), inputInterpreters[1]);
+    // std::unique_ptr<Player> player3 = std::make_unique<Player>(2, world.get(), world.get(), std::make_unique<Arcanist>(), inputInterpreters[1]);
+    // std::unique_ptr<Player> player4 = std::make_unique<Player>(3, world.get(), world.get(), std::make_unique<Depth>(), inputInterpreters[1]);
+    // std::unique_ptr<Player> player5 = std::make_unique<Player>(4, world.get(), world.get(), std::make_unique<Hero>(), inputInterpreters[1]);
+    // std::unique_ptr<Player> player6 = std::make_unique<Player>(5, world.get(), world.get(), std::make_unique<Redhood>(), inputInterpreters[1]);
+    // std::unique_ptr<Player> player7 = std::make_unique<Player>(6, world.get(), world.get(), std::make_unique<Stormbeast>(), inputInterpreters[1]);
+    // std::unique_ptr<Player> player8 = std::make_unique<Player>(7, world.get(), world.get(), std::make_unique<Lich>(), inputInterpreters[1]);
 
     world->addPlayer(std::move(player1));
     world->addPlayer(std::move(player2));
-    world->addPlayer(std::move(player3));
-    world->addPlayer(std::move(player4));
-    world->addPlayer(std::move(player5));
-    world->addPlayer(std::move(player6));
-    world->addPlayer(std::move(player7));
-    world->addPlayer(std::move(player8));
+    // world->addPlayer(std::move(player3));
+    // world->addPlayer(std::move(player4));
+    // world->addPlayer(std::move(player5));
+    // world->addPlayer(std::move(player6));
+    // world->addPlayer(std::move(player7));
+    // world->addPlayer(std::move(player8));
 
     // world->addPattern(std::make_unique<DemoPattern>(world.get()));
 

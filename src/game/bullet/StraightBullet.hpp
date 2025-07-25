@@ -1,5 +1,5 @@
-#ifndef COMMON_BULLET_HPP
-#define COMMON_BULLET_HPP
+#ifndef STRAIGHT_BULLET_HPP
+#define STRAIGHT_BULLET_HPP
 
 #include "Bullet.hpp"
 #include "BulletGraphicsComponent.hpp"
@@ -18,7 +18,9 @@
 class StraightBullet final : public Bullet {
 public:
     StraightBullet(int ownerId, Unit::Vec2D spawnPos, Unit::Vec2D direction,
-                   float radius, float speed, float startup, float lifetime, std::unique_ptr<BulletGraphicsComponent> graphics);
+                   float radius, float speed, float startup, float lifetime);
+
+    void addBulletGraphics(std::unique_ptr<BulletGraphicsComponent> graphics);
 
     void update(float dt) override;
     bool isDone() const override;

@@ -113,14 +113,6 @@ void PriestessOffensiveHandler::spawnBullet() {
             } else {
                 velocity = {-y, x};
             }
-            auto graphics = std::make_unique<CommonBulletGraphicsComponent>(
-                active,
-                resize,
-                STARTUP / 2,
-                true,
-                inactive,
-                resize
-            );
             auto bullet = std::make_unique<StraightBullet>(
                 player->getPlayerId(),
                 bulletPosition,
@@ -128,9 +120,19 @@ void PriestessOffensiveHandler::spawnBullet() {
                 BULLET_RADIUS,
                 BULLET_SPEED,
                 STARTUP,
-                1e9,
-                std::move(graphics)
+                1e9
             );
+            auto graphics = std::make_unique<CommonBulletGraphicsComponent>(
+                bullet.get(),
+                active,
+                resize,
+                STARTUP / 2,
+                true,
+                inactive,
+                resize
+            );
+            bullet->addBulletGraphics(std::move(graphics));
+
             player->spawnBullet(std::move(bullet));
         }
     }

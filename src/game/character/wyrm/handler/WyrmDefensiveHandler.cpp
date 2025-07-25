@@ -2,8 +2,9 @@
 
 #include "../../../player/Player.hpp"
 #include "../WyrmGraphicsComponent.hpp"
-#include "../bullet/NoviFire.hpp"
-#include "../../../bullet/CommonBulletGraphicsComponent.hpp"
+#include "../../../bullet/StraightBulletPro.hpp"
+
+#include "../../../bullet/BulletGraphicsComponent.hpp"
 
 WyrmDefensiveHandler::WyrmDefensiveHandler(WyrmGraphicsComponent* graphics)
     : TapHandler(Unit::Move::Defensive), graphics(graphics) {}
@@ -12,7 +13,12 @@ void WyrmDefensiveHandler::tap(bool isFocusing) {
 
     player->applyInvincibility(INVINCIBILITY_DURATION, true);
 
-    player->spawnBullet(std::make_unique<NoviFire>(player->getPlayerId(), player->getPosition()));
+    std::unique_ptr<StraightBulletPro> bullet = std::make_unique<StraightBulletPro>(
+        player->getPlayerId(), player->getPosition(), Unit::Vec2D(0, 0), [](float t) -> float { return 0; }, LIFETIME);
+    bullet->addDamagingHitbox(STARTUP, std::make_unique<CircleHitbox>(player->getPosition(), RADIUS));
+    bullet->addBulletGraphics(std::make_unique<BulletGraphicsComponent>(bullet.get()));
+
+    player->spawnBullet(std::move(bullet));
 
     player->applyImplicitMoveLock(true);
     player->applyCooldown(move, COOLDOWN);

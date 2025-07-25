@@ -39,8 +39,9 @@ void DemoCharacter::update(float dt, InputBufferer* input) {
                 Unit::Vec2D dir = { cosf(angle), sinf(angle) };
                 auto bullet = std::make_unique<StraightBullet>(
                     player->getPlayerId(), selfPos, dir, 
-                    radius, baseSpeed, startup, lifetime, std::make_unique<CommonBulletGraphicsComponent>()
+                    radius, baseSpeed, startup, lifetime
                 );
+                bullet->addBulletGraphics(std::make_unique<CommonBulletGraphicsComponent>(bullet.get()));
                 player->spawnBullet(std::move(bullet));
             }
         }
@@ -70,8 +71,9 @@ void DemoCharacter::update(float dt, InputBufferer* input) {
             Unit::Vec2D dir = { cosf(angle), sinf(angle) };
             auto bullet = std::make_unique<StraightBullet>(
                 player->getPlayerId(), selfPos, dir, 
-                radius, baseSpeed, startup, lifetime, std::make_unique<CommonBulletGraphicsComponent>()
+                radius, baseSpeed, startup, lifetime
             );
+            bullet->addBulletGraphics(std::make_unique<CommonBulletGraphicsComponent>(bullet.get()));
             player->spawnBullet(std::move(bullet));
         }
 
@@ -102,8 +104,9 @@ void DemoCharacter::update(float dt, InputBufferer* input) {
                 };
                 auto bullet = std::make_unique<StraightBullet>(
                     player->getPlayerId(), pos, Unit::Vec2D{float(dir), 0},
-                    radius, baseSpeed, startup, lifetime, std::make_unique<CommonBulletGraphicsComponent>()
+                    radius, baseSpeed, startup, lifetime
                 );
+                bullet->addBulletGraphics(std::make_unique<CommonBulletGraphicsComponent>(bullet.get()));
                 player->spawnBullet(std::move(bullet));
             }
         }

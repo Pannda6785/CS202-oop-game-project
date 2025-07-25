@@ -7,32 +7,22 @@
 #include "../hitbox/CircleHitbox.hpp"
 #include "../../graphics/TextureManager.hpp"
 
-CommonBulletGraphicsComponent::CommonBulletGraphicsComponent(float initialGradient)
-    : initialGradient(std::max(0.1f, initialGradient)) {}
+CommonBulletGraphicsComponent::CommonBulletGraphicsComponent(const Bullet* bullet, float initialGradient)
+    : BulletGraphicsComponent(bullet), initialGradient(std::max(0.1f, initialGradient)) {}
 
-CommonBulletGraphicsComponent::CommonBulletGraphicsComponent(std::string texturePath, float texResize, float initialGradient, bool useVelocity,
-    std::string startupTexturePath, float startUpTexResize)
-    : texResize(texResize), startUpTexResize(startUpTexResize),
+CommonBulletGraphicsComponent::CommonBulletGraphicsComponent(const Bullet* bullet, std::string texturePath, float texResize, 
+    float initialGradient, bool useVelocity, std::string startupTexturePath, float startUpTexResize)
+    : BulletGraphicsComponent(bullet),
+      texResize(texResize), startUpTexResize(startUpTexResize),
       initialGradient(std::max(0.1f, initialGradient)),
       useVelocity(useVelocity) {
-
     texture = TextureManager::instance().getTexture(texturePath);
     if (!startupTexturePath.empty()) {
         startupTexture = TextureManager::instance().getTexture(startupTexturePath);
     }
 }
 
-void CommonBulletGraphicsComponent::registerOwner(const Bullet* bullet) {
-    BulletGraphicsComponent::registerOwner(bullet);
-    this->bullet = bullet;
-}
-
 void CommonBulletGraphicsComponent::render() const {
-    if (!bullet) {
-        std::cerr << "Bullet not registered for CommonBulletGraphicsComponent rendering!" << std::endl;
-        return;
-    }
-
     Color tint = WHITE;
     tint.a = static_cast<unsigned char>(255 * gradient);
     Unit::Vec2D pos = bullet->getPosition();
@@ -61,10 +51,13 @@ void CommonBulletGraphicsComponent::render() const {
         DrawTexturePro(*texToDraw, source, dest, origin, rotation, tint);
     } else {
         const CircleHitbox* hitbox = dynamic_cast<const CircleHitbox*>(bullet->getLifeHitbox());
-        if (!hitbox) return;
-        Vector2 pos2 = { pos.x, pos.y };
-        float radius = hitbox->getRadius();
-        DrawCircleV(pos2, radius, tint);
+        if (hitbox) {
+            Vector2 pos2 = { pos.x, pos.y };
+            float radius = hitbox->getRadius();
+            DrawCircleV(pos2, radius, tint);
+        } else {
+            std::cerr << "CommonBulletGraphics::render() - the prototyping constructor used, and this is NOT circular hitbox" << std::endl;
+        }
     }
 
     BulletGraphicsComponent::drawHitboxes();

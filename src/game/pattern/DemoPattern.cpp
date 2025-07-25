@@ -46,12 +46,7 @@ void DemoPattern::update(float dt) {
             Unit::Vec2D velocity = { 0.0f, BULLET_SPEED };
 
             const float resize = (BULLET_RADIUS * 2.0f) / (TEXTURE_WIDTH * VISIBLE_RATIO);
-            auto graphics = std::make_unique<CommonBulletGraphicsComponent>(
-                TEXTURE_PATH,
-                resize,
-                BULLET_STARTUP
-            );
-
+            
             auto bullet = std::make_unique<StraightBullet>(
                 OWNER_ID,
                 position,
@@ -59,9 +54,15 @@ void DemoPattern::update(float dt) {
                 BULLET_RADIUS,
                 BULLET_SPEED,
                 BULLET_STARTUP,
-                BULLET_LIFESPAN,
-                std::move(graphics)
+                BULLET_LIFESPAN
             );
+            auto graphics = std::make_unique<CommonBulletGraphicsComponent>(
+                bullet.get(),
+                TEXTURE_PATH,
+                resize,
+                BULLET_STARTUP
+            );
+            bullet->addBulletGraphics(std::move(graphics));
 
             spawner->spawnBullet(std::move(bullet));
         }

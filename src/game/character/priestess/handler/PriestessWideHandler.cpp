@@ -80,12 +80,6 @@ void PriestessWideHandler::spawnBullet() {
         std::string path = "../assets/sprites/priestess/bullet/priest_bullets_4_p1_0001.png";
         constexpr float resize = 0.6364;
 
-        auto graphics = std::make_unique<CommonBulletGraphicsComponent>(
-            path,
-            resize,
-            startup
-        );
-
         auto bullet = std::make_unique<StraightBullet>(
             player->getPlayerId(),
             bulletPosition,
@@ -93,9 +87,15 @@ void PriestessWideHandler::spawnBullet() {
             BULLET_RADIUS,
             BULLET_SPEED,
             startup,
-            1e9,
-            std::move(graphics)
+            1e9
         );
+        auto graphics = std::make_unique<CommonBulletGraphicsComponent>(
+            bullet.get(),
+            path,
+            resize,
+            startup
+        );
+        bullet->addBulletGraphics(std::move(graphics));
 
         player->spawnBullet(std::move(bullet));
     }

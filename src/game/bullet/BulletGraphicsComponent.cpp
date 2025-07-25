@@ -4,16 +4,16 @@
 #include "../hitbox/RectangleHitbox.hpp"
 #include <raylib.h>
 
-BulletGraphicsComponent::BulletGraphicsComponent(bool drawHitbox) : drawHitbox(drawHitbox) {
+BulletGraphicsComponent::BulletGraphicsComponent(const Bullet* bullet) : bullet(bullet) {
     setLayer(Unit::Layer::Bullet);
 }
 
-void BulletGraphicsComponent::registerOwner(const Bullet* bullet) {
-    this->owner = bullet;
+void BulletGraphicsComponent::render() const {
+    drawHitboxes();
 }
 
 void BulletGraphicsComponent::drawHitboxes() const {
-    if (!drawHitbox || !owner) return;
+    if (!drawHitbox) return;
 
     auto drawHitbox = [](const Hitbox* hitbox, Color baseColor) {
         Color color = baseColor;
@@ -30,10 +30,10 @@ void BulletGraphicsComponent::drawHitboxes() const {
         }
     };
 
-    drawHitbox(owner->getLifeHitbox(), GREEN);
-    drawHitbox(owner->getDamagingHitbox(), RED);
-    drawHitbox(owner->getCleansingHitbox(), BLUE);
-    for (const auto& [hitbox, major, id, duration] : owner->getInvincibilityHitboxes()) {
+    drawHitbox(bullet->getLifeHitbox(), GREEN);
+    drawHitbox(bullet->getDamagingHitbox(), RED);
+    drawHitbox(bullet->getCleansingHitbox(), BLUE);
+    for (const auto& [hitbox, major, id, duration] : bullet->getInvincibilityHitboxes()) {
         drawHitbox(hitbox, YELLOW);
     }
 }

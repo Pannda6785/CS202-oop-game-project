@@ -8,11 +8,10 @@
 #include <string>
 
 SunburstGraphicsComponent::SunburstGraphicsComponent(const Sunburst* bullet)
-    : bullet(bullet) {
+    : BulletGraphicsComponent(bullet), bullet(bullet) {
     std::string path = "../assets/sprites/priestess/bullet/";
     inactiveTexture = TextureManager::instance().getTexture(path + "priest_bullets_6_p1_0001.png");
     activeTexture = TextureManager::instance().getTexture(path + "priest_bullets_3_p1_0002.png");
-    BulletGraphicsComponent::registerOwner(bullet);
 }
 
 void SunburstGraphicsComponent::update(float dt) {

@@ -1,28 +1,28 @@
-#ifndef NOVI_FIRE_GRAPHICS_COMPONENT_HPP
-#define NOVI_FIRE_GRAPHICS_COMPONENT_HPP
+// #ifndef NOVI_FIRE_GRAPHICS_COMPONENT_HPP
+// #define NOVI_FIRE_GRAPHICS_COMPONENT_HPP
 
-#include "../../../bullet/BulletGraphicsComponent.hpp"
+// #include "../../../bullet/BulletGraphicsComponent.hpp"
 
-class NoviFire;
-class Texture;
+// class NoviFire;
+// class Texture;
 
-class NoviFireGraphicsComponent : public BulletGraphicsComponent {
-    static constexpr float FLASH_FPS = 3;
+// class NoviFireGraphicsComponent : public BulletGraphicsComponent {
+//     static constexpr float FLASH_FPS = 3;
 
-public:
-    explicit NoviFireGraphicsComponent(const NoviFire* bullet);
+// public:
+//     explicit NoviFireGraphicsComponent(const NoviFire* bullet);
 
-    void render() const override;
-    void update(float dt);
+//     void render() const override;
+//     void update(float dt);
 
-private:
-    const NoviFire* bullet;
-    const Texture* chargeCircle;
-    const Texture* novi[2];
+// private:
+//     const NoviFire* bullet;
+//     const Texture* chargeCircle;
+//     const Texture* novi[2];
 
-    int frame = 0;
-    float timer;
+//     int frame = 0;
+//     float timer;
     
-};
+// };
 
-#endif // NOVI_FIRE_GRAPHICS_COMPONENT_HPP
+// #endif // NOVI_FIRE_GRAPHICS_COMPONENT_HPP

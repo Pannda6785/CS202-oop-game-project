@@ -14,6 +14,11 @@ class WyrmDefensiveHandler : public TapHandler {
     static constexpr float ACTION_LOCK = 1.150f;
     static constexpr float MOVEMENT_MODIFIER_AMOUNT = 0.3f;
     static constexpr float MOVEMENT_MODIFIER_DURATION = 1.450f;
+    
+    static constexpr float STARTUP = 0.780f;
+    static constexpr float RADIUS = 462;
+    static constexpr float LIFETIME = STARTUP + 0.4f;
+    static constexpr float BLOOM_TIME = 0.1f;
 
 public:
     WyrmDefensiveHandler(WyrmGraphicsComponent* graphics);
