@@ -5,6 +5,9 @@
 #include <raylib.h>
 
 BulletGraphicsComponent::BulletGraphicsComponent(const Bullet* bullet) : bullet(bullet) {
+    if (!bullet) {
+        throw std::invalid_argument("BulletGraphicsComponent requires a valid Bullet pointer.");
+    }
     setLayer(Unit::Layer::Bullet);
 }
 
@@ -17,7 +20,7 @@ void BulletGraphicsComponent::drawHitboxes() const {
 
     auto drawHitbox = [](const Hitbox* hitbox, Color baseColor) {
         Color color = baseColor;
-        color.a = 170;
+        color.a = 130;
         if (const auto* circle = dynamic_cast<const CircleHitbox*>(hitbox)) {
             Vector2 pos = { circle->getPosition().x, circle->getPosition().y };
             DrawCircleV(pos, circle->getRadius(), color);
