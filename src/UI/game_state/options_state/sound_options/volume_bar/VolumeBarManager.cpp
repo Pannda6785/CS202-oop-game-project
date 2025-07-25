@@ -26,7 +26,7 @@ void VolumeBarManager::update(float dt) {
 
 void VolumeBarManager::updateHoveredByMouse() {
     if (hoveredIndex != -1 && hoveredIndex < (int)bars.size()) {
-        if (IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
+        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
             Vector2 mouse = GetMousePosition();
             Rectangle buttonRect = {bars[hoveredIndex]->getButtonView()->getX(),
                                     bars[hoveredIndex]->getButtonView()->getY(),

@@ -77,3 +77,9 @@ Color BehindDots::getCurrentColor() {
     Color color = ColorLerp(palette[currentIndex], palette[nextIndex], t);
     return color;
 }
+
+void BehindDots::setVisible(bool visible) {
+    for (auto& dot : dots) {
+        dot->setVisible(visible);
+    }
+}

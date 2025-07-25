@@ -4,7 +4,7 @@
 
 GameStateManager::GameStateManager() : currentAction(StateAction::None) {
     // Initialize the game state manager with the main menu state
-    changeState(std::make_unique<SoloModeState>(*this));
+    changeState(std::make_unique<MainMenuState>(*this));
 }
 
 GameStateManager::~GameStateManager() = default;

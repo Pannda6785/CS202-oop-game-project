@@ -73,6 +73,8 @@ void AudioManager::update(float dt) {
     if(!IsWindowFocused()){
         SetMusicVolume(themeMusic, 0.0f);
         return;
+    } else {
+        SetMusicVolume(themeMusic, musicVolume);
     }
     if (IsMusicStreamPlaying(themeMusic)) {
         UpdateMusicStream(themeMusic);

@@ -6,7 +6,7 @@
 #include "../../button/Button.hpp"
 #include "../state_heading/StateHeading.hpp"
 #include "ArtworkTitle.hpp"
-#include "MovingTileGraphicsComponent.hpp"
+#include "../decorative_components/MovingTileGraphicsComponent.hpp"
 #include "BehindDots.hpp"
 #include <memory>
 
