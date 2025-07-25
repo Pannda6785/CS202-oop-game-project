@@ -10,12 +10,8 @@
 WyrmWideHandler::WyrmWideHandler(WyrmGraphicsComponent* graphics)
     : TapHandler(Unit::Move::Wide), graphics(graphics) {}
 
-void WyrmWideHandler::update(float dt, const InputBufferer* input) {
-    // No combo logic, can be empty or used for cooldowns if needed
-}
-
 void WyrmWideHandler::tap(bool isFocusing) {
-    // animation
+    graphics->roar(MOVEMENT_LOCK_DURATION, 0.25f);
 
     spawnBullet();
 

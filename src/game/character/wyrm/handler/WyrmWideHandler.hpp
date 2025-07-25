@@ -24,8 +24,6 @@ class WyrmWideHandler : public TapHandler {
 public:
     WyrmWideHandler(WyrmGraphicsComponent* graphics);
 
-    void update(float dt, const InputBufferer* input) override;
-
 protected:
     void tap(bool isFocusing) override;
 

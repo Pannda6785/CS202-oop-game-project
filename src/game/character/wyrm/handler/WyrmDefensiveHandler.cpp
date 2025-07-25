@@ -10,6 +10,7 @@ WyrmDefensiveHandler::WyrmDefensiveHandler(WyrmGraphicsComponent* graphics)
     : TapHandler(Unit::Move::Defensive), graphics(graphics) {}
 
 void WyrmDefensiveHandler::tap(bool isFocusing) {
+    graphics->roar(STARTUP - BLOOM_TIME, LIFETIME - STARTUP);
 
     player->applyInvincibility(INVINCIBILITY_DURATION, true);
 
