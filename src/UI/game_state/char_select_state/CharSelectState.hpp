@@ -9,6 +9,7 @@
 // #include "../decorative_components/BehindDots.hpp"
 #include "../decorative_components/MovingTileGraphicsComponent.hpp"
 #include "../../../input/KeyboardInputInterpreter.hpp"
+#include "./char_select_preview/CharSelectPreviewManager.hpp"
 #include <vector>
 #include <memory>
 #include "../decorative_components/Artwork.hpp"
@@ -43,6 +44,8 @@ private:
         };
     CharSelector charSelectorLeft;
     CharSelector charSelectorRight;
+
+    CharSelectPreviewManager charSelectPreviewManager;
 
 };
 

@@ -45,6 +45,10 @@ void Artwork::setPeriod(float p) {
     period = p;
 }
 
+void Artwork::setScale(float s) {
+    scale = s;
+}
+
 int Artwork::getWidth() const {
     if (textures.empty()) return 0;
     return drawWidth > 0 ? drawWidth : textures[0].width;
@@ -53,9 +57,16 @@ int Artwork::getWidth() const {
 void Artwork::render() const {
     if (textures.empty()) return;
     float time = GetTime();
-    int frame = static_cast<int>(time / period) % textures.size();
-    const Texture2D& tex = textures[frame];
+    const Texture2D& tex = textures[static_cast<int>(time / period) % textures.size()];
     int w = drawWidth > 0 ? drawWidth : tex.width;
     int h = drawHeight > 0 ? drawHeight : tex.height;
-    DrawTextureEx(tex, {(float)posX, (float)posY}, 0.0f, (float)w / tex.width, WHITE);
+
+    // DrawTextureEx(tex, {(float)posX, (float)posY}, 0.0f, (float)w / tex.width, WHITE);
+
+    Rectangle source = { 0, 0, (float)tex.width, (float)tex.height };
+    Rectangle dest = { posX, posY, tex.width * scale, tex.height * scale };
+    Vector2 origin = { 0, 0 }; // Không xoay
+    float rotation = 0;
+    
+    DrawTexturePro(tex, source, dest, origin, rotation, WHITE);
 }

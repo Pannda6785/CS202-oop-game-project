@@ -20,9 +20,12 @@ void MainMenuState::enter() {
     artworkTitle.loadCharTexture("../assets/background/main_menu_char.png");
     artworkTitle.loadTitleTexture("../assets/background/main_menu_title.png");
     artworkTitle.loadDecorationTexture("../assets/background/main_menu_decoration.png");
-    movingTileEffect[0].loadTexture("../assets/background/tile_pattern_0.png");
-    movingTileEffect[0].loadSideLines("../assets/background/side_lines.png");
-    movingTileEffect[1].loadTexture("../assets/background/tile_pattern_1.png");
+    movingTileEffect[0].addTexture("../assets/background/tile_pattern_0.png");
+    movingTileEffect[0].addTexture("../assets/background/side_lines.png");
+    movingTileEffect[1].addTexture("../assets/background/tile_pattern_1.png");
+    for(int i = 0; i < 2; i++){
+        movingTileEffect[i].setRestrictArea({0.0f, -100.0f, (float)GetScreenWidth(), (float)GetScreenHeight() + 100.0f});
+    }
     behindDots.loadDotTexture("../assets/UI_sprites/arround_dot.png");
     int buttonWidth = 720;
     int buttonHeight = 100;

@@ -12,20 +12,28 @@ CharSelectState::~CharSelectState() {
 }
 
 void CharSelectState::enter() {
-    movingTileEffect[0].loadTexture("../assets/UI_sprites/charselect_ribbon_mid.png");
-    movingTileEffect[1].loadTexture("../assets/UI_sprites/charselect_ribbon_mid.png");
-    movingTileEffect[0].init({500, 0}, 10.0f, 100.0f, 9);
-    movingTileEffect[1].init({550, 0}, 6.0f, 120.0f, 10);
+    movingTileEffect[0].addTexture("../assets/UI_sprites/charselect_ribbon_mid.png");
+    movingTileEffect[1].addTexture("../assets/UI_sprites/charselect_ribbon_mid.png");
+    movingTileEffect[0].setScale(0.75f);
+    movingTileEffect[1].setScale(0.75f);
+    movingTileEffect[0].setUpward(false);
+    movingTileEffect[0].setRestrictArea({0.0f, 0.0f, (float)GetScreenWidth(), (float)GetScreenHeight() + 100});
+    movingTileEffect[1].setRestrictArea({0.0f, -100.0f, (float)GetScreenWidth(), (float)GetScreenHeight() + 100.0f});
+    movingTileEffect[0].init({680.0f, GetScreenHeight() * 1.0f}, 10.0f, 100.0f, 9);
+    movingTileEffect[1].init({550.0f, 0.0f}, 6.0f, 120.0f, 10);
 
+
+    float characterSelectArtworkScale = 0.97f;
     characterSelectArtwork.addTexture("../assets/UI_sprites/charselect_mid_1.png");
-    characterSelectArtwork.setPosition(GetScreenWidth() / 2 - characterSelectArtwork.getWidth() / 2, 0);
-    characterSelectArtwork.setLayer(50);
+    characterSelectArtwork.setPosition(GetScreenWidth() / 2 - characterSelectArtwork.getWidth() * characterSelectArtworkScale / 2, 0);
+    characterSelectArtwork.setLayer(200);
+    characterSelectArtwork.setScale(characterSelectArtworkScale);
 
-    float deltaX = 33.0f;
-    float deltaY = 90.0f;
+    float deltaX = 33.0f * characterSelectArtworkScale;
+    float deltaY = 90.0f * characterSelectArtworkScale;
 
     Vector2 startPositionLeft = {960.0f, 165.0f};
-    Vector2 startPositionRight = {960.0f, 90.0f};
+    Vector2 startPositionRight = {950.0f, 90.0f};
 
     charSelectorLeft.init(selectOptions);
     charSelectorLeft.loadSelectionCursorTexture("../assets/UI_sprites/charselect_selector_left.png");
@@ -41,6 +49,7 @@ void CharSelectState::enter() {
     charSelectorRight.setDirection({-deltaX, deltaY});
     charSelectorRight.setAngleRotate(-30.0f);
 
+    charSelectPreviewManager.init(true); // Initialize with left side by default
 }
 
 void CharSelectState::update(float dt) {
@@ -49,6 +58,7 @@ void CharSelectState::update(float dt) {
     }
     charSelectorLeft.update(dt);
     charSelectorRight.update(dt);
+    charSelectPreviewManager.update(dt);
 }
 
 void CharSelectState::exit() {

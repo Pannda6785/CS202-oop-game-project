@@ -36,14 +36,15 @@ int main() {
         + audio
     */
 
-    // HideCursor(); // Hide the default cursor
+    bool tool = true;
+
+    if(!tool) HideCursor(); // Hide the default cursor
 
     GameStateManager gameStateManager;
     
-    
     AudioManager::getInstance().init(); // Initialize audio manager
     AudioManager::getInstance().loadThemeMusic("../assets/audio/music_mainthema.ogg");
-    CustomCursor::getInstance().init(); // Initialize custom cursor
+    if(!tool) CustomCursor::getInstance().init(); // Initialize custom cursor
 
     Vector2 initialPoint = { -1, -1 };
     Vector2 endPoint = { -1, -1 };
@@ -56,28 +57,30 @@ int main() {
         BeginDrawing();
         ClearBackground(BLACK);
 
-        if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-            initialPoint = GetMousePosition();
-            measuring = true;
-            endPoint = { -1, -1 };
-        }
+        if(tool){
+            if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+                initialPoint = GetMousePosition();
+                measuring = true;
+                endPoint = { -1, -1 };
+            }
 
-        // Mouse release: end measuring
-        if (measuring && IsMouseButtonReleased(MOUSE_LEFT_BUTTON)) {
-            endPoint = GetMousePosition();
-            measuring = false;
+            // Mouse release: end measuring
+            if (measuring && IsMouseButtonReleased(MOUSE_LEFT_BUTTON)) {
+                endPoint = GetMousePosition();
+                measuring = false;
 
-            // Measure pixel difference
-            std::cout << "Initial point: (" 
-                      << initialPoint.x << ", " << initialPoint.y << "), "
-                      << "End point: (" 
-                      << endPoint.x << ", " << endPoint.y << ")" << std::endl;
-            std::cout << "Pixel difference: "
-                      << "X: " << endPoint.x - initialPoint.x
-                      << ", Y: " << endPoint.y - initialPoint.y
-                      << std::endl;
-            initialPoint = { -1, -1 }; // Reset initial point
-            endPoint = { -1, -1 }; // Reset end point
+                // Measure pixel difference
+                std::cout << "Initial point: (" 
+                        << initialPoint.x << ", " << initialPoint.y << "), "
+                        << "End point: (" 
+                        << endPoint.x << ", " << endPoint.y << ")" << std::endl;
+                std::cout << "Pixel difference: "
+                        << "X: " << endPoint.x - initialPoint.x
+                        << ", Y: " << endPoint.y - initialPoint.y
+                        << std::endl;
+                initialPoint = { -1, -1 }; // Reset initial point
+                endPoint = { -1, -1 }; // Reset end point
+            }
         }
 
         if(IsKeyPressed(KEY_ESCAPE)){
@@ -88,7 +91,7 @@ int main() {
         AudioManager::getInstance().update(dt);
 
         gameStateManager.update(dt); // Update game state manager
-        // CustomCursor::getInstance().update(dt); // Update custom cursor
+        if(!tool) CustomCursor::getInstance().update(dt); // Update custom cursor
 
         if(gameStateManager.isEmpty()) {
             std::cerr << "GameStateManager is empty! Exiting..." << std::endl;
