@@ -4,7 +4,6 @@
 
 Artwork::Artwork(float period)
     : period(period) {
-    
 }
 
 Artwork::~Artwork() = default;
@@ -54,6 +53,19 @@ int Artwork::getWidth() const {
     return drawWidth > 0 ? drawWidth : textures[0].width;
 }
 
+void Artwork::setFadeInTime(float time) {
+    fadeInTime = time;
+}
+
+void Artwork::update(float dt) {
+    if (fadeInTime > 0.0f) {
+        fadeInTimer += dt;
+        if (fadeInTimer > fadeInTime) {
+            fadeInTimer = fadeInTime; // Clamp to fade-in time
+        }
+    }
+}
+
 void Artwork::render() const {
     if (textures.empty()) return;
     float time = GetTime();
@@ -61,12 +73,10 @@ void Artwork::render() const {
     int w = drawWidth > 0 ? drawWidth : tex.width;
     int h = drawHeight > 0 ? drawHeight : tex.height;
 
-    // DrawTextureEx(tex, {(float)posX, (float)posY}, 0.0f, (float)w / tex.width, WHITE);
-
     Rectangle source = { 0, 0, (float)tex.width, (float)tex.height };
     Rectangle dest = { posX, posY, tex.width * scale, tex.height * scale };
-    Vector2 origin = { 0, 0 }; // Không xoay
+    Vector2 origin = { 0, 0 };
     float rotation = 0;
-    
-    DrawTexturePro(tex, source, dest, origin, rotation, WHITE);
+    Color color = { 255, 255, 255, 255 * (fadeInTime > 0.0f ? fadeInTimer / fadeInTime : 1.0f) };
+    DrawTexturePro(tex, source, dest, origin, rotation, color);
 }

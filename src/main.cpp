@@ -88,7 +88,6 @@ int main() {
         }
 
         gameStateManager.processPendingStateChanges();
-        AudioManager::getInstance().update(dt);
 
         gameStateManager.update(dt); // Update game state manager
         if(!tool) CustomCursor::getInstance().update(dt); // Update custom cursor

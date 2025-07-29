@@ -12,6 +12,7 @@ public:
     ~Artwork() override;
 
     bool addTexture(const std::string& filePath);
+    void update(float dt);
     void render() const override;
     void setPosition(int x, int y);
     void setSize(int width, int height);
@@ -19,6 +20,7 @@ public:
     void unloadTextures();
     int getWidth() const;
     void setScale(float scale);
+    void setFadeInTime(float time);
 
 private:
     std::vector<Texture2D> textures;
@@ -27,6 +29,8 @@ private:
     int posX = 0, posY = 0;
     int drawWidth = 0, drawHeight = 0;
     float scale = 1.0f; // Scale factor for rendering
+    float fadeInTime = 0.0f; // Time for fade-in effect
+    float fadeInTimer = 0.0f;
 };
 
 #endif // ARTWORK_HPP

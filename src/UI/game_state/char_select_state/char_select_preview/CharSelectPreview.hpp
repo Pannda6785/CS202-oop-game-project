@@ -54,8 +54,8 @@ private:
     float belowBackgroundHeight = 50.0f;
     float ribbonBackgroundHeight = 100.0f;
     Rectangle ribbonBackgroundRect = {0, (float)GetScreenHeight() - belowBackgroundHeight - ribbonBackgroundHeight, (float)GetScreenWidth() / 2.0f, ribbonBackgroundHeight};
-
     std::vector<std::string> layers;
+    float portraitFadeInTime = 0.5f;
     int getLayer(std::string);
 
 };

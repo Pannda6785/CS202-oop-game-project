@@ -37,6 +37,7 @@ void CharSelectPreview::enter() {
     mainPortrait.setPosition(mainPortraitPosition.x, mainPortraitPosition.y);
     mainPortrait.setScale(0.37f); // Set scale for main portrait
     mainPortrait.setLayer(getLayer("main_portrait"));
+    mainPortrait.setFadeInTime(portraitFadeInTime);
     idleAnimPreview.setPosition(idleAnimPreviewPosition.x, idleAnimPreviewPosition.y);
     idleAnimPreview.setPeriod(0.28f); // Set animation period for idle animation
     idleAnimPreview.setScale(0.45f); // Set scale for idle animation
@@ -124,6 +125,7 @@ void CharSelectPreview::exit() {
 }
 
 void CharSelectPreview::update(float dt) {
+    mainPortrait.update(dt);
     for(int i = 0; i < 3; i++){
         backgroundTiles[i].update(dt);
     }

@@ -26,7 +26,7 @@ void CharSelectState::enter() {
     float characterSelectArtworkScale = 0.97f;
     characterSelectArtwork.addTexture("../assets/UI_sprites/charselect_mid_1.png");
     characterSelectArtwork.setPosition(GetScreenWidth() / 2 - characterSelectArtwork.getWidth() * characterSelectArtworkScale / 2, 0);
-    characterSelectArtwork.setLayer(200);
+    characterSelectArtwork.setLayer(50);
     characterSelectArtwork.setScale(characterSelectArtworkScale);
 
     float deltaX = 33.0f * characterSelectArtworkScale;
@@ -41,6 +41,7 @@ void CharSelectState::enter() {
     charSelectorLeft.setPosition(startPositionLeft);
     charSelectorLeft.setDirection({-deltaX, deltaY});
     charSelectorLeft.setAngleRotate(-30.0f);
+    charSelectorRight.setLayer(60);
 
     charSelectorRight.init(selectOptions);
     charSelectorRight.loadSelectionCursorTexture("../assets/UI_sprites/charselect_selector_right.png");
@@ -48,6 +49,7 @@ void CharSelectState::enter() {
     charSelectorRight.setPosition(startPositionRight);
     charSelectorRight.setDirection({-deltaX, deltaY});
     charSelectorRight.setAngleRotate(-30.0f);
+    charSelectorRight.setLayer(60);
 
     charSelectPreviewManager.init(true); // Initialize with left side by default
 }
@@ -58,6 +60,9 @@ void CharSelectState::update(float dt) {
     }
     charSelectorLeft.update(dt);
     charSelectorRight.update(dt);
+    if(charSelectorLeft.getChangeSelection()){
+        charSelectPreviewManager.setPreview("Silent Redhood", true);
+    }
     charSelectPreviewManager.update(dt);
 }
 

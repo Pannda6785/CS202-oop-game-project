@@ -20,9 +20,11 @@ public:
     void setPosition(Vector2 position);
     void setDirection(Vector2 dir);
     void setAngleRotate(float angle);
+    void setLayer(int layer);
     void loadSelectionCursorTexture(const std::string& texturePath);
     void unloadTextures();
     int getCurrentSelection() const;
+    bool getChangeSelection() const;
 
     void update(float dt);
 
@@ -34,6 +36,7 @@ private:
     bool lockSelect;
     KeyboardInputInterpreter inputInterpreter;
     bool isLeftSide;
+    bool changeSelection;
 
 };
 
