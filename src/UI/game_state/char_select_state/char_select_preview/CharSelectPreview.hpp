@@ -24,6 +24,7 @@ public:
     void setRibbonBackgroundColor(Color color);
     void setCharName(const std::string& text);
     void setFrontTileColor(Color color);
+    void setMovingTileBackgroundColor(Color color);
 
     void update(float dt);
 private:
@@ -35,6 +36,7 @@ private:
     Background background = Background();
     Background belowBackground = Background();
     Background ribbonBackground = Background();
+    Background movingTileBackground[3] = { Background(), Background(), Background() };
     bool isLeft = true;
     Vector2 mainPortraitPosition = {10.0f, 60.0f};
     Vector2 idleAnimPreviewPosition = {40.0f, 520.0f};
@@ -55,9 +57,10 @@ private:
     float ribbonBackgroundHeight = 100.0f;
     Rectangle ribbonBackgroundRect = {0, (float)GetScreenHeight() - belowBackgroundHeight - ribbonBackgroundHeight, (float)GetScreenWidth() / 2.0f, ribbonBackgroundHeight};
     std::vector<std::string> layers;
-    float portraitFadeInTime = 0.5f;
+    float portraitFadeInTime = 0.4f;
+    float expandingTilesTime = 0.3f;
+    Color MovingTileBackgroundColor = {255, 255, 255, 100};
     int getLayer(std::string);
-
 };
 
 #endif // CHAR_SELECT_PREVIEW_HPP

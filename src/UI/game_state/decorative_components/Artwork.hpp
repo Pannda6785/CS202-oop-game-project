@@ -21,6 +21,7 @@ public:
     int getWidth() const;
     void setScale(float scale);
     void setFadeInTime(float time);
+    bool finishedFadeIn() const;
 
 private:
     std::vector<Texture2D> textures;

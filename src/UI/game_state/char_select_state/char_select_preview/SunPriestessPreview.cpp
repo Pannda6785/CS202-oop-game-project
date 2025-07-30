@@ -29,6 +29,7 @@ SunPriestessPreview::SunPriestessPreview(bool isLeft) : CharSelectPreview() {
     setBackgroundColor({212, 155, 105, 255});
     setRibbonBackgroundColor({214, 70, 62, 255});
     setFrontTileColor({224, 113, 18, 255});
+    setMovingTileBackgroundColor({214, 70, 62, 255});
     enter();
 }
 

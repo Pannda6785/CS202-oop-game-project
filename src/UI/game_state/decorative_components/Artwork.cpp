@@ -57,6 +57,10 @@ void Artwork::setFadeInTime(float time) {
     fadeInTime = time;
 }
 
+bool Artwork::finishedFadeIn() const {
+    return fadeInTimer >= fadeInTime;
+}
+
 void Artwork::update(float dt) {
     if (fadeInTime > 0.0f) {
         fadeInTimer += dt;

@@ -1,6 +1,6 @@
 #include "CharSelectPreview.hpp"
 #include <iostream>
-#include <cassert>
+#include <assert.h> 
 #include <algorithm>
 
 CharSelectPreview::CharSelectPreview() {
@@ -14,8 +14,11 @@ CharSelectPreview::~CharSelectPreview() {
 void CharSelectPreview::enter() {
     layers = {"background",
               "background_tile_0", 
+              "tile_rect_0",
               "background_tile_1", 
+              "tile_rect_1",
               "background_tile_2", 
+              "tile_rect_2",
               "main_portrait", 
               "ribbon_background",
               "front_tile",
@@ -48,7 +51,14 @@ void CharSelectPreview::enter() {
         backgroundTiles[i].setRestrictArea({0, 0, (float)GetScreenWidth() / 2.0f, (float)GetScreenHeight()});
         backgroundTiles[i].setUpward(false);
         backgroundTilesLayer[i] = getLayer("background_tile_" + std::to_string(i));
+        backgroundTiles[i].setExpandingTime(expandingTilesTime);
         backgroundTiles[i].init(backgroundTilesPosition[i], backgroundTilesAngle[i], backgroundTilesSpeed[i], backgroundTilesLayer[i]);
+    }
+
+    for(int i = 0; i < 3; i++){
+        movingTileBackground[i].setLayer(getLayer("tile_rect_" + std::to_string(i)));
+        movingTileBackground[i].setBackgroundColor(MovingTileBackgroundColor);
+        movingTileBackground[i].setAngle(-(90.0f + backgroundTilesAngle[i]));
     }
     
     charName.setPosition(charNamePosition.x, charNamePosition.y);
@@ -114,6 +124,10 @@ void CharSelectPreview::setFrontTileColor(Color color) {
     frontTile.setColor(color);
 }
 
+void CharSelectPreview::setMovingTileBackgroundColor(Color color) {
+    MovingTileBackgroundColor = color;
+}
+
 void CharSelectPreview::exit() {
     mainPortrait.unloadTextures();
     idleAnimPreview.unloadTextures();
@@ -127,7 +141,17 @@ void CharSelectPreview::exit() {
 void CharSelectPreview::update(float dt) {
     mainPortrait.update(dt);
     for(int i = 0; i < 3; i++){
+        if(mainPortrait.finishedFadeIn()) {
+            backgroundTiles[i].setStartExpand(true);
+        }
         backgroundTiles[i].update(dt);
+        if(backgroundTiles[i].getStartExpand()) {
+            float ratioRect = 0.6f;
+            Vector2 size = {1000.0f, backgroundTiles[i].getTileWidth() * ratioRect};
+            Vector2 pos = backgroundTiles[i].getMiddlePostion();
+            movingTileBackground[i].setBackgroundRect({pos.x, pos.y, size.x, size.y});
+            movingTileBackground[i].setOriginMiddle();
+        } 
     }
     frontTile.update(dt);
 }
