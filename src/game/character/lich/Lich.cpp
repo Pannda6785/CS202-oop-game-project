@@ -1,6 +1,8 @@
 #include "Lich.hpp"
 
 #include "LichGraphicsComponent.hpp"
+#include "handler/LichBasicHandler.hpp"
+#include "handler/LichWideHandler.hpp"
 
 Lich::Lich() : HandlerCharacter("Lich", 525.0f, 300.0f, std::make_unique<LichGraphicsComponent>()) {
     neutralize();

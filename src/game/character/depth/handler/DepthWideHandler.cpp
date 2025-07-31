@@ -1,30 +1,28 @@
-#include "WyrmWideHandler.hpp"
-
+#include "DepthWideHandler.hpp"
 #include "../../../player/Player.hpp"
-#include "../WyrmGraphicsComponent.hpp"
+#include "../DepthGraphicsComponent.hpp"
+
 #include "../../../bullet/StraightBullet.hpp"
 #include "../../../bullet/CommonBulletGraphicsComponent.hpp"
 
 #include <cmath>
 
-WyrmWideHandler::WyrmWideHandler(WyrmGraphicsComponent* graphics)
+DepthWideHandler::DepthWideHandler(DepthGraphicsComponent* graphics)
     : TapHandler(Unit::Move::Wide), graphics(graphics) {}
 
-void WyrmWideHandler::tap(bool isFocusing) {
-    graphics->roar(MOVEMENT_LOCK_DURATION, 0.25f);
+void DepthWideHandler::tap(bool isFocusing) {
+    graphics->useWide();
 
     spawnBullet();
 
     player->applyImplicitMoveLock();
+    player->applyLock(Unit::Lock::MovementLock, MOVEMENT_LOCK);
+    player->applyLock(Unit::Lock::ArrowLock, ARROW_LOCK);
     player->applyLock(Unit::Lock::BasicLock, ATTACK_LOCK);
     player->applyLock(Unit::Lock::WideLock, ATTACK_LOCK);
-    player->applyLock(Unit::Lock::OffensiveLock, SPELL_LOCK);
-    player->applyLock(Unit::Lock::DefensiveLock, SPELL_LOCK);
-    player->applyLock(Unit::Lock::MovementLock, MOVEMENT_LOCK_DURATION);
-    player->applyLock(Unit::Lock::ArrowLock, ARROW_LOCK);
 }
 
-void WyrmWideHandler::spawnBullet() {
+void DepthWideHandler::spawnBullet() {
     constexpr float PI = 3.14159265358979323846f;
 
     Unit::Vec2D pos = player->getPosition();
@@ -34,9 +32,9 @@ void WyrmWideHandler::spawnBullet() {
     constexpr float ANGLE_STEP = 360.0f / NUM_BULLETS;
     float baseAngle = std::atan2(aimDir.y, aimDir.x) * 180.0f / static_cast<float>(PI) + ANGLE_STEP / 2;
 
-    std::string bulletTexture = "../assets/sprites/wyrm/bullet/nidhogg_bullet_0_p1_0001.png";
-    constexpr float visibleRatio = 0.5f;
-    constexpr float textureWidth = 256;
+    std::string bulletTexture = "../assets/sprites/depth/bullet/hydra_bullets_0_p1_0001.png";
+    constexpr float visibleRatio = 3.5f / 6.0f;
+    constexpr float textureWidth = 512;
     constexpr float resize = (RADIUS * 2) / (textureWidth * visibleRatio);
 
     for (int wave = 0; wave < 2; ++wave) {
@@ -62,7 +60,7 @@ void WyrmWideHandler::spawnBullet() {
                 bullet.get(),
                 bulletTexture,
                 resize,
-                STARTUP
+                STARTUP / 2
             );
             bullet->addBulletGraphics(std::move(gfx));
 

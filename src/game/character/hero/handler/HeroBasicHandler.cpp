@@ -20,29 +20,28 @@ void HeroBasicHandler::update(float dt, const InputBufferer* input) {
 
 void HeroBasicHandler::listen(Unit::Move move) {
     if (move != Unit::Move::Basic) {
-        comboHold = 0.0f;
-        step = 0;
+        if (move == Unit::Move::Offensive) {
+            comboHold = OFFENSIVE_COMBO_HOLD;
+        } else {
+            comboHold = 0.0f;
+            step = 0;
+        }
     }
 }
 
 void HeroBasicHandler::tick(bool isFocusing) {
-    // graphics->useBasic();
+    graphics->useBasic(step);
 
     spawnBullet(isFocusing);
 
     player->applyImplicitMoveLock();
-    player->applyLock(Unit::Lock::BasicLock, ACTION_LOCK);
-    player->applyLock(Unit::Lock::WideLock, ACTION_LOCK);
+    player->applyLock(Unit::Lock::BasicLock, ATTACK_LOCK);
+    player->applyLock(Unit::Lock::WideLock, ATTACK_LOCK);
     player->applyModifier(Unit::Modifier::MovementModifier, MOVEMENT_MODIFIER_DURATION, MOVEMENT_MODIFIER_AMOUNT);
     player->applyModifier(Unit::Modifier::ArrowModifier, ARROW_MODIFIER_DURATION, ARROW_MODIFIER_AMOUNT);
 
-    ++step;
-    if (step < 3) {
-        comboHold = COMBO_HOLD;
-    } else {
-        step = 0;
-        comboHold = 0.0f;
-    }
+    comboHold = COMBO_HOLD;
+    step = (step + 1) % 3;
 }
 
 void HeroBasicHandler::spawnBullet(bool isFocusing) {
