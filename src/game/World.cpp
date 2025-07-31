@@ -3,6 +3,10 @@
 #include <algorithm>
 
 void World::update(float dt) {
+    devTool->update(dt);
+    dt *= devTool->getTimeScale();
+    if (dt < Unit::EPS) return;
+    
     for (auto& player : players) {
         player->update(dt);
     }
@@ -22,6 +26,7 @@ void World::init() {
     for (auto & pattern : patterns) {
         pattern->init();
     }
+    devTool = std::make_unique<DevTool>(this);
 }
 
 const Player* World::getPlayer(int playerId) const {

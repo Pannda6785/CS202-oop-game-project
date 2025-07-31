@@ -6,10 +6,12 @@
 #include "player/Player.hpp"
 #include "bullet/Bullet.hpp"
 #include "pattern/Pattern.hpp"
+#include "devtool/DevTool.hpp"
 
 #include <memory>
 
 class World : public IWorldView, public IBulletSpawner {
+    friend class DevTool;
 public:
     void update(float dt);
     void init();
@@ -26,6 +28,7 @@ private:
     std::vector<std::unique_ptr<Player>> players;
     std::vector<std::unique_ptr<Bullet>> bullets;
     std::vector<std::unique_ptr<Pattern>> patterns;
+    std::unique_ptr<DevTool> devTool;
 
     void handleCollisions();
 };

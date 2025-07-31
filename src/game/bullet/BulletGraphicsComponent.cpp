@@ -2,6 +2,7 @@
 #include "Bullet.hpp"
 #include "../hitbox/CircleHitbox.hpp"
 #include "../hitbox/RectangleHitbox.hpp"
+#include "../devtool/DevTool.hpp"
 #include <raylib.h>
 
 BulletGraphicsComponent::BulletGraphicsComponent(const Bullet* bullet) : bullet(bullet) {
@@ -16,7 +17,7 @@ void BulletGraphicsComponent::render() const {
 }
 
 void BulletGraphicsComponent::drawHitboxes() const {
-    if (!drawHitbox) return;
+    if (!DevTool::isHitboxEnabled()) return;
 
     auto drawHitbox = [](const Hitbox* hitbox, Color baseColor) {
         Color color = baseColor;

@@ -20,9 +20,6 @@ protected:
 protected:
     const Bullet* bullet = nullptr;
 
-private:
-    bool drawHitbox = true;
-
 };
 
 #endif // BULLET_GRAPHICS_COMPONENT_HPP

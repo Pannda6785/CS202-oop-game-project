@@ -12,7 +12,7 @@ class NoviDispelGraphicsComponent : public BulletGraphicsComponent {
 
     static constexpr int RIPPLE_COUNT = 3;
     static constexpr float RIPPLE_DURATION = 0.4f; // seconds
-    static constexpr float RIPPLE_WIDTH = 7.0f;
+    static constexpr float RIPPLE_WIDTH = 9.0f;
     static constexpr float RIPPLE_SPREAD = 50.0f;  // how far ripples expand beyond the texture edge
 
 public:
