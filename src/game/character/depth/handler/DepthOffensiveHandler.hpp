@@ -20,10 +20,10 @@ class DepthOffensiveHandler : public HoldHandler {
     // move control
     static constexpr float COOLDOWN = 3.500f;
     static constexpr float MOVEMENT_MODIFIER_VALUE = 0.15f;
-    static constexpr float MOVEMENT_MODIFIER_DURATION = 0.720f;
+    static constexpr float MOVEMENT_MODIFIER_DURATION = 0.780f;
     static constexpr float SPELL_LOCK = 0.680f;
     static constexpr float ARROW_LOCK = 1.280f;
-    static constexpr float COMBO_HOLD = 1.240f; // also a cooldown hold
+    static constexpr float COMBO_HOLD = 1.400f; // also a cooldown hold
 
 public:
     DepthOffensiveHandler(DepthGraphicsComponent* graphics);

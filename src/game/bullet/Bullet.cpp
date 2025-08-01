@@ -1,20 +1,28 @@
 #include "Bullet.hpp"
 
-Bullet::Bullet(int ownerID) : whose(ownerID) {}
+Bullet::Bullet(int ownerID, std::unique_ptr<BulletGraphicsComponent> graphics) : whose(ownerID), graphics(std::move(graphics)) {
+    this->graphics->registerBullet(this);
+}
+
+BulletGraphicsComponent* Bullet::getGraphics() const {
+    return graphics.get();
+}
 
 int Bullet::isWhose() const {
     return whose;
 }
 
 Unit::Vec2D Bullet::getPosition() const {
+    std::cerr << "Warning: Bullet::getPosition() is not overriden, are you sure?" << std::endl;
     if (lifeHitbox) return lifeHitbox->getPosition();
     if (damagingHitbox) return damagingHitbox->getPosition();
     if (cleansingHitbox) return cleansingHitbox->getPosition();
-    std::cerr << "Bullet::getPosition() called without any hitbox set." << std::endl;
+    std::cerr << "Warning: Bullet::getPosition() called without any hitbox set." << std::endl;
     return {0.0f, 0.0f};
 }
 
 Unit::Vec2D Bullet::getVelocity() const {
+    std::cerr << "Warning: Bullet::getVelocity() is not overriden!" << std::endl;
     return {0.0f, 0.0f};
 }
 
@@ -29,6 +37,7 @@ void Bullet::resize(float scale) {
     if (cleansingHitbox) cleansingHitbox->resize(scale);
     for (auto& [hitbox, major, who, duration] : invincibilityHitboxes) hitbox->resize(scale);
     for (auto& [hitbox, modifier, who, duration, amount] : modifierHitboxes) hitbox->resize(scale);
+    for (auto& [hitbox, lock, who, duration] : lockHitboxes) hitbox->resize(scale);
 }
 
 const Hitbox* Bullet::getLifeHitbox() const {

@@ -8,8 +8,10 @@ class Bullet;
 
 class BulletGraphicsComponent : public GraphicsComponent {
 public:
-    BulletGraphicsComponent(const Bullet* bullet);
+    BulletGraphicsComponent();
     virtual ~BulletGraphicsComponent() = default;
+
+    void registerBullet(const Bullet* bullet);
     
     virtual void render() const;
     virtual void update(float dt) {}

@@ -3,7 +3,9 @@
 #include "../../../player/Player.hpp"
 #include "../HeroGraphicsComponent.hpp"
 #include "../../../bullet/StraightBullet.hpp"
-#include "../../../bullet/CommonBulletGraphicsComponent.hpp"
+#include "../../../bullet/TextureBulletGraphicsComponent.hpp"
+#include "../../../hitbox/CircleHitbox.hpp"
+#include "../../../../graphics/TextureManager.hpp"
 
 #include <cmath>
 #include <algorithm>
@@ -45,39 +47,36 @@ void HeroBasicHandler::tick(bool isFocusing) {
 }
 
 void HeroBasicHandler::spawnBullet(bool isFocusing) {
+    constexpr float MY_PI = 3.14159265358979323846f;
+
     if (lastFocusing != isFocusing) {
         step = 0;
         lastFocusing = isFocusing;
     }
 
-    constexpr float PI = 3.14159265358979323846f;
-    std::string bulletTexture = "../assets/sprites/hero/bullet/fencer_bullets_0_p1_0000.png";
+    const Texture* bulletTexture = TextureManager::instance().getTexture("../assets/sprites/hero/bullet/fencer_bullets_0_p1_0000.png");
     constexpr float visibleRatio = 0.25f;
     constexpr float textureWidth = 256;
     constexpr float resize = (RADIUS * 2) / (textureWidth * visibleRatio);
 
     Unit::Vec2D pos = player->getPosition();
     Unit::Vec2D baseDir = player->getArrow();
-    float baseAngle = std::atan2(baseDir.y, baseDir.x) * 180.0f / static_cast<float>(PI);
+    float baseAngle = std::atan2(baseDir.y, baseDir.x) * 180.0f / static_cast<float>(MY_PI);
 
     auto spawn = [&](Unit::Vec2D spawnPos, Unit::Vec2D velocity, float radius, float speed) {
         auto bullet = std::make_unique<StraightBullet>(
             player->getPlayerId(),
+            std::make_unique<TextureBulletGraphicsComponent>(bulletTexture, resize),
             spawnPos,
             velocity,
-            radius,
             speed,
-            STARTUP,
             1e9
         );
-        auto gfx = std::make_unique<CommonBulletGraphicsComponent>(
-            bullet.get(),
-            bulletTexture,
-            resize,
-            STARTUP,
-            true
-        );
-        bullet->addBulletGraphics(std::move(gfx));
+        bullet->addLifeHitbox(0, std::make_unique<CircleHitbox>(spawnPos, radius));
+        bullet->addDamagingHitbox(STARTUP, std::make_unique<CircleHitbox>(spawnPos, radius));
+        dynamic_cast<TextureBulletGraphicsComponent*>(bullet->getGraphics())->addFadein(0.0f, STARTUP / 2);
+        dynamic_cast<TextureBulletGraphicsComponent*>(bullet->getGraphics())->addVelocityRotation(true);
+
         player->spawnBullet(std::move(bullet));
     };
 
@@ -87,7 +86,7 @@ void HeroBasicHandler::spawnBullet(bool isFocusing) {
             float angles[3] = {12.0f, 0.0f, -12.0f};
             for (float angle : angles) {
                 float angleDeg = baseAngle + angle;
-                float rad = angleDeg * PI / 180.0f;
+                float rad = angleDeg * MY_PI / 180.0f;
                 Unit::Vec2D dir(std::cos(rad), std::sin(rad));
                 spawn(pos + dir * RADIUS, dir * SPEED, RADIUS, SPEED);
             }
@@ -95,7 +94,7 @@ void HeroBasicHandler::spawnBullet(bool isFocusing) {
             float angles[4] = {18.0f, 6.0f, -6.0f, -18.0f};
             for (float angle : angles) {
                 float angleDeg = baseAngle + angle;
-                float rad = angleDeg * PI / 180.0f;
+                float rad = angleDeg * MY_PI / 180.0f;
                 Unit::Vec2D dir(std::cos(rad), std::sin(rad));
                 spawn(pos + dir * RADIUS, dir * SPEED, RADIUS, SPEED);
             }
@@ -106,7 +105,7 @@ void HeroBasicHandler::spawnBullet(bool isFocusing) {
             };
             for (auto& b : bullets) {
                 float angleDeg = baseAngle + b.angle;
-                float rad = angleDeg * PI / 180.0f;
+                float rad = angleDeg * MY_PI / 180.0f;
                 Unit::Vec2D dir(std::cos(rad), std::sin(rad));
                 Unit::Vec2D offset = baseDir.normalized() * b.xOffset + Unit::Vec2D(-baseDir.y, baseDir.x).normalized() * b.yOffset;
                 spawn(pos + offset, dir * SPEED, RADIUS, SPEED);
@@ -121,7 +120,7 @@ void HeroBasicHandler::spawnBullet(bool isFocusing) {
             };
             for (auto& b : bullets) {
                 float angleDeg = baseAngle + b.angle;
-                float rad = angleDeg * PI / 180.0f;
+                float rad = angleDeg * MY_PI / 180.0f;
                 Unit::Vec2D dir(std::cos(rad), std::sin(rad));
                 spawn(pos + dir * RADIUS, dir * b.speed, RADIUS, b.speed);
             }
@@ -132,7 +131,7 @@ void HeroBasicHandler::spawnBullet(bool isFocusing) {
             };
             for (auto& b : bullets) {
                 float angleDeg = baseAngle + b.angle;
-                float rad = angleDeg * PI / 180.0f;
+                float rad = angleDeg * MY_PI / 180.0f;
                 Unit::Vec2D dir(std::cos(rad), std::sin(rad));
                 Unit::Vec2D offset = baseDir.normalized() * b.xOffset + Unit::Vec2D(-baseDir.y, baseDir.x).normalized() * b.yOffset;
                 spawn(pos + offset, dir * SPEED_2, RADIUS, SPEED_2);
@@ -150,7 +149,7 @@ void HeroBasicHandler::spawnBullet(bool isFocusing) {
             };
             for (auto& b : bullets) {
                 float angleDeg = baseAngle + b.angle;
-                float rad = angleDeg * PI / 180.0f;
+                float rad = angleDeg * MY_PI / 180.0f;
                 Unit::Vec2D dir(std::cos(rad), std::sin(rad));
                 Unit::Vec2D offset = baseDir.normalized() * b.xOffset + Unit::Vec2D(-baseDir.y, baseDir.x).normalized() * b.yOffset;
                 spawn(pos + offset, dir * SPEED_3, RADIUS, SPEED_3);

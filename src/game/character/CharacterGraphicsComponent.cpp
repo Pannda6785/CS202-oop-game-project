@@ -25,6 +25,10 @@ void CharacterGraphicsComponent::registerPlayer(Player* playerView) {
     player = playerView;
 }
 
+std::array<int, 4> CharacterGraphicsComponent::getSignatureColor() const {
+    return signatureColor;
+}
+
 void CharacterGraphicsComponent::init() {
     setVisible(true);
     playAnim("idle");

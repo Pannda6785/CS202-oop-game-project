@@ -12,6 +12,7 @@ class HeroWideHandler : public TapHandler {
     static constexpr float SPEED_INIT = 1200;
     static constexpr float SPEED_FINAL = 300;
     static constexpr float LIFETIME = 0.750f;
+    static constexpr float FADEOUT = 0.150f;
 
     static constexpr float MOVEMENT_MODIFIER_VALUE = 0.85f;
     static constexpr float MOVEMENT_MODIFIER_DURATION = 0.800f;

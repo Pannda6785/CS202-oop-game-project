@@ -14,7 +14,7 @@ const Texture* TextureManager::getTexture(std::string path) {
     }
     Texture texture = LoadTexture(path.c_str());
     if (texture.id == 0) {
-        std::cerr << "Failed to load texture: " << path << std::endl;
+        std::cerr << "Warning: TextureManager - Failed to load texture: " << path << std::endl;
         return nullptr;
     }
     textureCache[path] = texture;

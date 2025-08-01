@@ -28,6 +28,7 @@ public:
     void roundReset();
 
     // World interaction
+    const IWorldView* getWorld() const;
     void spawnBullet(std::unique_ptr<Bullet> bullet);
 
     // Life data

@@ -75,7 +75,12 @@ void Player::roundReset() {
     for (auto& mod : modifiers) mod = {0.0f, 1.0f};
 }
 
-// --- Operations ---
+// --- World interaction ---
+
+const IWorldView* Player::getWorld() const {
+    return world;
+}
+
 void Player::spawnBullet(std::unique_ptr<Bullet> bullet) {
     bullet->resize(modifiers[static_cast<int>(Unit::Modifier::BulletSizeModifier)].second);
     bulletSpawner->spawnBullet(move(bullet));

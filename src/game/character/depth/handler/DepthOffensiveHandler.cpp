@@ -1,9 +1,10 @@
 #include "DepthOffensiveHandler.hpp"
 #include "../../../player/Player.hpp"
 #include "../DepthGraphicsComponent.hpp"
-#include "../../../bullet/StraightBulletPro.hpp"
-#include "../../../bullet/CommonBulletGraphicsComponent.hpp"
+#include "../../../bullet/StraightBullet.hpp"
+#include "../../../bullet/TextureBulletGraphicsComponent.hpp"
 #include "../../../hitbox/CircleHitbox.hpp"
+#include "../../../../graphics/TextureManager.hpp"
 
 #include <cmath>
 #include <algorithm>
@@ -48,15 +49,15 @@ void DepthOffensiveHandler::tick(bool isFocusing) {
 }
 
 void DepthOffensiveHandler::spawnBullet() {
-    constexpr float PI = 3.14159265358979323846f;
+    constexpr float MY_PI = 3.14159265358979323846f;
     Unit::Vec2D pos = player->getPosition();
     Unit::Vec2D aimDir = player->getArrow().normalized();
 
     float spread = ANGLE_SPREAD[step];
     int numBullets = NUM_BULLETS;
-    float baseAngle = std::atan2(aimDir.y, aimDir.x) * 180.0f / static_cast<float>(PI);
+    float baseAngle = std::atan2(aimDir.y, aimDir.x) * 180.0f / static_cast<float>(MY_PI);
 
-    std::string bulletTexture = "../assets/sprites/depth/bullet/hydra_bullets_0_p1_0005.png";
+    const Texture* bulletTexture = TextureManager::instance().getTexture("../assets/sprites/depth/bullet/hydra_bullets_0_p1_0005.png");
     constexpr float visibleRatio = 3.5f / 6.0f;
     constexpr float textureWidth = 512;
     constexpr float resize = (RADIUS * 2) / (textureWidth * visibleRatio);
@@ -69,25 +70,22 @@ void DepthOffensiveHandler::spawnBullet() {
 
     for (int i = 0; i < numBullets; ++i) {
         float angleDeg = baseAngle - spread + (2.0f * spread) * i / (numBullets - 1);
-        float rad = angleDeg * PI / 180.0f;
+        float rad = angleDeg * MY_PI / 180.0f;
         Unit::Vec2D dir(std::cos(rad), std::sin(rad));
 
-        auto bullet = std::make_unique<StraightBulletPro>(
+        auto bullet = std::make_unique<StraightBullet>(
             player->getPlayerId(),
-            pos + dir * RADIUS,
+            std::make_unique<TextureBulletGraphicsComponent>(bulletTexture, resize),
+            pos,
             dir,
             speedFunc,
             lifetime
         );
-        auto gfx = std::make_unique<CommonBulletGraphicsComponent>(
-            bullet.get(),
-            bulletTexture,
-            resize,
-            STARTUP
-        );
-        bullet->addBulletGraphics(std::move(gfx));
-        bullet->addLifeHitbox(0.0f, std::make_unique<CircleHitbox>(Unit::Vec2D(), RADIUS));
-        bullet->addDamagingHitbox(STARTUP, std::make_unique<CircleHitbox>(Unit::Vec2D(), RADIUS));
+
+        bullet->addLifeHitbox(0, std::make_unique<CircleHitbox>(Unit::Vec2D(0, 0), RADIUS));
+        bullet->addDamagingHitbox(STARTUP, std::make_unique<CircleHitbox>(Unit::Vec2D(0, 0), RADIUS));
+        dynamic_cast<TextureBulletGraphicsComponent*>(bullet->getGraphics())->addFadein(0.0f, STARTUP / 2);
+
         player->spawnBullet(std::move(bullet));
     }
 }

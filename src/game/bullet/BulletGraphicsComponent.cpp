@@ -5,11 +5,12 @@
 #include "../devtool/DevTool.hpp"
 #include <raylib.h>
 
-BulletGraphicsComponent::BulletGraphicsComponent(const Bullet* bullet) : bullet(bullet) {
-    if (!bullet) {
-        throw std::invalid_argument("BulletGraphicsComponent requires a valid Bullet pointer.");
-    }
+BulletGraphicsComponent::BulletGraphicsComponent() {
     setLayer(Unit::Layer::Bullet);
+}
+
+void BulletGraphicsComponent::registerBullet(const Bullet* bullet) {
+    this->bullet = bullet;
 }
 
 void BulletGraphicsComponent::render() const {

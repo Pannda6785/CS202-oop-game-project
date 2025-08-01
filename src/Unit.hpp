@@ -105,7 +105,7 @@ namespace Unit {
         Underlay = 10,
         Character = 20,
         Bullet = 30,
-        Overlap = 40,
+        Overlay = 40,
         Foreground = 50,
         HUD = 60,
         UI = 70

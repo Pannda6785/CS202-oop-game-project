@@ -7,19 +7,18 @@ class HeroGraphicsComponent;
 
 class HeroDefensiveHandler : public TapHandler {
     static constexpr float INVINCIBILITY_DURATION = 0.500f; // minor
-    static constexpr float STUN_DURATION = 1.2f;
+    static constexpr float STUN_DURATION = 1.380;
 
     // move control
     static constexpr float COOLDOWN = 8.5f;
-    static constexpr float MOVEMENT_LOCK = 0.6f;
+    static constexpr float MOVEMENT_LOCK = 0.600f;
     static constexpr float ATTACK_LOCK = 0.600f;
-    static constexpr float SPELL_LOCK = 0.725f;
+    static constexpr float SPELL_LOCK = 0.720f;
 
     // bullet
     static constexpr float STARTUP = 0.425f;
     static constexpr float RADIUS = 335;
-    static constexpr float LIFETIME = 0.5f; // for graphics to live
-    static constexpr float BLOOM_TIME = 0.1f;
+    static constexpr float LIFETIME = 1.800f;
 
 public:
     HeroDefensiveHandler(HeroGraphicsComponent* graphics);
@@ -29,6 +28,8 @@ protected:
 
 private:
     HeroGraphicsComponent* graphics;
+    
+    void spawnBullet();
 };
 
 #endif // HERO_DEFENSIVE_HANDLER_HPP

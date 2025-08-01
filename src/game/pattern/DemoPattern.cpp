@@ -1,7 +1,9 @@
 #include "DemoPattern.hpp"
 
 #include "../bullet/StraightBullet.hpp"
-#include "../bullet/CommonBulletGraphicsComponent.hpp"
+#include "../bullet/TextureBulletGraphicsComponent.hpp"
+#include "../hitbox/CircleHitbox.hpp"
+#include "../../graphics/TextureManager.hpp"
 
 #include "../IBulletSpawner.hpp"
 #include "../../Unit.hpp"
@@ -45,24 +47,19 @@ void DemoPattern::update(float dt) {
             Unit::Vec2D position = { startX + i * step, -40.0f };
             Unit::Vec2D velocity = { 0.0f, BULLET_SPEED };
 
+            const Texture* texture = TextureManager::instance().getTexture(TEXTURE_PATH);
             const float resize = (BULLET_RADIUS * 2.0f) / (TEXTURE_WIDTH * VISIBLE_RATIO);
-            
+
             auto bullet = std::make_unique<StraightBullet>(
                 OWNER_ID,
+                std::make_unique<TextureBulletGraphicsComponent>(texture, resize),
                 position,
                 velocity,
-                BULLET_RADIUS,
                 BULLET_SPEED,
-                BULLET_STARTUP,
                 BULLET_LIFESPAN
             );
-            auto graphics = std::make_unique<CommonBulletGraphicsComponent>(
-                bullet.get(),
-                TEXTURE_PATH,
-                resize,
-                BULLET_STARTUP
-            );
-            bullet->addBulletGraphics(std::move(graphics));
+            bullet->addLifeHitbox(0, std::make_unique<CircleHitbox>(position, BULLET_RADIUS));
+            bullet->addDamagingHitbox(BULLET_STARTUP, std::make_unique<CircleHitbox>(position, BULLET_RADIUS));
 
             spawner->spawnBullet(std::move(bullet));
         }

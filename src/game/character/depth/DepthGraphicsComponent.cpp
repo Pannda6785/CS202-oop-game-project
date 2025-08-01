@@ -4,6 +4,7 @@
 #include "../../../graphics/TextureManager.hpp"
 
 DepthGraphicsComponent::DepthGraphicsComponent() : CharacterGraphicsComponent() {
+    signatureColor = {0, 217, 140, 255};
     loadTextures();
 }
 

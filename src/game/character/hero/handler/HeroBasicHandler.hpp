@@ -16,10 +16,10 @@ class HeroBasicHandler : public HoldHandler {
 
     // move control
     static constexpr float MOVEMENT_MODIFIER_AMOUNT = 0.4f;
-    static constexpr float MOVEMENT_MODIFIER_DURATION = 0.400f;
+    static constexpr float MOVEMENT_MODIFIER_DURATION = 0.380f;
     static constexpr float ARROW_MODIFIER_AMOUNT = 0.4f;
-    static constexpr float ARROW_MODIFIER_DURATION = 0.350f;
-    static constexpr float ATTACK_LOCK = 0.340f;
+    static constexpr float ARROW_MODIFIER_DURATION = 0.380f;
+    static constexpr float ATTACK_LOCK = 0.320f;
     static constexpr float COMBO_HOLD = 0.500f;
     static constexpr float OFFENSIVE_COMBO_HOLD = 0.700f;
 

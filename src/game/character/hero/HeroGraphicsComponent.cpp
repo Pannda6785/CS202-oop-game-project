@@ -4,6 +4,7 @@
 #include "../../../graphics/TextureManager.hpp"
 
 HeroGraphicsComponent::HeroGraphicsComponent() : CharacterGraphicsComponent() {
+    signatureColor = {113, 255, 62, 255};
     loadTextures();
 }
 

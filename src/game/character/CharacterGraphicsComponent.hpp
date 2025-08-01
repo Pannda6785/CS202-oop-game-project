@@ -7,6 +7,7 @@
 #include <vector>
 #include <string>
 #include <unordered_map>
+#include <array>
 
 class Player;
 class Texture;
@@ -18,6 +19,7 @@ public:
     virtual ~CharacterGraphicsComponent();
 
     void registerPlayer(Player* playerView);
+    std::array<int, 4> getSignatureColor() const;
 
     void render() const override final;
     void init();
@@ -42,6 +44,7 @@ private:
 
 protected:
     const Player* player;
+    std::array<int, 4> signatureColor = {255, 255, 255, 255}; // default white
 
     struct Animation {
         std::vector<const Texture*> frames;
