@@ -28,3 +28,7 @@ void Background::setBackgroundRect(Rectangle rect) {
 void Background::setAngle(float angle) {
     this->angle = angle;
 }
+
+float Background::getWidth() const {
+    return backgroundRect.width;
+}

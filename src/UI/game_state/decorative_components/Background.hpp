@@ -14,6 +14,7 @@ public:
     void setBackgroundRect(Rectangle rect);
     void setOriginMiddle();
     void setAngle(float angle);
+    float getWidth() const;
 
 private:
     Rectangle backgroundRect = {0, 0, 0, 0};

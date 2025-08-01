@@ -50,7 +50,7 @@ void Artwork::setScale(float s) {
 
 int Artwork::getWidth() const {
     if (textures.empty()) return 0;
-    return drawWidth > 0 ? drawWidth : textures[0].width;
+    return textures[0].width * scale;
 }
 
 void Artwork::setFadeInTime(float time) {
@@ -59,6 +59,17 @@ void Artwork::setFadeInTime(float time) {
 
 bool Artwork::finishedFadeIn() const {
     return fadeInTimer >= fadeInTime;
+}
+
+void Artwork::setMiddle(bool mid) {
+    middle = mid;
+}
+
+void Artwork::setFlip(bool flip) {
+    this->flip = flip;
+    if(flip && middle){
+        origin.x = -textures[0].width / 2.0f; // Adjust origin for flipping
+    }
 }
 
 void Artwork::update(float dt) {
@@ -76,11 +87,17 @@ void Artwork::render() const {
     const Texture2D& tex = textures[static_cast<int>(time / period) % textures.size()];
     int w = drawWidth > 0 ? drawWidth : tex.width;
     int h = drawHeight > 0 ? drawHeight : tex.height;
-
+    Vector2 origin = {0.0f, 0.0f};
+    // if(middle) {
+    //     origin.x = w / 2.0f;
+    //     if(flip) {
+    //         origin.x = -origin.x;
+    //     }
+    // }
     Rectangle source = { 0, 0, (float)tex.width, (float)tex.height };
     Rectangle dest = { posX, posY, tex.width * scale, tex.height * scale };
-    Vector2 origin = { 0, 0 };
     float rotation = 0;
     Color color = { 255, 255, 255, 255 * (fadeInTime > 0.0f ? fadeInTimer / fadeInTime : 1.0f) };
+    if(flip) source.width = -source.width; // Flip horizontally if needed
     DrawTexturePro(tex, source, dest, origin, rotation, color);
 }

@@ -23,6 +23,7 @@ public:
     int getX() const;
     int getY() const;
     int getFontSize() const;
+    float getWidth() const;
     Color getColor() const;
 
     void render() const override;

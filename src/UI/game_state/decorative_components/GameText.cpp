@@ -62,6 +62,14 @@ Color GameText::getColor() const {
     return color;
 }
 
+float GameText::getWidth() const {
+    if (fontLoaded) {
+        return MeasureTextEx(font, text.c_str(), (float)fontSize, 1).x;
+    } else {
+        return MeasureText(text.c_str(), fontSize);
+    }
+}
+
 void GameText::render() const {
     if (text.empty()) return;
     if (fontLoaded) {

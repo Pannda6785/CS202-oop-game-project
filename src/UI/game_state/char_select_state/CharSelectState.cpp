@@ -51,7 +51,10 @@ void CharSelectState::enter() {
     charSelectorRight.setAngleRotate(-30.0f);
     charSelectorRight.setLayer(60);
 
-    charSelectPreviewManager.init(true); // Initialize with left side by default
+    // charSelectPreviewManagerLeft.init(true); // Initialize with left side by default
+    // charSelectPreviewManagerRight.init(false); // Initialize with right side by default
+    charSelectPreviewManagerLeft.setPreview("Sun Priestess", true);
+    charSelectPreviewManagerRight.setPreview("Sun Priestess", false);
 }
 
 void CharSelectState::update(float dt) {
@@ -61,9 +64,13 @@ void CharSelectState::update(float dt) {
     charSelectorLeft.update(dt);
     charSelectorRight.update(dt);
     if(charSelectorLeft.getChangeSelection()){
-        charSelectPreviewManager.setPreview("Silent Redhood", true);
+        charSelectPreviewManagerLeft.setPreview("Sun Priestess", true);
     }
-    charSelectPreviewManager.update(dt);
+    if(charSelectorRight.getChangeSelection()){
+        charSelectPreviewManagerRight.setPreview("Sun Priestess", false);
+    }
+    charSelectPreviewManagerLeft.update(dt);
+    charSelectPreviewManagerRight.update(dt);
 }
 
 void CharSelectState::exit() {

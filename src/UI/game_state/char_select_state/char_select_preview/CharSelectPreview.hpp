@@ -61,6 +61,7 @@ private:
     float expandingTilesTime = 0.3f;
     Color MovingTileBackgroundColor = {255, 255, 255, 100};
     int getLayer(std::string);
+    Vector2 getSymetricPos(Vector2 pos);
 };
 
 #endif // CHAR_SELECT_PREVIEW_HPP

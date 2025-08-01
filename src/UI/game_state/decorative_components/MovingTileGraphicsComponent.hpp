@@ -38,7 +38,7 @@ private:
     std::vector<Texture2D> textures;
     bool upward = true; // Direction of movement
     Rectangle restrictArea = {0, 0, (float)GetScreenWidth(), (float)GetScreenHeight()}; // Default restrict area to screen size
-    int initialNumTiles = 200; // Number of tiles to generate
+    int initialNumTiles = 10; // Number of tiles to generate
     Color color = WHITE; // Default color for rendering
     float expandingTime = 0.0f; // Time for expanding effect
     float expandingTimer = 0.0f; // Timer for expanding effect

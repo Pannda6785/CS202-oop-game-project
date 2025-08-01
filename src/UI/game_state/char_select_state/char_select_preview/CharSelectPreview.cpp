@@ -4,7 +4,7 @@
 #include <algorithm>
 
 CharSelectPreview::CharSelectPreview() {
-    enter();
+    // enter();
 }
 
 CharSelectPreview::~CharSelectPreview() {
@@ -25,31 +25,41 @@ void CharSelectPreview::enter() {
               "below_background",
               "idle_anim_preview",
               "char_name"};
+
+    mainPortrait.setMiddle(true);
+    mainPortrait.setScale(0.37f); // Set scale for main portrait
+    idleAnimPreview.setMiddle(true);
+    idleAnimPreview.setScale(0.45f); // Set scale for idle animation
+
     if(isLeft){
         background.setBackgroundRect({0, 0, GetScreenWidth() / 2.0f, GetScreenHeight()});
     } else{
-        mainPortraitPosition = {mainPortraitPosition.x + GetScreenWidth() / 2.0f, mainPortraitPosition.y};
-        idleAnimPreviewPosition = {idleAnimPreviewPosition.x + GetScreenWidth() / 2.0f, idleAnimPreviewPosition.y};
-        for(int i = 0; i < 3; i++){
-            backgroundTilesPosition[i] = {backgroundTilesPosition[i].x + GetScreenWidth() / 2.0f, backgroundTilesPosition[i].y};
-        }
-        frontTilePosition = {frontTilePosition.x + GetScreenWidth() / 2.0f, frontTilePosition.y};
-        charNamePosition = {charNamePosition.x + GetScreenWidth() / 2, charNamePosition.y};
         background.setBackgroundRect({GetScreenWidth() / 2.0f, 0, GetScreenWidth() / 2.0f, GetScreenHeight()});
+        mainPortraitPosition = getSymetricPos(mainPortraitPosition);
+        mainPortraitPosition.x -= mainPortrait.getWidth();
+        idleAnimPreviewPosition = getSymetricPos(idleAnimPreviewPosition);
+        idleAnimPreviewPosition.x -= idleAnimPreview.getWidth();
+        for(int i = 0; i < 3; i++) backgroundTilesPosition[i] = getSymetricPos(backgroundTilesPosition[i]);
+        for(int i = 0; i < 3; i++) backgroundTilesAngle[i] = 180.0f - backgroundTilesAngle[i];
+        charNamePosition = getSymetricPos(charNamePosition);
+        charNamePosition.x -= charName.getWidth();
+        ribbonBackgroundRect = {GetScreenWidth() / 2.0f, (float)GetScreenHeight() - belowBackgroundHeight - ribbonBackgroundHeight, (float)GetScreenWidth() / 2.0f, ribbonBackgroundHeight};
+        mainPortrait.setFlip(true);
+        idleAnimPreview.setFlip(true);
     }
+
     mainPortrait.setPosition(mainPortraitPosition.x, mainPortraitPosition.y);
-    mainPortrait.setScale(0.37f); // Set scale for main portrait
     mainPortrait.setLayer(getLayer("main_portrait"));
     mainPortrait.setFadeInTime(portraitFadeInTime);
+    
     idleAnimPreview.setPosition(idleAnimPreviewPosition.x, idleAnimPreviewPosition.y);
-    idleAnimPreview.setPeriod(0.28f); // Set animation period for idle animation
-    idleAnimPreview.setScale(0.45f); // Set scale for idle animation
     idleAnimPreview.setLayer(getLayer("idle_anim_preview"));
+    idleAnimPreview.setPeriod(0.28f); // Set animation period for idle animation
 
     for(int i = 0; i < 3; i++){
         backgroundTiles[i].setScale(0.60f);
-        backgroundTiles[i].setRestrictArea({0, 0, (float)GetScreenWidth() / 2.0f, (float)GetScreenHeight()});
-        backgroundTiles[i].setUpward(false);
+        backgroundTiles[i].setRestrictArea({isLeft ? 0 : (float)GetScreenWidth() / 2.0f, 0, (float)GetScreenWidth() / 2.0f, (float)GetScreenHeight()});
+        backgroundTiles[i].setUpward(!isLeft);
         backgroundTilesLayer[i] = getLayer("background_tile_" + std::to_string(i));
         backgroundTiles[i].setExpandingTime(expandingTilesTime);
         backgroundTiles[i].init(backgroundTilesPosition[i], backgroundTilesAngle[i], backgroundTilesSpeed[i], backgroundTilesLayer[i]);
@@ -58,7 +68,8 @@ void CharSelectPreview::enter() {
     for(int i = 0; i < 3; i++){
         movingTileBackground[i].setLayer(getLayer("tile_rect_" + std::to_string(i)));
         movingTileBackground[i].setBackgroundColor(MovingTileBackgroundColor);
-        movingTileBackground[i].setAngle(-(90.0f + backgroundTilesAngle[i]));
+        if(isLeft) movingTileBackground[i].setAngle(-(90.0f + backgroundTilesAngle[i]));
+        else movingTileBackground[i].setAngle(-(backgroundTilesAngle[i] - 90.0f));
     }
     
     charName.setPosition(charNamePosition.x, charNamePosition.y);
@@ -70,18 +81,21 @@ void CharSelectPreview::enter() {
     background.setLayer(getLayer("background"));
 
     belowBackground.setLayer(getLayer("below_background"));
-    belowBackground.setBackgroundRect({0, (float)GetScreenHeight() - belowBackgroundHeight, (float)GetScreenWidth() / 2.0f, belowBackgroundHeight});
+    belowBackground.setBackgroundRect({isLeft ? 0 : GetScreenWidth() / 2.0f, (float)GetScreenHeight() - belowBackgroundHeight, (float)GetScreenWidth() / 2.0f, belowBackgroundHeight});
     belowBackground.setBackgroundColor(BLACK);
 
-    ribbonBackground.setLayer(getLayer("ribbon_background"));   
+    ribbonBackground.setLayer(getLayer("ribbon_background"));
     ribbonBackground.setBackgroundRect(ribbonBackgroundRect);
 
     frontTile.setScale(0.60f);
     frontTile.addTexture("../assets/UI_sprites/side_ribbon.png");
-    frontTile.setRestrictArea({-100, 0, (float)GetScreenWidth() / 2.0f, (float)GetScreenHeight()});
-    std::cout << ribbonBackgroundRect.x << ' ' << ribbonBackgroundRect.y << std::endl;
+    if(isLeft){
+        frontTile.setRestrictArea({-100, 0, (float)GetScreenWidth() / 2.0f, (float)GetScreenHeight()});
+    } else{
+        frontTile.setRestrictArea({(float)GetScreenWidth() / 2.0f, 0, GetScreenWidth() / 2.0f, (float)GetScreenHeight()});
+    }
+    frontTile.setInitialNumTiles(isLeft ? 6 : 9);
     frontTile.init({ribbonBackgroundRect.x, (float)GetScreenHeight() - 22.0f}, 90.0f, 50.0f, getLayer("front_tile"));
-    frontTile.setInitialNumTiles(7);
 }
 
 void CharSelectPreview::setSide(bool isLeft) {
@@ -159,8 +173,13 @@ void CharSelectPreview::update(float dt) {
 int CharSelectPreview::getLayer(std::string layerName) {
     auto it = std::find(layers.begin(), layers.end(), layerName);
     if (it != layers.end()) {
-        return std::distance(layers.begin(), it) + 1;
+        return std::distance(layers.begin(), it);
     }
     assert(false);
     return 0; // Layer not found
+}
+
+Vector2 CharSelectPreview::getSymetricPos(Vector2 pos) {
+    float dx = GetScreenWidth() / 2.0f - pos.x;
+    return {GetScreenWidth() / 2.0f + dx, pos.y};
 }

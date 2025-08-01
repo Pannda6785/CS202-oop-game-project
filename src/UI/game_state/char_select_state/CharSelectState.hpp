@@ -45,7 +45,8 @@ private:
     CharSelector charSelectorLeft;
     CharSelector charSelectorRight;
 
-    CharSelectPreviewManager charSelectPreviewManager;
+    CharSelectPreviewManager charSelectPreviewManagerLeft;
+    CharSelectPreviewManager charSelectPreviewManagerRight;
 
 };
 
