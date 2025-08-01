@@ -83,8 +83,7 @@ void DepthOffensiveHandler::spawnBullet() {
             bullet.get(),
             bulletTexture,
             resize,
-            STARTUP,
-            true
+            STARTUP
         );
         bullet->addBulletGraphics(std::move(gfx));
         bullet->addLifeHitbox(0.0f, std::make_unique<CircleHitbox>(Unit::Vec2D(), RADIUS));

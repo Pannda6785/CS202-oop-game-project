@@ -12,5 +12,5 @@ Depth::Depth() : HandlerCharacter("Depth", 570.0f, 330.0f, std::make_unique<Dept
 }
 
 void Depth::neutralize() {
-    order = { Unit::Move::Defensive, Unit::Move::Offensive, Unit::Move::Wide, Unit::Move::Basic };
+    order = { Unit::Move::Defensive, Unit::Move::Basic, Unit::Move::Wide, Unit::Move::Offensive };
 }

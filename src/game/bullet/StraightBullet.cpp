@@ -29,8 +29,14 @@ void StraightBullet::update(float dt) {
     }
     if (graphics) graphics->update(dt);
 }
+
+void StraightBullet::makeDone() {
+    forcedDone = true;
+}
+
 bool StraightBullet::isDone() const {
     if (remainingTime <= 0.0f) return true;
+    if (forcedDone) return true;
 
     float margin = 4 * radius * getSize();
 

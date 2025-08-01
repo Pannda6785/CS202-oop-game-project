@@ -24,6 +24,7 @@ public:
 
     void update(float dt) override;
     bool isDone() const override;
+    void makeDone();
 
     Unit::Vec2D getPosition() const override;
     Unit::Vec2D getVelocity() const override;
@@ -36,6 +37,7 @@ private:
     float remainingTime;
     float remainingStartup;
     bool startedUp = false;
+    bool forcedDone = false;
 
     std::unique_ptr<BulletGraphicsComponent> graphics;
 };

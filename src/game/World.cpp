@@ -16,6 +16,10 @@ void World::update(float dt) {
     for (auto& bullet : bullets) {
         bullet->update(dt);
     }
+    while (!pendingBullets.empty()) {
+        bullets.push_back(std::move(pendingBullets.back()));
+        pendingBullets.pop_back();
+    }
     handleCollisions();
 }
 
@@ -69,7 +73,7 @@ void World::addPattern(std::unique_ptr<Pattern> pattern) {
 }
 
 void World::spawnBullet(std::unique_ptr<Bullet> bullet) {
-    bullets.push_back(std::move(bullet));
+    pendingBullets.push_back(std::move(bullet));
 }
 
 void World::handleCollisions() {
@@ -156,12 +160,16 @@ void World::handleCollisions() {
     }
     
     /* Remove to-delete bullets */
-    std::vector<std::unique_ptr<Bullet>> newBullets;
-    for (size_t i = 0; i < bullets.size(); ++i) {
-        if (!toDelete[i] && !bullets[i]->isDone()) {
-            newBullets.push_back(std::move(bullets[i]));
-        }
-    }
-    bullets = std::move(newBullets);
+    bullets.erase(
+        std::remove_if(
+            bullets.begin(),
+            bullets.end(),
+            [&](const std::unique_ptr<Bullet>& bullet) {
+                size_t i = &bullet - &bullets[0];
+                return toDelete[i] || bullet->isDone();
+            }
+        ),
+        bullets.end()
+    );
 
 }

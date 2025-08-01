@@ -30,6 +30,8 @@ private:
     std::vector<std::unique_ptr<Pattern>> patterns;
     std::unique_ptr<DevTool> devTool;
 
+    std::vector<std::unique_ptr<Bullet>> pendingBullets;
+
     void handleCollisions();
 };
 

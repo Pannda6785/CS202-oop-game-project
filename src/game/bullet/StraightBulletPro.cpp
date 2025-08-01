@@ -31,9 +31,13 @@ void StraightBulletPro::update(float dt) {
     if (graphics) graphics->update(dt);
 }
 
+void StraightBulletPro::makeDone() {
+    forcedDone = true;
+}
 
 bool StraightBulletPro::isDone() const {
     if (timer > lifetime) return true;
+    if (forcedDone) return true;
 
     float margin = 500.0f; // a bit performance burdened, but just to be safe
     

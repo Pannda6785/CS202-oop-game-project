@@ -39,6 +39,7 @@ public:
 
     void update(float dt) override;
     bool isDone() const override;
+    void makeDone();
 
     Unit::Vec2D getPosition() const override;
     Unit::Vec2D getVelocity() const override;
@@ -51,7 +52,8 @@ private:
     
     Unit::Vec2D pos;
     float timer = 0.0f;
-    
+    bool forcedDone = false;
+
     std::vector<std::pair<float, std::unique_ptr<Hitbox>>> pendingLifeHitbox;
     std::vector<std::pair<float, std::unique_ptr<Hitbox>>> pendingDamagingHitbox;
     std::vector<std::pair<float, std::unique_ptr<Hitbox>>> pendingCleansingHitbox;
