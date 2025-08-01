@@ -119,6 +119,19 @@ void World::handleCollisions() {
         }
     }
 
+    /* Bullet vs Player: Lock applying */
+    for (size_t i = 0; i < bullets.size(); ++i) {
+        if (toDelete[i] || bullets[i]->isDone()) continue;
+        for (const auto& [hb, lock, who, duration] : bullets[i]->getLockHitboxes()) {
+            if (!hb) continue;
+            for (auto& player : players) {
+                if (player->getPlayerId() == who && player->getInvincibility(true) < Unit::EPS && hb->collidesWith(*player->getHitbox())) {
+                    player->applyLock(lock, duration);
+                }
+            }
+        }
+    }
+
     /* Bullet vs Player: Damage applying */
     std::vector<int> hitPlayers;
     for (size_t i = 0; i < bullets.size(); ++i) {

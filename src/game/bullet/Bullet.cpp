@@ -58,3 +58,11 @@ const std::vector<std::tuple<const Hitbox*, Unit::Modifier, int, float, float>> 
     }
     return result;
 }
+
+const std::vector<std::tuple<const Hitbox*, Unit::Lock, int, float>> Bullet::getLockHitboxes() const {
+    std::vector<std::tuple<const Hitbox*, Unit::Lock, int, float>> result;
+    for (const auto& [hitbox, modifier, who, duration] : lockHitboxes) {
+        result.emplace_back(hitbox.get(), modifier, who, duration);
+    }
+    return result;
+}

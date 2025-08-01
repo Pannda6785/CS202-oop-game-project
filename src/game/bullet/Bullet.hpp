@@ -27,6 +27,7 @@ public:
     const Hitbox* getCleansingHitbox() const;
     const std::vector<std::tuple<const Hitbox*, bool, int, float>> getInvincibilityHitboxes() const;
     const std::vector<std::tuple<const Hitbox*, Unit::Modifier, int, float, float>> getModifierHitboxes() const;
+    const std::vector<std::tuple<const Hitbox*, Unit::Lock, int, float>> getLockHitboxes() const;
 
 protected:
     int whose;
@@ -36,6 +37,8 @@ protected:
     std::unique_ptr<Hitbox> cleansingHitbox;
     std::vector<std::tuple<std::unique_ptr<Hitbox>, bool, int, float>> invincibilityHitboxes; // (hitbox, major, who, how long)
     std::vector<std::tuple<std::unique_ptr<Hitbox>, Unit::Modifier, int, float, float>> modifierHitboxes; // (hitbox, which modifier, who, how long, how much)
+    std::vector<std::tuple<std::unique_ptr<Hitbox>, Unit::Lock, int, float>> lockHitboxes; // (hitbox, which modifier, who, how long)
+
 };
 
 #endif // BULLET_HPP

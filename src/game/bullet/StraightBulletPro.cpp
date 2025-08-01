@@ -86,6 +86,9 @@ void StraightBulletPro::addInvincibilityHitbox(float time, std::unique_ptr<Hitbo
 void StraightBulletPro::addModifierHitbox(float time, std::unique_ptr<Hitbox> hitbox, Unit::Modifier modifier, int who, float duration, float amount) {
     pendingModifierHitboxes.emplace_back(time, std::move(hitbox), modifier, who, duration, amount);
 }
+void StraightBulletPro::addLockHitbox(float time, std::unique_ptr<Hitbox> hitbox, Unit::Lock lock, int who, float duration) {
+    pendingLockHitboxes.emplace_back(time, std::move(hitbox), lock, who, duration);
+}
 
 void StraightBulletPro::removeLifeHitbox(float time) {
     lifeHitboxClearTime = time;
@@ -101,6 +104,9 @@ void StraightBulletPro::removeInvincibilityHitboxes(float time) {
 }
 void StraightBulletPro::removeModifierHitboxes(float time) {
     modifierHitboxesClearTime = time;
+}
+void StraightBulletPro::removeLockHitboxes(float time) {
+    lockHitboxesClearTime = time;
 }
 
 void StraightBulletPro::resolvePendingHitboxes() {
@@ -141,6 +147,14 @@ void StraightBulletPro::resolvePendingHitboxes() {
         if (timer >= std::get<0>(*it)) {
             modifierHitboxes.emplace_back(std::move(std::get<1>(*it)), std::get<2>(*it), std::get<3>(*it), std::get<4>(*it), std::get<5>(*it));
             it = pendingModifierHitboxes.erase(it);
+        } else {
+            ++it;
+        }
+    }
+    for (auto it = pendingLockHitboxes.begin(); it != pendingLockHitboxes.end();) {
+        if (timer >= std::get<0>(*it)) {
+            lockHitboxes.emplace_back(std::move(std::get<1>(*it)), std::get<2>(*it), std::get<3>(*it), std::get<4>(*it));
+            it = pendingLockHitboxes.erase(it);
         } else {
             ++it;
         }

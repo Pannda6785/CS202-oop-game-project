@@ -30,12 +30,14 @@ public:
     void addCleansingHitbox(float time, std::unique_ptr<Hitbox> hitbox);
     void addInvincibilityHitbox(float time, std::unique_ptr<Hitbox> hitbox, bool major, int who, float duration);
     void addModifierHitbox(float time, std::unique_ptr<Hitbox> hitbox, Unit::Modifier modifier, int who, float duration, float amount);
+    void addLockHitbox(float time, std::unique_ptr<Hitbox> hitbox, Unit::Lock lock, int who, float duration);
 
     void removeLifeHitbox(float time);
     void removeDamagingHitbox(float time);
     void removeCleansingHitbox(float time);
     void removeInvincibilityHitboxes(float time);
     void removeModifierHitboxes(float time);
+    void removeLockHitboxes(float time);
 
     void update(float dt) override;
     bool isDone() const override;
@@ -59,12 +61,14 @@ private:
     std::vector<std::pair<float, std::unique_ptr<Hitbox>>> pendingCleansingHitbox;
     std::vector<std::tuple<float, std::unique_ptr<Hitbox>, bool, int, float>> pendingInvincibilityHitboxes; // (time, hitbox, major, who, duration)
     std::vector<std::tuple<float, std::unique_ptr<Hitbox>, Unit::Modifier, int, float, float>> pendingModifierHitboxes; // (time, hitbox, modifier, who, duration, amount)
+    std::vector<std::tuple<float, std::unique_ptr<Hitbox>, Unit::Lock, int, float>> pendingLockHitboxes; // (time, hitbox, modifier, who, duration)
 
     std::optional<float> lifeHitboxClearTime = std::nullopt;
     std::optional<float> damagingHitboxClearTime = std::nullopt;
     std::optional<float> cleansingHitboxClearTime = std::nullopt;
     std::optional<float> invincibilityHitboxesClearTime = std::nullopt;
     std::optional<float> modifierHitboxesClearTime = std::nullopt;
+    std::optional<float> lockHitboxesClearTime = std::nullopt;
 
     void resolvePendingHitboxes();
 };

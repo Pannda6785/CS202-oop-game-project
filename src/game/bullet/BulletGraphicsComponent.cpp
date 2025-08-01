@@ -40,4 +40,10 @@ void BulletGraphicsComponent::drawHitboxes() const {
     for (const auto& [hitbox, major, id, duration] : bullet->getInvincibilityHitboxes()) {
         drawHitbox(hitbox, YELLOW);
     }
+    for (const auto& [hitbox, modifier, id, duration, amount] : bullet->getModifierHitboxes()) {
+        drawHitbox(hitbox, PURPLE);
+    }
+    for (const auto& [hitbox, lock, id, duration] : bullet->getLockHitboxes()) {
+        drawHitbox(hitbox, PURPLE);
+    }
 }
