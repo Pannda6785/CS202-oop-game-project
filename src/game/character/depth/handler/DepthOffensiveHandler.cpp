@@ -59,8 +59,7 @@ void DepthOffensiveHandler::spawnBullet() {
 
     const Texture* bulletTexture = TextureManager::instance().getTexture("../assets/sprites/depth/bullet/hydra_bullets_0_p1_0005.png");
     constexpr float visibleRatio = 3.5f / 6.0f;
-    constexpr float textureWidth = 512;
-    constexpr float resize = (RADIUS * 2) / (textureWidth * visibleRatio);
+    const float resize = (RADIUS * 2) / (bulletTexture->width * visibleRatio);
 
     auto speedFunc = [fast = SPEED_FAST, slow = SPEED_SLOW, fastDur = FAST_DURATION[step]](float t) {
         return (t < fastDur) ? fast : slow;
@@ -82,8 +81,8 @@ void DepthOffensiveHandler::spawnBullet() {
             lifetime
         );
 
-        bullet->addLifeHitbox(0, std::make_unique<CircleHitbox>(Unit::Vec2D(0, 0), RADIUS));
-        bullet->addDamagingHitbox(STARTUP, std::make_unique<CircleHitbox>(Unit::Vec2D(0, 0), RADIUS));
+        bullet->addLifeHitbox(0, std::make_unique<CircleHitbox>(bullet->getPosition(), RADIUS));
+        bullet->addDamagingHitbox(STARTUP, std::make_unique<CircleHitbox>(bullet->getPosition(), RADIUS));
         dynamic_cast<TextureBulletGraphicsComponent*>(bullet->getGraphics())->addFadein(0.0f, STARTUP / 2);
 
         player->spawnBullet(std::move(bullet));

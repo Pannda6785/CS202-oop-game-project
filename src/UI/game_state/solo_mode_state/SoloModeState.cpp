@@ -9,7 +9,7 @@
 // #include "../../../game/character/redhood/Redhood.hpp"
 // #include "../../../game/character/arcanist/Arcanist.hpp"
 #include "../../../game/character/hero/Hero.hpp"
-// #include "../../../game/character/wyrm/Wyrm.hpp"
+#include "../../../game/character/wyrm/Wyrm.hpp"
 // #include "../../../game/character/lich/Lich.hpp"
 #include "../../../game/character/depth/Depth.hpp"
 // #include "../../../game/character/stormbeast/Stormbeast.hpp"
@@ -34,7 +34,7 @@ SoloModeState::SoloModeState(GameStateManager& gsm)
 
     world = std::make_unique<World>();
 
-    std::unique_ptr<Player> player1 = std::make_unique<Player>(0, world.get(), world.get(), std::make_unique<Hero>(), inputInterpreters[0]);
+    std::unique_ptr<Player> player1 = std::make_unique<Player>(0, world.get(), world.get(), std::make_unique<Wyrm>(), inputInterpreters[0]);
     std::unique_ptr<Player> player2 = std::make_unique<Player>(1, world.get(), world.get(), std::make_unique<Depth>(), inputInterpreters[1]);
     // std::unique_ptr<Player> player3 = std::make_unique<Player>(2, world.get(), world.get(), std::make_unique<Arcanist>(), inputInterpreters[1]);
     // std::unique_ptr<Player> player4 = std::make_unique<Player>(3, world.get(), world.get(), std::make_unique<Depth>(), inputInterpreters[1]);

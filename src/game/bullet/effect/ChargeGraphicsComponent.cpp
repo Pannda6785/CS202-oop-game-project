@@ -55,10 +55,12 @@ void ChargeGraphicsComponent::render() const {
     Unit::Vec2D pos = bullet->getPosition();
     float scale = bullet->getSize();
 
-    const Texture* tex = TextureManager::instance().getTexture(TEXTURE_PATH);
+
+    const Texture* tex = TextureManager::instance().getTexture("../assets/sprites/universal/spr_bullet_warning_0_1.png");
+    constexpr float visibleRatio = 1.0f;
+    float resize = 2.0f * radius * scale / (visibleRatio * tex->width);
     if (!tex) return;
 
-    float resize = 2.0f * radius * scale / (VISIBLE_RATIO * TEXTURE_WIDTH);
     Color drawColor = { (unsigned char)color[0], (unsigned char)color[1], (unsigned char)color[2], (unsigned char)color[3] };
     Rectangle source = { 0, 0, (float)tex->width, (float)tex->height };
     Rectangle dest = { pos.x, pos.y, tex->width * resize, tex->height * resize };
@@ -67,7 +69,7 @@ void ChargeGraphicsComponent::render() const {
 
     for (const auto& inner : inners) {
         if (inner.radius <= 0.0f) continue;
-        float innerResize = 2.0f * inner.radius * scale / (VISIBLE_RATIO * TEXTURE_WIDTH);
+        float innerResize = 2.0f * inner.radius * scale / (visibleRatio * tex->width);
         Color innerColor = { (unsigned char)inner.color[0], (unsigned char)inner.color[1], (unsigned char)inner.color[2], (unsigned char)inner.color[3] };
         Rectangle innerDest = { pos.x, pos.y, tex->width * innerResize, tex->height * innerResize };
         Vector2 innerOrigin = { innerDest.width / 2.0f, innerDest.height / 2.0f };

@@ -56,8 +56,7 @@ void HeroBasicHandler::spawnBullet(bool isFocusing) {
 
     const Texture* bulletTexture = TextureManager::instance().getTexture("../assets/sprites/hero/bullet/fencer_bullets_0_p1_0000.png");
     constexpr float visibleRatio = 0.25f;
-    constexpr float textureWidth = 256;
-    constexpr float resize = (RADIUS * 2) / (textureWidth * visibleRatio);
+    const float resize = (RADIUS * 2) / (bulletTexture->width * visibleRatio);
 
     Unit::Vec2D pos = player->getPosition();
     Unit::Vec2D baseDir = player->getArrow();

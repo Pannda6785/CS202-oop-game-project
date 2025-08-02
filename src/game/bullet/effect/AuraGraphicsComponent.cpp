@@ -25,8 +25,9 @@ void AuraGraphicsComponent::render() const {
     float radius = startRadius + (endRadius - startRadius) * t;
     float scale = bullet->getSize();
 
-    const Texture* tex = TextureManager::instance().getTexture(TEXTURE_PATH);
-    float resize = 2.0f * radius * scale / (VISIBLE_RATIO * TEXTURE_WIDTH);
+    const Texture* tex = TextureManager::instance().getTexture("../assets/sprites/universal/spr_fade_0.png");
+    constexpr float visibleRatio = 2.5f / 6.0f;
+    float resize = 2.0f * radius * scale / (visibleRatio * tex->width);
     if (!tex) return;
 
     Color drawColor = { (unsigned char)color[0], (unsigned char)color[1], (unsigned char)color[2], (unsigned char)color[3] };

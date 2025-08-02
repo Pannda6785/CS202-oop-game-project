@@ -10,8 +10,12 @@ void CompositeBulletGraphicsComponent::addComponent(std::unique_ptr<BulletGraphi
 void CompositeBulletGraphicsComponent::update(float dt) {
     time += dt;
     for (auto& tc : components) {
-        if (time >= tc.start) tc.component->setVisible(true);
-        if (time > tc.end) tc.component->setVisible(false);
+        if (time - 2 * dt < tc.start && time >= tc.start) {
+            tc.component->setVisible(true);
+        }
+        if (time - 2 * dt < tc.end && time >= tc.end) {
+            tc.component->setVisible(false);
+        }
         if (tc.component->isVisible()) {
             tc.component->update(dt);
         }

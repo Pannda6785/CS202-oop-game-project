@@ -7,10 +7,6 @@
 #include <string>
 
 class ChargeGraphicsComponent : public BulletGraphicsComponent {
-    std::string TEXTURE_PATH = "../assets/sprites/universal/spr_bullet_warning_0_1.png";
-    static constexpr float VISIBLE_RATIO = 1.0f;
-    static constexpr float TEXTURE_WIDTH = 1000.0f;
-
 public:
     // Automatic mode: radius animates from startRadius to endRadius over duration
     ChargeGraphicsComponent(std::array<int, 4> color, float startRadius, float endRadius, float duration);

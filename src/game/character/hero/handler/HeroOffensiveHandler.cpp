@@ -7,7 +7,7 @@ HeroOffensiveHandler::HeroOffensiveHandler(HeroGraphicsComponent* graphics)
 
 void HeroOffensiveHandler::update(float dt, const InputBufferer* input) {
     timer += dt;
-    if (timer - dt < MOVEMENT_MODIFIER_DURATION_1 && timer >= MOVEMENT_MODIFIER_DURATION_1) {
+    if (timer - 2 * dt < MOVEMENT_MODIFIER_DURATION_1 && timer >= MOVEMENT_MODIFIER_DURATION_1) {
         player->applyModifier(Unit::Modifier::MovementModifier, MOVEMENT_MODIFIER_DURATION_2, MOVEMENT_MODIFIER_VALUE_2);
     }
 }

@@ -5,11 +5,7 @@
 #include <array>
 #include <string>
 
-class RippleGraphicsComponent : public BulletGraphicsComponent {
-    std::string TEXTURE_PATH = "../assets/sprites/universal/spr_bullet_fade_0_1.png";
-    static constexpr float VISIBLE_RATIO = 1.0f;
-    static constexpr float TEXTURE_WIDTH = 520.0f;
-    
+class RippleGraphicsComponent : public BulletGraphicsComponent {    
 public:
     RippleGraphicsComponent(std::array<int, 4> color, 
                            int numRipples,

@@ -123,6 +123,7 @@ void StraightBullet::resolvePendingHitboxes() {
     for (auto it = pendingLifeHitbox.begin(); it != pendingLifeHitbox.end();) {
         if (timer >= it->first) {
             lifeHitbox = std::move(it->second);
+            lifeHitbox->resize(getSize());
             it = pendingLifeHitbox.erase(it);
         } else {
             ++it;
@@ -131,6 +132,7 @@ void StraightBullet::resolvePendingHitboxes() {
     for (auto it = pendingDamagingHitbox.begin(); it != pendingDamagingHitbox.end();) {
         if (timer >= it->first) {
             damagingHitbox = std::move(it->second);
+            damagingHitbox->resize(getSize());
             it = pendingDamagingHitbox.erase(it);
         } else {
             ++it;
@@ -139,6 +141,7 @@ void StraightBullet::resolvePendingHitboxes() {
     for (auto it = pendingCleansingHitbox.begin(); it != pendingCleansingHitbox.end();) {
         if (timer >= it->first) {
             cleansingHitbox = std::move(it->second);
+            cleansingHitbox->resize(getSize());
             it = pendingCleansingHitbox.erase(it);
         } else {
             ++it;
@@ -147,6 +150,7 @@ void StraightBullet::resolvePendingHitboxes() {
     for (auto it = pendingInvincibilityHitboxes.begin(); it != pendingInvincibilityHitboxes.end();) {
         if (timer >= std::get<0>(*it)) {
             invincibilityHitboxes.emplace_back(std::move(std::get<1>(*it)), std::get<2>(*it), std::get<3>(*it), std::get<4>(*it));
+            std::get<1>(*it)->resize(getSize());
             it = pendingInvincibilityHitboxes.erase(it);
         } else {
             ++it;
@@ -155,6 +159,7 @@ void StraightBullet::resolvePendingHitboxes() {
     for (auto it = pendingModifierHitboxes.begin(); it != pendingModifierHitboxes.end();) {
         if (timer >= std::get<0>(*it)) {
             modifierHitboxes.emplace_back(std::move(std::get<1>(*it)), std::get<2>(*it), std::get<3>(*it), std::get<4>(*it), std::get<5>(*it));
+            std::get<1>(*it)->resize(getSize());
             it = pendingModifierHitboxes.erase(it);
         } else {
             ++it;
@@ -163,6 +168,7 @@ void StraightBullet::resolvePendingHitboxes() {
     for (auto it = pendingLockHitboxes.begin(); it != pendingLockHitboxes.end();) {
         if (timer >= std::get<0>(*it)) {
             lockHitboxes.emplace_back(std::move(std::get<1>(*it)), std::get<2>(*it), std::get<3>(*it), std::get<4>(*it));
+            std::get<1>(*it)->resize(getSize());
             it = pendingLockHitboxes.erase(it);
         } else {
             ++it;

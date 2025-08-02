@@ -1,30 +1,33 @@
-#include "DepthWideHandler.hpp"
+#include "WyrmWideHandler.hpp"
+
 #include "../../../player/Player.hpp"
-#include "../DepthGraphicsComponent.hpp"
+#include "../WyrmGraphicsComponent.hpp"
 
 #include "../../../bullet/StraightBullet.hpp"
 #include "../../../bullet/TextureBulletGraphicsComponent.hpp"
-#include "../../../../graphics/TextureManager.hpp"
 #include "../../../hitbox/CircleHitbox.hpp"
+#include "../../../../graphics/TextureManager.hpp"
 
 #include <cmath>
 
-DepthWideHandler::DepthWideHandler(DepthGraphicsComponent* graphics)
+WyrmWideHandler::WyrmWideHandler(WyrmGraphicsComponent* graphics)
     : TapHandler(Unit::Move::Wide), graphics(graphics) {}
 
-void DepthWideHandler::tap(bool isFocusing) {
-    graphics->useWide();
+void WyrmWideHandler::tap(bool isFocusing) {
+    graphics->roar(MOVEMENT_LOCK_DURATION, 0.25f);
 
     spawnBullet();
 
     player->applyImplicitMoveLock();
-    player->applyLock(Unit::Lock::MovementLock, MOVEMENT_LOCK);
-    player->applyLock(Unit::Lock::ArrowLock, ARROW_LOCK);
     player->applyLock(Unit::Lock::BasicLock, ATTACK_LOCK);
     player->applyLock(Unit::Lock::WideLock, ATTACK_LOCK);
+    player->applyLock(Unit::Lock::OffensiveLock, SPELL_LOCK);
+    player->applyLock(Unit::Lock::DefensiveLock, SPELL_LOCK);
+    player->applyLock(Unit::Lock::MovementLock, MOVEMENT_LOCK_DURATION);
+    player->applyLock(Unit::Lock::ArrowLock, ARROW_LOCK);
 }
 
-void DepthWideHandler::spawnBullet() {
+void WyrmWideHandler::spawnBullet() {
     constexpr float MY_PI = 3.14159265358979323846f;
 
     Unit::Vec2D pos = player->getPosition();
@@ -34,8 +37,8 @@ void DepthWideHandler::spawnBullet() {
     constexpr float ANGLE_STEP = 360.0f / NUM_BULLETS;
     float baseAngle = std::atan2(aimDir.y, aimDir.x) * 180.0f / static_cast<float>(MY_PI) + ANGLE_STEP / 2;
 
-    const Texture* bulletTexture = TextureManager::instance().getTexture("../assets/sprites/depth/bullet/hydra_bullets_0_p1_0001.png");
-    constexpr float visibleRatio = 3.5f / 6.0f;
+    auto bulletTexture = TextureManager::instance().getTexture("../assets/sprites/wyrm/bullet/nidhogg_bullet_0_p1_0001.png");
+    constexpr float visibleRatio = 0.5f;
     const float resize = (RADIUS * 2) / (bulletTexture->width * visibleRatio);
 
     for (int wave = 0; wave < 2; ++wave) {
@@ -46,19 +49,18 @@ void DepthWideHandler::spawnBullet() {
             float angleRad = angleDeg * static_cast<float>(MY_PI) / 180.0f;
 
             Unit::Vec2D dir(std::cos(angleRad), std::sin(angleRad));
-            Unit::Vec2D velocity = dir * speed;
 
             auto bullet = std::make_unique<StraightBullet>(
                 player->getPlayerId(),
                 std::make_unique<TextureBulletGraphicsComponent>(bulletTexture, resize),
                 pos + dir * SPAWN_RADIUS,
-                velocity,
+                dir,
                 speed,
                 1e9
             );
-            bullet->addLifeHitbox(0, std::make_unique<CircleHitbox>(bullet->getPosition(), RADIUS));
+            bullet->addLifeHitbox(0.0f, std::make_unique<CircleHitbox>(bullet->getPosition(), RADIUS));
             bullet->addDamagingHitbox(STARTUP, std::make_unique<CircleHitbox>(bullet->getPosition(), RADIUS));
-            dynamic_cast<TextureBulletGraphicsComponent*>(bullet->getGraphics())->addFadein(0.0f, STARTUP / 2);
+            dynamic_cast<TextureBulletGraphicsComponent*>(bullet->getGraphics())->addFadein(0, STARTUP);
 
             player->spawnBullet(std::move(bullet));
         }

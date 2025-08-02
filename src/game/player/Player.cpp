@@ -162,7 +162,7 @@ void Player::applyModifier(Unit::Modifier mod, float duration, float value, bool
         modifiers[static_cast<int>(mod)] = {duration, value};
     } else {
         // only if the previous duration is very long should the previous effect be continued
-        if (modifiers[static_cast<int>(mod)].first < 10) {
+        if (modifiers[static_cast<int>(mod)].first < 1000) {
             modifiers[static_cast<int>(mod)] = {duration, value};
         }
     }

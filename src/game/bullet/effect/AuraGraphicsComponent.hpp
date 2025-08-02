@@ -6,10 +6,6 @@
 #include <string>
 
 class AuraGraphicsComponent : public BulletGraphicsComponent {
-    std::string TEXTURE_PATH = "../assets/sprites/universal/spr_fade_0.png";
-    static constexpr float VISIBLE_RATIO = 2.5f / 6.0f;
-    static constexpr float TEXTURE_WIDTH = 128.0f;
-
 public:
     AuraGraphicsComponent(std::array<int, 4> color,
                          float startRadius,

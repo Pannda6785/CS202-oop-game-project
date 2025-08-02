@@ -13,7 +13,7 @@ HeroWideHandler::HeroWideHandler(HeroGraphicsComponent* graphics)
 
 void HeroWideHandler::update(float dt, const InputBufferer* input) {
     timer += dt;
-    if (timer - dt < DELAY && timer >= DELAY) {
+    if (timer - 2 * dt < DELAY && timer >= DELAY) {
         // Shoo to the two sides
         for (float sideAngle : {90.0f, -90.0f}) {
             spawnBullet(sideAngle);
@@ -45,10 +45,8 @@ void HeroWideHandler::spawnBullet(float angle) {
     constexpr float MY_PI = 3.14159265358979323846f;
 
     const Texture* bulletTexture = TextureManager::instance().getTexture("../assets/sprites/hero/bullet/spr_fen_0_wh_7_1.png");
-    
     constexpr float visibleRatio = 2.5f / 6.0f;
-    constexpr float textureWidth = 231;
-    constexpr float resize = (RADIUS * 2) / (textureWidth * visibleRatio);
+    const float resize = (RADIUS * 2) / (bulletTexture->width * visibleRatio);
 
     Unit::Vec2D pos = player->getPosition();
     float baseAngle = std::atan2(directionSnapshot.y, directionSnapshot.x) * 180.0f / static_cast<float>(MY_PI);
