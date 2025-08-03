@@ -72,7 +72,7 @@ void DepthOffensiveHandler::spawnBullet() {
         float rad = angleDeg * MY_PI / 180.0f;
         Unit::Vec2D dir(std::cos(rad), std::sin(rad));
 
-        auto bullet = std::make_unique<StraightBullet>(
+        auto bullet = std::make_shared<StraightBullet>(
             player->getPlayerId(),
             std::make_unique<TextureBulletGraphicsComponent>(bulletTexture, resize),
             pos,

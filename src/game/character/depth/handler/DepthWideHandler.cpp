@@ -48,7 +48,7 @@ void DepthWideHandler::spawnBullet() {
             Unit::Vec2D dir(std::cos(angleRad), std::sin(angleRad));
             Unit::Vec2D velocity = dir * speed;
 
-            auto bullet = std::make_unique<StraightBullet>(
+            auto bullet = std::make_shared<StraightBullet>(
                 player->getPlayerId(),
                 std::make_unique<TextureBulletGraphicsComponent>(bulletTexture, resize),
                 pos + dir * SPAWN_RADIUS,

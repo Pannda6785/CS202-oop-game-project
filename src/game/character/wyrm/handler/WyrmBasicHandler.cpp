@@ -67,7 +67,7 @@ void WyrmBasicHandler::spawnBullet() {
         constexpr float visibleRatio = 0.14f;
         const float resize = (RADIUS * 2) / (bulletTexture->width * visibleRatio);
 
-        auto bullet = std::make_unique<StraightBullet>(
+        auto bullet = std::make_shared<StraightBullet>(
             player->getPlayerId(),
             std::make_unique<TextureBulletGraphicsComponent>(bulletTexture, resize),
             player->getPosition(),

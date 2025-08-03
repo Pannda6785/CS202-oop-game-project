@@ -2,6 +2,7 @@
 #define WYRM_OFFENSIVE_HANDLER_HPP
 
 #include "../../handlerCharacter/CastHandler.hpp"
+#include <memory>
 
 class StraightBullet;
 class WyrmGraphicsComponent;
@@ -9,10 +10,10 @@ class ChargeGraphicsComponent;
 
 class WyrmOffensiveHandler : public CastHandler {
     static constexpr float MIN_CASTING_TIME = 0.8f;
-    static constexpr float MAX_CASTING_TIME = 5.0f;
+    static constexpr float MAX_CASTING_TIME = 8.0f;
 
     static constexpr float MIN_DURATION = 7.0f;
-    static constexpr float MAX_DURATION = 14.0f;
+    static constexpr float MAX_DURATION = 16.0f;
 
     static constexpr float MIN_SIZEUP = 1.5f;
     static constexpr float MAX_SIZEUP = 2.4f;
@@ -44,8 +45,8 @@ private:
     float duration;
     float timer;
 
-    StraightBullet* bulletRef = nullptr;
-    ChargeGraphicsComponent* chargeGraphicsRef = nullptr;
+    std::weak_ptr<StraightBullet> bulletRef;
+    ChargeGraphicsComponent* chargeGraphicsRef;
 
     float getRadius() const;
 };

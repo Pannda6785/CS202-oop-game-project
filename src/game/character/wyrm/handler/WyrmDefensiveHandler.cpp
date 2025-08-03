@@ -31,7 +31,7 @@ void WyrmDefensiveHandler::tap(bool isFocusing) {
 }
 
 void WyrmDefensiveHandler::spawnBullet() {
-    auto bullet = std::make_unique<StraightBullet>(
+    auto bullet = std::make_shared<StraightBullet>(
         player->getPlayerId(),
         std::make_unique<CompositeBulletGraphicsComponent>(),
         player->getPosition(),

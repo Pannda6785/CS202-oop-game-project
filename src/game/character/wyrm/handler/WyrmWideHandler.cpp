@@ -50,7 +50,7 @@ void WyrmWideHandler::spawnBullet() {
 
             Unit::Vec2D dir(std::cos(angleRad), std::sin(angleRad));
 
-            auto bullet = std::make_unique<StraightBullet>(
+            auto bullet = std::make_shared<StraightBullet>(
                 player->getPlayerId(),
                 std::make_unique<TextureBulletGraphicsComponent>(bulletTexture, resize),
                 pos + dir * SPAWN_RADIUS,

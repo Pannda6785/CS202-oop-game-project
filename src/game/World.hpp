@@ -22,15 +22,15 @@ public:
 
     void addPlayer(std::unique_ptr<Player> player);
     void addPattern(std::unique_ptr<Pattern> pattern);
-    void spawnBullet(std::unique_ptr<Bullet> bullet);
+    void spawnBullet(std::shared_ptr<Bullet> bullet);
 
 private:
     std::vector<std::unique_ptr<Player>> players;
-    std::vector<std::unique_ptr<Bullet>> bullets;
+    std::vector<std::shared_ptr<Bullet>> bullets;
     std::vector<std::unique_ptr<Pattern>> patterns;
     std::unique_ptr<DevTool> devTool;
 
-    std::vector<std::unique_ptr<Bullet>> pendingBullets;
+    std::vector<std::shared_ptr<Bullet>> pendingBullets;
 
     void handleCollisions();
 };

@@ -72,7 +72,7 @@ void World::addPattern(std::unique_ptr<Pattern> pattern) {
     patterns.push_back(std::move(pattern));
 }
 
-void World::spawnBullet(std::unique_ptr<Bullet> bullet) {
+void World::spawnBullet(std::shared_ptr<Bullet> bullet) {
     pendingBullets.push_back(std::move(bullet));
 }
 
@@ -177,7 +177,7 @@ void World::handleCollisions() {
         std::remove_if(
             bullets.begin(),
             bullets.end(),
-            [&](const std::unique_ptr<Bullet>& bullet) {
+            [&](const std::shared_ptr<Bullet>& bullet) {
                 size_t i = &bullet - &bullets[0];
                 return toDelete[i] || bullet->isDone();
             }

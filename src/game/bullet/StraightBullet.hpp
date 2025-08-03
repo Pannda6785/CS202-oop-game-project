@@ -45,6 +45,7 @@ public:
 
     Unit::Vec2D getPosition() const override;
     Unit::Vec2D getVelocity() const override;
+    void setPosition(const Unit::Vec2D& pos);
 
 private:
     // bullet constant info

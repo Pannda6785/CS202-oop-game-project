@@ -78,6 +78,16 @@ Unit::Vec2D StraightBullet::getVelocity() const {
     return dir * speed;
 }
 
+void StraightBullet::setPosition(const Unit::Vec2D& pos) {
+    this->pos = pos;
+    if (lifeHitbox) lifeHitbox->setPosition(pos);
+    if (damagingHitbox) damagingHitbox->setPosition(pos);
+    if (cleansingHitbox) cleansingHitbox->setPosition(pos);
+    for (auto& [hitbox, major, who, duration] : invincibilityHitboxes) hitbox->setPosition(pos);
+    for (auto& [hitbox, modifier, who, duration, amount] : modifierHitboxes) hitbox->setPosition(pos);
+    for (auto& [hitbox, lock, who, duration] : lockHitboxes) hitbox->setPosition(pos);
+}
+
 void StraightBullet::addBulletGraphics(std::unique_ptr<BulletGraphicsComponent> g) {
     graphics = std::move(g);
 }

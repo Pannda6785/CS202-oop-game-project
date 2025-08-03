@@ -35,7 +35,7 @@ void DepthGraphicsComponent::loadTextures() {
     animations["wide_start"] = Animation(loadAnim(character_path + "moveset/wide", 1), 8, false);
     animations["wide_loop"] = Animation(loadAnim(character_path + "moveset/wide", 2, 1), 8, true);
     animations["offensive"] = Animation(loadAnim(character_path + "moveset/offensive", 7), 10, false);
-    animations["defensive_start"] = Animation(loadAnim(character_path + "moveset/defensive", 1), 8, false);
+    animations["defensive_start"] = Animation(loadAnim(character_path + "moveset/defensive", 1), 1, true);
     animations["defensive_loop"] = Animation(loadAnim(character_path + "moveset/defensive", 2, 1), 8, true);
 }
 
@@ -62,8 +62,15 @@ void DepthGraphicsComponent::useOffensive() {
     isDefensive = false;
 }
 
-void DepthGraphicsComponent::useDefensive(float loopTime) {
+void DepthGraphicsComponent::startCastingDefensive() {
     playAnim("defensive_start", true);
+    isDefensive = true;
+    isBasic = false;
+    isWide = false;
+}
+
+void DepthGraphicsComponent::endCastingDefensive(float loopTime) {
+    playAnim("defensive_loop", true);
     remainingLoopTime = loopTime;
     isDefensive = true;
     isBasic = false;
@@ -71,10 +78,9 @@ void DepthGraphicsComponent::useDefensive(float loopTime) {
 }
 
 bool DepthGraphicsComponent::characterSpecificUpdate(float dt) {
-    remainingLoopTime -= dt;
-
     auto work = [&](std::string start, std::string loop) -> bool {
         if (currentAnimName == loop && remainingLoopTime > Unit::EPS) {
+            remainingLoopTime -= dt;
             playAnim(loop);
             return true;
         }

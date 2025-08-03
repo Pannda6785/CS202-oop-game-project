@@ -67,7 +67,7 @@ void HeroWideHandler::spawnBullet(float angle) {
     for (float offset : offsets) {
         Unit::Vec2D spawnPos = pos + dir * RADIUS + perp * offset;
 
-        auto bullet = std::make_unique<StraightBullet>(
+        auto bullet = std::make_shared<StraightBullet>(
             player->getPlayerId(),
             std::make_unique<TextureBulletGraphicsComponent>(bulletTexture, resize),
             spawnPos,

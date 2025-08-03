@@ -35,7 +35,7 @@ void WyrmOffensiveHandler::update(float dt, const InputBufferer* input) {
         }
         player->applyModifier(Unit::Modifier::SizeModifier, 0.05f, sizeUp);
 
-        chargeGraphicsRef->setRadius(getRadius());
+        if (bulletRef.lock()) chargeGraphicsRef->setRadius(getRadius());
     }
 }
 
@@ -43,7 +43,7 @@ void WyrmOffensiveHandler::onCastStart() {
     graphics->roar(1e9, 0);
     isActive = false;
     
-    auto bullet = std::make_unique<StraightBullet>(
+    auto bullet = std::make_shared<StraightBullet>(
         player->getPlayerId(),
         std::make_unique<CompositeBulletGraphicsComponent>(),
         player->getPosition(),
@@ -51,7 +51,7 @@ void WyrmOffensiveHandler::onCastStart() {
         0,
         MAX_CASTING_TIME + 0.8f
     );
-    bulletRef = bullet.get();
+    bulletRef = bullet;
     
     std::array<int, 4> color = graphics->getSignatureColor(); color[3] = 80;
     auto chargeGraphics = std::make_unique<ChargeGraphicsComponent>(color);
@@ -64,22 +64,27 @@ void WyrmOffensiveHandler::onCastStart() {
 }
 
 void WyrmOffensiveHandler::onCastRelease(bool isInterupted) {
-    if (isInterupted) return;
+    if (isInterupted) {
+        if (auto bullet = bulletRef.lock()) bullet->makeDone();
+        return;
+    }
+    if (bulletRef.lock()) chargeGraphicsRef->setVisible(false);
     isActive = true;
     timer = 0.0f;
     graphics->roar(0.01f, 0.2f);
+
+    if (auto bullet = bulletRef.lock()) {
+        auto rippleGraphics = std::make_unique<RippleGraphicsComponent>(graphics->getSignatureColor(), 2, 0, getRadius(), 0.3f, 0.4f, 6);
+        dynamic_cast<CompositeBulletGraphicsComponent*>(bullet->getGraphics())->addComponent(std::move(rippleGraphics), castingTime, 1e9);
+        bullet->addCleansingHitbox(castingTime, std::make_unique<CircleHitbox>(player->getPosition(), getRadius()));
+        bullet->removeCleansingHitbox(castingTime + 0.02f);
+    }
 
     float ratio = (castingTime - MIN_CASTING_TIME) / (MAX_CASTING_TIME - MIN_CASTING_TIME);
     ratio *= ratio; // the longer the crazier
     duration = MIN_DURATION + (MAX_DURATION - MIN_DURATION) * ratio;
     float sizeUp = MIN_SIZEUP + (MAX_SIZEUP - MIN_SIZEUP) * ratio;
     float bulletSizeUp = BULLET_MIN_SIZEUP + (BULLET_MAX_SIZEUP - BULLET_MIN_SIZEUP) * ratio;
-
-    chargeGraphicsRef->setVisible(false);
-    auto rippleGraphics = std::make_unique<RippleGraphicsComponent>(graphics->getSignatureColor(), 2, 0, getRadius(), 0.3f, 0.4f, 6);
-    dynamic_cast<CompositeBulletGraphicsComponent*>(bulletRef->getGraphics())->addComponent(std::move(rippleGraphics), castingTime, 1e9);
-    bulletRef->addCleansingHitbox(castingTime, std::make_unique<CircleHitbox>(player->getPosition(), getRadius()));
-    bulletRef->removeCleansingHitbox(castingTime + 0.02f);
 
     player->applyModifier(Unit::Modifier::MovementModifier, MOVEMENT_MODIFIER_DURATION_BURST, MOVEMENT_MODIFIER_VALUE_BURST);
     player->applyModifier(Unit::Modifier::SizeModifier, duration, sizeUp);

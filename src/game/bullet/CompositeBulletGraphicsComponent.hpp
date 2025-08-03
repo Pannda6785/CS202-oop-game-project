@@ -17,6 +17,7 @@ private:
         std::unique_ptr<BulletGraphicsComponent> component;
         float start;
         float end;
+        bool isActive = false;
     };
     std::vector<TimedComponent> components;
     float time = 0.0f;

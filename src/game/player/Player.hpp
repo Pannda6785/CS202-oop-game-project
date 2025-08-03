@@ -29,7 +29,7 @@ public:
 
     // World interaction
     const IWorldView* getWorld() const;
-    void spawnBullet(std::unique_ptr<Bullet> bullet);
+    void spawnBullet(std::shared_ptr<Bullet> bullet);
 
     // Life data
     int getPlayerId() const;
@@ -55,6 +55,10 @@ public:
     void applyLock(Unit::Lock lock, float duration, bool force = false);
     void applyCooldown(Unit::Move move, float duration, bool force = false);
     void applyImplicitMoveLock(bool force = false);
+
+    // Export data
+    std::string getName() const;
+    std::array<int, 4> getSignatureColor() const;
 
 private:
     IWorldView* world;

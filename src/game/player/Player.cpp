@@ -81,7 +81,7 @@ const IWorldView* Player::getWorld() const {
     return world;
 }
 
-void Player::spawnBullet(std::unique_ptr<Bullet> bullet) {
+void Player::spawnBullet(std::shared_ptr<Bullet> bullet) {
     bullet->resize(modifiers[static_cast<int>(Unit::Modifier::BulletSizeModifier)].second);
     bulletSpawner->spawnBullet(move(bullet));
 }
@@ -191,6 +191,15 @@ void Player::applyImplicitMoveLock(bool force) {
     applyLock(Unit::Lock::WideLock, 0.2f, force);
     applyLock(Unit::Lock::OffensiveLock, 0.2f, force);
     applyLock(Unit::Lock::DefensiveLock, 0.2f, force);
+}
+
+// --- Export data ---
+std::string Player::getName() const {
+    return character->getName();
+}
+
+std::array<int, 4> Player::getSignatureColor() const {
+    return character->getGraphics()->getSignatureColor();
 }
 
 // --- Private helpers ---

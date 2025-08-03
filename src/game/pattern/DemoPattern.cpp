@@ -50,7 +50,7 @@ void DemoPattern::update(float dt) {
             const Texture* texture = TextureManager::instance().getTexture(TEXTURE_PATH);
             const float resize = (BULLET_RADIUS * 2.0f) / (TEXTURE_WIDTH * VISIBLE_RATIO);
 
-            auto bullet = std::make_unique<StraightBullet>(
+            auto bullet = std::make_shared<StraightBullet>(
                 OWNER_ID,
                 std::make_unique<TextureBulletGraphicsComponent>(texture, resize),
                 position,

@@ -63,7 +63,7 @@ void HeroBasicHandler::spawnBullet(bool isFocusing) {
     float baseAngle = std::atan2(baseDir.y, baseDir.x) * 180.0f / static_cast<float>(MY_PI);
 
     auto spawn = [&](Unit::Vec2D spawnPos, Unit::Vec2D velocity, float radius, float speed) {
-        auto bullet = std::make_unique<StraightBullet>(
+        auto bullet = std::make_shared<StraightBullet>(
             player->getPlayerId(),
             std::make_unique<TextureBulletGraphicsComponent>(bulletTexture, resize),
             spawnPos,

@@ -8,10 +8,11 @@ public:
     DepthGraphicsComponent();
     ~DepthGraphicsComponent() override;
 
-    void useBasic(float loopTime = 0.5f);
+    void useBasic(float loopTime = 0.6f);
     void useWide(float loopTime = 1.0f);
     void useOffensive();
-    void useDefensive(float loopTime = 0.7f);
+    void startCastingDefensive();
+    void endCastingDefensive(float loopTime = 0.9f);
 
 protected:
     void loadTextures() override;
