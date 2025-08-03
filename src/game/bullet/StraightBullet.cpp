@@ -159,8 +159,8 @@ void StraightBullet::resolvePendingHitboxes() {
     }
     for (auto it = pendingInvincibilityHitboxes.begin(); it != pendingInvincibilityHitboxes.end();) {
         if (timer >= std::get<0>(*it)) {
-            invincibilityHitboxes.emplace_back(std::move(std::get<1>(*it)), std::get<2>(*it), std::get<3>(*it), std::get<4>(*it));
             std::get<1>(*it)->resize(getSize());
+            invincibilityHitboxes.emplace_back(std::move(std::get<1>(*it)), std::get<2>(*it), std::get<3>(*it), std::get<4>(*it));
             it = pendingInvincibilityHitboxes.erase(it);
         } else {
             ++it;
@@ -168,8 +168,8 @@ void StraightBullet::resolvePendingHitboxes() {
     }
     for (auto it = pendingModifierHitboxes.begin(); it != pendingModifierHitboxes.end();) {
         if (timer >= std::get<0>(*it)) {
-            modifierHitboxes.emplace_back(std::move(std::get<1>(*it)), std::get<2>(*it), std::get<3>(*it), std::get<4>(*it), std::get<5>(*it));
             std::get<1>(*it)->resize(getSize());
+            modifierHitboxes.emplace_back(std::move(std::get<1>(*it)), std::get<2>(*it), std::get<3>(*it), std::get<4>(*it), std::get<5>(*it));
             it = pendingModifierHitboxes.erase(it);
         } else {
             ++it;
@@ -177,8 +177,8 @@ void StraightBullet::resolvePendingHitboxes() {
     }
     for (auto it = pendingLockHitboxes.begin(); it != pendingLockHitboxes.end();) {
         if (timer >= std::get<0>(*it)) {
-            lockHitboxes.emplace_back(std::move(std::get<1>(*it)), std::get<2>(*it), std::get<3>(*it), std::get<4>(*it));
             std::get<1>(*it)->resize(getSize());
+            lockHitboxes.emplace_back(std::move(std::get<1>(*it)), std::get<2>(*it), std::get<3>(*it), std::get<4>(*it));
             it = pendingLockHitboxes.erase(it);
         } else {
             ++it;
