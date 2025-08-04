@@ -18,7 +18,7 @@ void GameText::loadFont(const std::string& fontPath) {
         UnloadFont(font);
         fontLoaded = false;
     }
-    font = LoadFontEx(fontPath.c_str(), fontSize, nullptr, 0);
+    font = LoadFontEx(fontPath.c_str(), 256, nullptr, 0);
     fontLoaded = font.texture.id != 0;
 }
 

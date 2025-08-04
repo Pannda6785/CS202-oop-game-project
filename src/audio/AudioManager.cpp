@@ -152,6 +152,10 @@ void AudioManager::init() {
         sounds["ClickButton"] = clickButtonSound;
         Sound menuCursorSound = LoadSound("../assets/audio/sound_menu_cursor.wav");
         sounds["MenuCursor"] = menuCursorSound;
+        Sound confirmSelectChar = LoadSound("../assets/audio/sound_charselect_confirm.wav");
+        sounds["ConfirmSelectChar"] = confirmSelectChar;
+        Sound charSelectRibbon = LoadSound("../assets/audio/sound_charselect_ribbon.wav");
+        sounds["CharSelectRibbon"] = charSelectRibbon;
         initialized = true;
     }
     

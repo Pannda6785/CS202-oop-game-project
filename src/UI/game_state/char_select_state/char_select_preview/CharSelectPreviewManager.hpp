@@ -18,9 +18,6 @@ public:
 private:
     bool isLeft = true;
     std::unique_ptr<CharSelectPreview> preview = nullptr;
-    // std::shared_ptr<CharSelectPreview> sunPriestessPreview = nullptr;
-    // std::shared_ptr<CharSelectPreview> silentRedhoodPreview = nullptr;
-
 };
 
 #endif // CHAR_SELECT_PREVIEW_MANAGER_HPP

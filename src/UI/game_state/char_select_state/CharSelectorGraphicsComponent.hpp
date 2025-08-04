@@ -9,21 +9,24 @@ class CharSelector;
 class CharSelectorGraphicsComponent : public GraphicsComponent {
 public:
     CharSelectorGraphicsComponent(CharSelector& charSelector);
-    void render() const override;
+
+    void loadTexture(const std::string& texturePath);
+    void unloadTextures();
+
     void setStartPosition(Vector2 position);
     void setDirection(Vector2 dir);
     void setAngleRotate(float angle);
     void setOriginRotate(bool upper, bool left);
-    void loadSelectionCursorTexture(const std::string& texturePath);
-    void unloadTextures();
+
+    void render() const override;
 
 private:
     CharSelector& charSelector;
-    Vector2 startPosition;
-    Vector2 direction;
+    Vector2 startPosition = {0.0f, 0.0f};
+    Vector2 direction = {0.0f, 0.0f};
     Texture selectionCursorTexture = {0};
-    float angleRotate;
-    Vector2 originRotate;
+    float angleRotate = 0.0f;
+    Vector2 originRotate = {0.0f, 0.0f};
 
 };
 

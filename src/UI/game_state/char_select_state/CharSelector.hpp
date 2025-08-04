@@ -12,7 +12,10 @@ public:
     CharSelector();
     ~CharSelector();
 
-    void init(std::vector<std::string> options);
+    void loadTexture(const std::string& texturePath);
+    void unloadTextures();
+
+    void setOptions(const std::vector<std::string>& options);
     void setKeyUp(int raylibKey);
     void setKeyDown(int raylibKey);
     void setKeyConfirm(int raylibKey);
@@ -21,10 +24,11 @@ public:
     void setDirection(Vector2 dir);
     void setAngleRotate(float angle);
     void setLayer(int layer);
-    void loadSelectionCursorTexture(const std::string& texturePath);
-    void unloadTextures();
+
     int getCurrentSelection() const;
     bool getChangeSelection() const;
+
+    bool isLocked() const;
 
     void update(float dt);
 
@@ -32,11 +36,11 @@ private:
     std::vector<std::string> characterOptions;
     CharSelectorGraphicsComponent graphic;
 
-    int currentSelection;
-    bool lockSelect;
+    int currentSelection = 0;
+    bool lockSelect = false;
     KeyboardInputInterpreter inputInterpreter;
-    bool isLeftSide;
-    bool changeSelection;
+    bool isLeftSide = true;
+    bool changeSelection = false;
 
 };
 

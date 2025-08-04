@@ -1,11 +1,10 @@
 #include "CharSelectPreviewManager.hpp"
 
-CharSelectPreviewManager::CharSelectPreviewManager() {
-    init();
+CharSelectPreviewManager::CharSelectPreviewManager() : preview(nullptr)
+{
 }
 
 CharSelectPreviewManager::~CharSelectPreviewManager() {
-    // Clean up resources if needed
 }
 
 void CharSelectPreviewManager::init(bool isLeft) {

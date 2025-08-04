@@ -9,7 +9,6 @@ Background::~Background() = default;
 
 void Background::render() const {
     float rotation = angle;
-    // std::cout << "offset " << origin.y << std::endl;
     DrawRectanglePro({backgroundRect.x, backgroundRect.y, backgroundRect.width, backgroundRect.height}, origin, rotation, backgroundColor);
 }
 
