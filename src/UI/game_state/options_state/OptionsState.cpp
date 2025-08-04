@@ -150,7 +150,7 @@ void OptionsState::enter(){
         coordYFirstButton += buttonHeight + buttonSpacing, 
         buttonWidth, 
         buttonHeight, 
-        "RETURN OPTIONS", 
+        "RETURN", 
         fontSize, 
         offset -= deltaOffset, 
         0, 
