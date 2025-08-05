@@ -5,22 +5,18 @@
 
 class HoldHandler : public MoveHandler {
 public:
-    HoldHandler(Unit::Move move, float minHoldingTime = 0.017f);
+    HoldHandler(Unit::Move move);
     virtual ~HoldHandler() = default;
 
     bool tryRegister(InputBufferer* input) override final;
-    void update(float dt, const InputBufferer* input) override;
+    void update(float dt, const InputBufferer* input) override {};
 
 protected:
-    virtual void onHoldStart() = 0;
-    virtual void onHoldRelease(bool isInterupted = false) = 0;
+    virtual void tick(bool isFocusing) = 0;
 
 protected:
     Unit::Move move;
-    float minHoldingTime;
 
-    bool isHolding = false;
-    float holdingTime = 0.0f;
 };
 
 #endif // HOLD_HANDLER_HPP

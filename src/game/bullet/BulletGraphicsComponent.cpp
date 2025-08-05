@@ -2,22 +2,27 @@
 #include "Bullet.hpp"
 #include "../hitbox/CircleHitbox.hpp"
 #include "../hitbox/RectangleHitbox.hpp"
+#include "../devtool/DevTool.hpp"
 #include <raylib.h>
 
-BulletGraphicsComponent::BulletGraphicsComponent(bool drawHitbox) : drawHitbox(drawHitbox) {
+BulletGraphicsComponent::BulletGraphicsComponent() {
     setLayer(Unit::Layer::Bullet);
 }
 
-void BulletGraphicsComponent::registerOwner(const Bullet* bullet) {
-    this->owner = bullet;
+void BulletGraphicsComponent::registerBullet(const Bullet* bullet) {
+    this->bullet = bullet;
+}
+
+void BulletGraphicsComponent::render() const {
+    drawHitboxes();
 }
 
 void BulletGraphicsComponent::drawHitboxes() const {
-    if (!drawHitbox || !owner) return;
+    if (!DevTool::isHitboxEnabled()) return;
 
     auto drawHitbox = [](const Hitbox* hitbox, Color baseColor) {
         Color color = baseColor;
-        color.a = 170;
+        color.a = 130;
         if (const auto* circle = dynamic_cast<const CircleHitbox*>(hitbox)) {
             Vector2 pos = { circle->getPosition().x, circle->getPosition().y };
             DrawCircleV(pos, circle->getRadius(), color);
@@ -30,10 +35,16 @@ void BulletGraphicsComponent::drawHitboxes() const {
         }
     };
 
-    drawHitbox(owner->getLifeHitbox(), GREEN);
-    drawHitbox(owner->getDamagingHitbox(), RED);
-    drawHitbox(owner->getCleansingHitbox(), BLUE);
-    for (const auto& [hitbox, major, id, duration] : owner->getInvincibilityHitboxes()) {
+    drawHitbox(bullet->getLifeHitbox(), GREEN);
+    drawHitbox(bullet->getDamagingHitbox(), RED);
+    drawHitbox(bullet->getCleansingHitbox(), BLUE);
+    for (const auto& [hitbox, major, id, duration] : bullet->getInvincibilityHitboxes()) {
         drawHitbox(hitbox, YELLOW);
+    }
+    for (const auto& [hitbox, modifier, id, duration, amount] : bullet->getModifierHitboxes()) {
+        drawHitbox(hitbox, PURPLE);
+    }
+    for (const auto& [hitbox, lock, id, duration] : bullet->getLockHitboxes()) {
+        drawHitbox(hitbox, PURPLE);
     }
 }

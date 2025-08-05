@@ -99,13 +99,13 @@ namespace Unit {
         LockCount // This should always be the last element
     };
     const int NUM_LOCKS = static_cast<int>(Lock::LockCount);
-
+    
     enum Layer {
         Background = 0,
         Underlay = 10,
-        Bullet = 20,
-        Character = 30,
-        Overlap = 40,
+        Character = 20,
+        Bullet = 30,
+        Overlay = 40,
         Foreground = 50,
         HUD = 60,
         UI = 70
@@ -120,6 +120,7 @@ namespace Unit {
             default:              return Input::InputCount; // Invalid input fallback
         }
     }
+
     inline Lock moveToLock(Move move) {
         switch (move) {
             case Move::Basic:     return Lock::BasicLock;
@@ -129,6 +130,7 @@ namespace Unit {
             default:              return Lock::LockCount; // Invalid lock fallback
         }
     }
+
 };
 
 #endif // UNIT_HPP

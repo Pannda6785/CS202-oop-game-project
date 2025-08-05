@@ -4,8 +4,8 @@
 #include "../../player/Player.hpp"
 #include "HandlerCharacter.hpp"
 
-CastHandler::CastHandler(Unit::Move move, float minCastingTime)
-    : move(move), minCastingTime(minCastingTime) {}
+CastHandler::CastHandler(Unit::Move move, float minCastingTime, float maxCastingTime)
+    : move(move), minCastingTime(minCastingTime), maxCastingTime(maxCastingTime) {}
 
 bool CastHandler::tryRegister(InputBufferer* input) {
     if (!player || !character) {
@@ -25,8 +25,7 @@ bool CastHandler::tryRegister(InputBufferer* input) {
 
     Unit::Input inputKey = Unit::moveToInput(move);
     if (!isCasting) {
-        if (input->isHoldingKey(inputKey)) {
-            input->tryRegister(inputKey); // Flush earlier inputs
+        if (input->tryRegister(inputKey)) {
             isCasting = true;
             castingTime = 0.0f;
             character->setOrder({move});
@@ -36,7 +35,8 @@ bool CastHandler::tryRegister(InputBufferer* input) {
             return false;
         }
     } else {
-        if (input->isHoldingKey(inputKey) || castingTime < minCastingTime) { // force hold for minCastingTime
+        if ((castingTime < minCastingTime) || (input->isHoldingKey(inputKey) && castingTime < maxCastingTime)) { 
+            // force hold cast for min time or once max time then must release
             return true;
         } else {
             onCastRelease();

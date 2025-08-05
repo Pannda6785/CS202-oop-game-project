@@ -5,7 +5,7 @@
 
 class CastHandler : public MoveHandler {
 public:
-    CastHandler(Unit::Move move, float minCastingTime = 0.017f);
+    CastHandler(Unit::Move move, float minCastingTime = 0.017f, float maxCastingTime = 1e9);
     virtual ~CastHandler() = default;
 
     bool tryRegister(InputBufferer* input) override final;
@@ -17,8 +17,9 @@ protected:
     
 protected:
     Unit::Move move;
-    float minCastingTime;
-    
+    const float minCastingTime;
+    const float maxCastingTime;
+
     float castingTime = 0.0f;
     bool isCasting = false;
 

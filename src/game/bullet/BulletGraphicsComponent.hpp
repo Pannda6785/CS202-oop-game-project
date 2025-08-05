@@ -8,18 +8,19 @@ class Bullet;
 
 class BulletGraphicsComponent : public GraphicsComponent {
 public:
-    BulletGraphicsComponent(bool drawHitbox = false);
+    BulletGraphicsComponent();
     virtual ~BulletGraphicsComponent() = default;
-    virtual void registerOwner(const Bullet* owner);
 
-    virtual void render() const = 0;
+    void registerBullet(const Bullet* bullet);
+    
+    virtual void render() const;
+    virtual void update(float dt) {}
 
 protected:
     void drawHitboxes() const;
 
-private:
-    const Bullet* owner = nullptr;
-    bool drawHitbox;
+protected:
+    const Bullet* bullet = nullptr;
 
 };
 
