@@ -1,18 +1,19 @@
-#ifndef MAIN_MENU_BACKGROUND_HPP
-#define MAIN_MENU_BACKGROUND_HPP
+#ifndef ARTWORK_TITLE_HPP
+#define ARTWORK_TITLE_HPP
 
 #include "../../../graphics/GraphicsComponent.hpp"
 #include <raylib.h>
 #include <string>
 
-class MainMenuBackground : public GraphicsComponent {
+class ArtworkTitle : public GraphicsComponent {
 public:
-    MainMenuBackground();
+    ArtworkTitle();
+    virtual ~ArtworkTitle();
+
     void loadCharTexture(const std::string& texturePath);
     void loadTitleTexture(const std::string& texturePath);
     void loadDecorationTexture(const std::string& texturePath);
-    ~MainMenuBackground();
-
+    void unloadTextures();
     void render() const override;
 
 private:
@@ -24,4 +25,4 @@ private:
     bool loadedDecoration = false;
 };
 
-#endif // MAIN_MENU_BACKGROUND_HPP
+#endif // ARTWORK_TITLE_HPP

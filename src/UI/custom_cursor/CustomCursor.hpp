@@ -10,7 +10,7 @@ public:
     void update(float dt);
 private:
     CustomCursor() = default;
-    ~CustomCursor() = default;
+    ~CustomCursor();
 
     CustomCursor(const CustomCursor&) = delete;
     CustomCursor& operator=(const CustomCursor&) = delete;

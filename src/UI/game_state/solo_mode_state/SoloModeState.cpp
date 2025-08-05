@@ -20,6 +20,14 @@
 SoloModeState::SoloModeState(GameStateManager& gsm)
     : gameStateManager(gsm)
 {
+    enter();
+}
+
+SoloModeState::~SoloModeState(){
+    std::cout << "SoloModeState destructor called." << std::endl;
+}
+
+void SoloModeState::enter() {
     inputInterpreters = { std::make_shared<KeyboardInputInterpreter>(), std::make_shared<KeyboardInputInterpreter>() };
     inputInterpreters[1]->setKeyMapping(Unit::Input::MoveUp, KEY_W);
     inputInterpreters[1]->setKeyMapping(Unit::Input::MoveDown, KEY_S);
@@ -54,26 +62,27 @@ SoloModeState::SoloModeState(GameStateManager& gsm)
     // world->addPattern(std::make_unique<DemoPattern>(world.get()));
 
     world->init();
-
-    enter();
-}
-
-SoloModeState::~SoloModeState(){
-    std::cout << "SoloModeState destructor called." << std::endl;
-}
-
-void SoloModeState::enter() {
+    
     std::unique_ptr<Button> backButton = std::make_unique<Button>(
-        50, 50, 300, 75, "Back to Main Menu", 50, 50, true
+        50, 
+        50, 
+        500, 
+        75, 
+        "Back to Main Menu", 
+        50, 
+        50, 
+        0, 
+        "../assets/fonts/Redressed.ttf",
+        true
     );
     backButton->setOnClickListener([&gsm = gameStateManager]() {
         std::cout << "Returning to Main Menu..." << std::endl;
         gsm.changeState(std::make_unique<MainMenuState>(gsm));
-        AudioManager::getInstance().play("tick");
+        AudioManager::getInstance().playSound("tick");
     });
     backButton->setOnHoverEnterListener([]() {
         std::cout << "Hovered over Back button!" << std::endl;
-        AudioManager::getInstance().play("tick");
+        AudioManager::getInstance().playSound("tick");
     });
     buttonManager.addButton(std::move(backButton));
 }

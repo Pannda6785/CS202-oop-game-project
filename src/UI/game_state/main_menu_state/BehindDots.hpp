@@ -11,8 +11,10 @@ public:
     ~BehindDots();
 
     void loadDotTexture(const std::string& texturePath);
+    void unloadTexture();
     void init();
     void update(float dt);
+    void setVisible(bool visible);
 private:
     Texture2D dotTexture = {0}; // Texture for the dots
     bool loadedDotTexture = false;
