@@ -3,6 +3,10 @@
 #include <algorithm>
 
 void World::update(float dt) {
+    devTool->update(dt);
+    dt *= devTool->getTimeScale();
+    if (dt < Unit::EPS) return;
+    
     for (auto& player : players) {
         player->update(dt);
     }
@@ -11,6 +15,10 @@ void World::update(float dt) {
     }
     for (auto& bullet : bullets) {
         bullet->update(dt);
+    }
+    while (!pendingBullets.empty()) {
+        bullets.push_back(std::move(pendingBullets.back()));
+        pendingBullets.pop_back();
     }
     handleCollisions();
 }
@@ -22,6 +30,7 @@ void World::init() {
     for (auto & pattern : patterns) {
         pattern->init();
     }
+    devTool = std::make_unique<DevTool>(this);
 }
 
 const Player* World::getPlayer(int playerId) const {
@@ -63,8 +72,8 @@ void World::addPattern(std::unique_ptr<Pattern> pattern) {
     patterns.push_back(std::move(pattern));
 }
 
-void World::spawnBullet(std::unique_ptr<Bullet> bullet) {
-    bullets.push_back(std::move(bullet));
+void World::spawnBullet(std::shared_ptr<Bullet> bullet) {
+    pendingBullets.push_back(std::move(bullet));
 }
 
 void World::handleCollisions() {
@@ -105,6 +114,19 @@ void World::handleCollisions() {
             for (auto& player : players) {
                 if (player->getPlayerId() == who && player->getInvincibility(true) < Unit::EPS && hb->collidesWith(*player->getHitbox())) {
                     player->applyModifier(mod, duration, value);
+                }
+            }
+        }
+    }
+
+    /* Bullet vs Player: Lock applying */
+    for (size_t i = 0; i < bullets.size(); ++i) {
+        if (toDelete[i] || bullets[i]->isDone()) continue;
+        for (const auto& [hb, lock, who, duration] : bullets[i]->getLockHitboxes()) {
+            if (!hb) continue;
+            for (auto& player : players) {
+                if (player->getPlayerId() == who && player->getInvincibility(true) < Unit::EPS && hb->collidesWith(*player->getHitbox())) {
+                    player->applyLock(lock, duration);
                 }
             }
         }
@@ -151,12 +173,16 @@ void World::handleCollisions() {
     }
     
     /* Remove to-delete bullets */
-    std::vector<std::unique_ptr<Bullet>> newBullets;
-    for (size_t i = 0; i < bullets.size(); ++i) {
-        if (!toDelete[i] && !bullets[i]->isDone()) {
-            newBullets.push_back(std::move(bullets[i]));
-        }
-    }
-    bullets = std::move(newBullets);
+    bullets.erase(
+        std::remove_if(
+            bullets.begin(),
+            bullets.end(),
+            [&](const std::shared_ptr<Bullet>& bullet) {
+                size_t i = &bullet - &bullets[0];
+                return toDelete[i] || bullet->isDone();
+            }
+        ),
+        bullets.end()
+    );
 
 }

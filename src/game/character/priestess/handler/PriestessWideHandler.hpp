@@ -2,7 +2,7 @@
 #define PRIESTESS_WIDE_HANDLER_HPP
 
 #include "../../handlerCharacter/CastHandler.hpp"
-#include "../bullet/RingGraphicsComponent.hpp"
+#include "../extra/RingGraphicsComponent.hpp"
 
 #include <memory>
 

@@ -3,7 +3,7 @@
 
 #include "InputBufferer.hpp"
 #include "../character/Character.hpp"
-#include "../hitbox/Hitbox.hpp"
+#include "../hitbox/CircleHitbox.hpp"
 
 #include <array>
 #include <memory>
@@ -14,6 +14,8 @@ class IBulletSpawner;
 class Bullet;
 
 class Player {
+    static constexpr float HITBOX_RADIUS = 1.5f;
+
 public:
     Player(int playerId, IWorldView* worldView, IBulletSpawner* bulletSpawner,
             std::unique_ptr<Character> character, std::shared_ptr<InputInterpreter> inputInterpreter);
@@ -26,13 +28,14 @@ public:
     void roundReset();
 
     // World interaction
-    void spawnBullet(std::unique_ptr<Bullet> bullet);
+    const IWorldView* getWorld() const;
+    void spawnBullet(std::shared_ptr<Bullet> bullet);
 
     // Life data
     int getPlayerId() const;
     int getHealth() const;
     int getStock() const;
-    const Hitbox* getHitbox() const;
+    const CircleHitbox* getHitbox() const;
     
     // Positional data
     Unit::Vec2D getPosition() const;
@@ -53,6 +56,10 @@ public:
     void applyCooldown(Unit::Move move, float duration, bool force = false);
     void applyImplicitMoveLock(bool force = false);
 
+    // Export data
+    std::string getName() const;
+    std::array<int, 4> getSignatureColor() const;
+
 private:
     IWorldView* world;
     IBulletSpawner* bulletSpawner;
@@ -65,7 +72,7 @@ private:
     int playerId;
     int health;
     int stock;
-    std::unique_ptr<Hitbox> hitbox;
+    std::unique_ptr<CircleHitbox> hitbox;
 
     // Positional data
     Unit::Vec2D pos;

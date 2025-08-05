@@ -25,7 +25,7 @@ private:
     static constexpr float BULLET_STARTUP = 0.2f;
     static constexpr float BULLET_LIFESPAN = 10000.0f;
 
-    static constexpr const char* TEXTURE_PATH = "../assets/sprites/pattern/bullet/beast_bullets_0_p1_0002.png";
+    static constexpr const char* TEXTURE_PATH = "../assets/sprites/stormbeast/bullet/beast_bullets_0_p1_0002.png";
     static constexpr float VISIBLE_RATIO = 0.25f;
     static constexpr float TEXTURE_WIDTH = 150;
 

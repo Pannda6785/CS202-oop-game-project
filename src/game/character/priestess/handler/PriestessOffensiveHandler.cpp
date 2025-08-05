@@ -2,10 +2,11 @@
 
 #include "../../../player/Player.hpp"
 #include "../PriestessGraphicsComponent.hpp"
-#include "../../../bullet/StraightBullet.hpp"
-#include "../../../bullet/CommonBulletGraphicsComponent.hpp"
 
-constexpr float PI = 3.14159265358979323846f;
+#include "../../../bullet/StraightBullet.hpp"
+#include "../../../bullet/TextureBulletGraphicsComponent.hpp"
+#include "../../../../graphics/TextureManager.hpp"
+#include "../../../hitbox/CircleHitbox.hpp"
 
 PriestessOffensiveHandler::PriestessOffensiveHandler(PriestessGraphicsComponent* graphics)
     : CastHandler(Unit::Move::Offensive, MIN_CASTING_TIME), graphics(graphics) {
@@ -76,6 +77,8 @@ float PriestessOffensiveHandler::getRingRadius() const {
 }
 
 void PriestessOffensiveHandler::spawnBullet() {
+    constexpr float MY_PI = 3.14159265358979323846f;
+
     auto getRate = [&](float x) -> float {
         float t = (x - ADDED_RING_RADIUS) / (RING_SPEED - ADDED_RING_RADIUS);
         if (t > 1) t = 1;
@@ -91,18 +94,29 @@ void PriestessOffensiveHandler::spawnBullet() {
     Unit::Vec2D toTarget = (target - center).normalized();
 
     // Compute rotation angle in degrees
-    float baseAngleDeg = std::atan2(toTarget.y, toTarget.x) * 180.0f / PI;
+    float baseAngleDeg = std::atan2(toTarget.y, toTarget.x) * 180.0f / MY_PI;
+
+    std::vector<const Texture*> activeTextures = {
+        TextureManager::instance().getTexture("../assets/sprites/priestess/bullet/spr_prs_0_p1_0.png"),
+        TextureManager::instance().getTexture("../assets/sprites/priestess/bullet/spr_prs_0_p1_1.png"),
+        TextureManager::instance().getTexture("../assets/sprites/priestess/bullet/spr_prs_0_p1_2.png"),
+        TextureManager::instance().getTexture("../assets/sprites/priestess/bullet/spr_prs_0_p1_3.png")
+    };
+    std::vector<const Texture*> inactiveTextures = {
+        TextureManager::instance().getTexture("../assets/sprites/priestess/bullet/spr_prs_5_p1_0.png"),
+        TextureManager::instance().getTexture("../assets/sprites/priestess/bullet/spr_prs_5_p1_1.png"),
+        TextureManager::instance().getTexture("../assets/sprites/priestess/bullet/spr_prs_5_p1_2.png"),
+        TextureManager::instance().getTexture("../assets/sprites/priestess/bullet/spr_prs_5_p1_3.png")
+    };
+    constexpr float visibleRatio = 0.475;
+    float resize = (BULLET_RADIUS * 2) / (activeTextures[0]->width * visibleRatio);
 
     for (int i = 0; i < numBullets; ++i) {
         float angleDeg = baseAngleDeg + (i + 0.5) * angleStep;
-        float angleRad = angleDeg * PI / 180.0f;
+        float angleRad = angleDeg * MY_PI / 180.0f;
 
         Unit::Vec2D direction(std::cos(angleRad), std::sin(angleRad));
         Unit::Vec2D bulletPosition = center + direction * radius;
-        
-        std::string active = "../assets/sprites/priestess/bullet/priest_bullets_0_p1_0000.png";
-        std::string inactive = "../assets/sprites/priestess/bullet/priest_bullets_5_p1_0000.png";
-        constexpr float resize = 0.5;
 
         for (int t = 0; t < 2; ++t) {
             Unit::Vec2D velocity = direction.normalized() * BULLET_SPEED;
@@ -113,24 +127,20 @@ void PriestessOffensiveHandler::spawnBullet() {
             } else {
                 velocity = {-y, x};
             }
-            auto graphics = std::make_unique<CommonBulletGraphicsComponent>(
-                active,
-                resize,
-                STARTUP / 2,
-                true,
-                inactive,
-                resize
-            );
-            auto bullet = std::make_unique<StraightBullet>(
+
+            auto bullet = std::make_shared<StraightBullet>(
                 player->getPlayerId(),
+                std::make_unique<TextureBulletGraphicsComponent>(activeTextures, 8, resize),
                 bulletPosition,
                 velocity,
-                BULLET_RADIUS,
                 BULLET_SPEED,
-                STARTUP,
-                1e9,
-                std::move(graphics)
+                1e9
             );
+            bullet->addDamagingHitbox(STARTUP, std::make_unique<CircleHitbox>(bullet->getPosition(), BULLET_RADIUS));
+            dynamic_cast<TextureBulletGraphicsComponent*>(bullet->getGraphics())->addStartup(inactiveTextures, 8, resize);
+            dynamic_cast<TextureBulletGraphicsComponent*>(bullet->getGraphics())->addFadein(0.0f, STARTUP / 3);
+            dynamic_cast<TextureBulletGraphicsComponent*>(bullet->getGraphics())->addVelocityRotation(true);
+
             player->spawnBullet(std::move(bullet));
         }
     }

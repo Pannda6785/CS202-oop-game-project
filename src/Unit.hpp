@@ -103,9 +103,9 @@ namespace Unit {
     enum Layer {
         Background = 0,
         Underlay = 10,
-        Bullet = 20,
-        Character = 30,
-        Overlap = 40,
+        Character = 20,
+        Bullet = 30,
+        Overlay = 40,
         Foreground = 50,
         HUD = 60,
         UI = 70
