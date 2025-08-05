@@ -7,8 +7,9 @@
 #include <vector>
 #include <string>
 #include <unordered_map>
+#include <array>
 
-class IPlayerView;
+class Player;
 class Texture;
 class Shader;
 
@@ -17,14 +18,16 @@ public:
     CharacterGraphicsComponent();
     virtual ~CharacterGraphicsComponent();
 
-    void registerPlayer(IPlayerView* playerView);
+    void registerPlayer(Player* playerView);
+    std::array<int, 4> getSignatureColor() const;
 
-    void render() const override;
+    void render() const override final;
     void init();
     void update(float dt);
 
     // Event based
     void resize(float scale);
+    float getSize() const { return size; }
     void takeHit(float staggerTime);
 
 protected:
@@ -40,14 +43,15 @@ private:
     void renderCharacter() const; // character and all that animations
 
 protected:
-    const IPlayerView* player;
+    const Player* player;
+    std::array<int, 4> signatureColor = {255, 255, 255, 255}; // default white
 
     struct Animation {
-        std::vector<Texture*> frames;
+        std::vector<const Texture*> frames;
         float fps;
         bool loop;
         Animation() = default;
-        Animation(std::vector<Texture*> frames, float fps, bool loop)
+        Animation(std::vector<const Texture*> frames, float fps, bool loop)
             : frames(std::move(frames)), fps(fps), loop(loop) {}
     };
     std::unordered_map<std::string, Animation> animations;
@@ -61,7 +65,6 @@ private:
 
     float size = 1;
 
-    const float flashFrequency = 4;
     Shader* whiteSilhouette = nullptr;
 
     float remainingStaggerTime = 0.0f;

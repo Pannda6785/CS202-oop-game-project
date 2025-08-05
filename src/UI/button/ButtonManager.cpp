@@ -1,17 +1,18 @@
 #include "ButtonManager.hpp"
 #include <raylib.h>
+#include <iostream>
 
-ButtonManager::ButtonManager() : hoveredIndex(-1) {
+ButtonManager::ButtonManager() : hoveredIndex(-1), isTriggerCurrentButton(false) {
 }
 
 ButtonManager::~ButtonManager() {
-    reset();
 }
 
 void ButtonManager::addButton(std::unique_ptr<Button> button) {
     buttons.push_back(std::move(button));
     if (hoveredIndex == -1 && buttons.back()->isEnabled()) {
-        hoveredIndex = static_cast<int>(buttons.size()) - 1;
+        hoveredIndex = 0;
+        buttons[hoveredIndex]->setToState("hovered");
     }
 }
 
@@ -27,6 +28,12 @@ void ButtonManager::update(float dt) {
 
     // 3. Keyboard navigation
     updateHoveredByKeyboard();
+
+    // 4. Trigger the current button if ENTER is pressed
+    if (hoveredIndex != -1 && isTriggerCurrentButton) {
+        triggerCurrentButton();
+        isTriggerCurrentButton = false; // Reset trigger state
+    }
 }
 
 void ButtonManager::updateHoveredByMouse() {
@@ -39,6 +46,7 @@ void ButtonManager::updateHoveredByMouse() {
             CheckCollisionPointRec({(float)mouseX, (float)mouseY}, buttons[i]->getBounds())) {
             hoveredIndex = static_cast<int>(i);
             found = true;
+            isTriggerCurrentButton = IsMouseButtonPressed(MOUSE_LEFT_BUTTON);
             break;
         }
     }
@@ -46,9 +54,9 @@ void ButtonManager::updateHoveredByMouse() {
         if (hoveredIndex != prevHovered) {
             // If hoveredIndex changed, update states
             if (prevHovered != -1 && prevHovered < (int)buttons.size()) {
-                buttons[prevHovered]->setToState("idle");
+                buttons[prevHovered]->setExitHovered(true);
             }
-            buttons[hoveredIndex]->setToState("hovered");
+            buttons[hoveredIndex]->setEnterHovered(true);
         }
     }
 
@@ -71,12 +79,13 @@ void ButtonManager::updateHoveredByKeyboard() {
         int next = findNextEnabled(idx, 1);
         if (next != -1) hoveredIndex = next;
     }
-    buttons[prevHovered]->setToState("idle");
-    buttons[hoveredIndex]->setToState("hovered");
-    if(prevHovered != hoveredIndex) buttons[hoveredIndex]->triggerHoverEnter();
+    if(prevHovered != hoveredIndex){
+        buttons[hoveredIndex]->setEnterHovered(true);
+        buttons[prevHovered]->setExitHovered(true);
+    }
     // ENTER triggers the current button
     if (hoveredIndex != -1 && IsKeyPressed(KEY_ENTER)) {
-        triggerCurrentButton();
+        isTriggerCurrentButton = true;
     }
 }
 
@@ -100,6 +109,9 @@ void ButtonManager::triggerCurrentButton() {
 }
 
 void ButtonManager::reset() {
+    for(auto& button : buttons) {
+        button->getGraphicsComponent()->unload();
+    }
     buttons.clear();
     hoveredIndex = -1;
 }
@@ -115,4 +127,10 @@ int ButtonManager::getButtonCount() const {
 Button* ButtonManager::getButton(int idx) {
     if (idx < 0 || idx >= (int)buttons.size()) return nullptr;
     return buttons[idx].get();
+}
+
+void ButtonManager::setVisible(bool visible){
+    for(auto &button : buttons){
+        button->getGraphicsComponent()->setVisible(visible);
+    }
 }

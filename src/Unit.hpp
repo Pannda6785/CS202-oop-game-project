@@ -99,6 +99,17 @@ namespace Unit {
         LockCount // This should always be the last element
     };
     const int NUM_LOCKS = static_cast<int>(Lock::LockCount);
+    
+    enum Layer {
+        Background = 0,
+        Underlay = 10,
+        Character = 20,
+        Bullet = 30,
+        Overlay = 40,
+        Foreground = 50,
+        HUD = 60,
+        UI = 70
+    };
 
     inline Input moveToInput(Move move) {
         switch (move) {
@@ -109,6 +120,17 @@ namespace Unit {
             default:              return Input::InputCount; // Invalid input fallback
         }
     }
+
+    inline Lock moveToLock(Move move) {
+        switch (move) {
+            case Move::Basic:     return Lock::BasicLock;
+            case Move::Wide:      return Lock::WideLock;
+            case Move::Offensive: return Lock::OffensiveLock;
+            case Move::Defensive: return Lock::DefensiveLock;
+            default:              return Lock::LockCount; // Invalid lock fallback
+        }
+    }
+
 };
 
 #endif // UNIT_HPP

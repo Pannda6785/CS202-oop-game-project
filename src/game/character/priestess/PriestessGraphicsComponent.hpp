@@ -1,7 +1,7 @@
 #ifndef PRIESTESS_GRAPHICS_COMPONENT_HPP
 #define PRIESTESS_GRAPHICS_COMPONENT_HPP
 
-#include "CharacterGraphicsComponent.hpp"
+#include "../CharacterGraphicsComponent.hpp"
 
 class PriestessGraphicsComponent : public CharacterGraphicsComponent {
 public:
@@ -16,7 +16,7 @@ public:
 
 protected:
     void loadTextures() override;
-    void unloadTextures() override;
+    void unloadTextures() override {};
     bool characterSpecificUpdate(float dt) override;
 
 private:

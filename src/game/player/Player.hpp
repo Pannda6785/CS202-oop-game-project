@@ -1,12 +1,9 @@
 #ifndef PLAYER_HPP
 #define PLAYER_HPP
 
-#include "IPlayerControl.hpp"
-#include "IPlayerView.hpp"
-
 #include "InputBufferer.hpp"
 #include "../character/Character.hpp"
-#include "../hitbox/Hitbox.hpp"
+#include "../hitbox/CircleHitbox.hpp"
 
 #include <array>
 #include <memory>
@@ -14,8 +11,11 @@
 
 class IWorldView;
 class IBulletSpawner;
+class Bullet;
 
-class Player : public IPlayerControl, public IPlayerView {
+class Player {
+    static constexpr float HITBOX_RADIUS = 1.5f;
+
 public:
     Player(int playerId, IWorldView* worldView, IBulletSpawner* bulletSpawner,
             std::unique_ptr<Character> character, std::shared_ptr<InputInterpreter> inputInterpreter);
@@ -28,34 +28,37 @@ public:
     void roundReset();
 
     // World interaction
-    void spawnBullet(std::unique_ptr<Bullet> bullet);
+    const IWorldView* getWorld() const;
+    void spawnBullet(std::shared_ptr<Bullet> bullet);
 
     // Life data
-    int getPlayerId() const override;
-    int getHealth() const override;
-    int getStock() const override;
-    const Hitbox* getHitbox() const override;
-    void setHealth(int h);
-    void setStock(int s);
+    int getPlayerId() const;
+    int getHealth() const;
+    int getStock() const;
+    const CircleHitbox* getHitbox() const;
     
     // Positional data
-    Unit::Vec2D getPosition() const override;
-    Unit::Vec2D getArrow() const override;
-    Unit::Vec2D getMovement() const override;
-    Unit::Vec2D getTargetPosition() const override;
-    void setPosition(const Unit::Vec2D& pos) override;
+    Unit::Vec2D getPosition() const;
+    Unit::Vec2D getArrow() const;
+    Unit::Vec2D getMovement() const;
+    Unit::Vec2D getTargetPosition() const;
+    void setPosition(const Unit::Vec2D& pos);
     
     // Status data
-    float getInvincibility() const override;
-    std::pair<float, float> getModifier(Unit::Modifier mod) const override;
-    float getLock(Unit::Lock lock) const override;
-    float getCooldown(Unit::Move move) const override;
+    float getInvincibility(bool major = false) const;
+    std::pair<float, float> getModifier(Unit::Modifier mod) const;
+    float getLock(Unit::Lock lock) const;
+    float getCooldown(Unit::Move move) const;
 
-    void applyInvincibility(float duration, bool force = false) override;
-    void applyModifier(Unit::Modifier mod, float duration, float value, bool force = false) override;
-    void applyLock(Unit::Lock lock, float duration, bool force = false) override;
-    void applyCooldown(Unit::Move move, float duration, bool force = false) override;
-    void applyImplicitMoveLock() override;
+    void applyInvincibility(float duration, bool major, bool force = false);
+    void applyModifier(Unit::Modifier mod, float duration, float value, bool force = false);
+    void applyLock(Unit::Lock lock, float duration, bool force = false);
+    void applyCooldown(Unit::Move move, float duration, bool force = false);
+    void applyImplicitMoveLock(bool force = false);
+
+    // Export data
+    std::string getName() const;
+    std::array<int, 4> getSignatureColor() const;
 
 private:
     IWorldView* world;
@@ -69,7 +72,7 @@ private:
     int playerId;
     int health;
     int stock;
-    std::unique_ptr<Hitbox> hitbox;
+    std::unique_ptr<CircleHitbox> hitbox;
 
     // Positional data
     Unit::Vec2D pos;
@@ -77,7 +80,7 @@ private:
     Unit::Vec2D movement;
 
     // Status data
-    float invincibility;
+    std::array<float, 2> invincibility;
     std::array<std::pair<float, float>, Unit::NUM_MODIFIERS> modifiers{}; // duration and values
     std::array<float, Unit::NUM_LOCKS> locks{};
     std::array<float, Unit::NUM_MOVES> cooldown{};

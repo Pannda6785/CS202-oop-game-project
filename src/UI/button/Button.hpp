@@ -11,7 +11,7 @@
 
 class Button : public IButtonControl, public IButtonView {
 public:
-    Button(int x, int y, int width, int height, const std::string& text);
+    Button(int x, int y, int width, int height, const std::string& text, int fontSize, int offset, int side, const std::string &fontPath, bool lableShift);
     ~Button();
 
     void enable() override;
@@ -34,11 +34,13 @@ public:
     int getHeight() const override;
     Rectangle getBounds() const;
 
-    void update(float dt); 
+    void update(float dt);
+    void setEnterHovered(bool enterHovered);
+    void setExitHovered(bool exitHovered);
     void triggerOnClick();
     void triggerHoverEnter();
     
-    ButtonGraphicsComponent* getGraphicsComponent() const;
+    ButtonGraphicsComponent* getGraphicsComponent();
 
 private:
     int x, y;
@@ -49,6 +51,8 @@ private:
     bool hoveredState;
     bool pressedState;
     bool disabledState = false;
+    bool enterHovered = false;
+    bool exitHovered = false;
     std::function<void()> onClick;
     std::function<void()> onHoverEnter;
 

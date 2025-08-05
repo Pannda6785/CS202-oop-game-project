@@ -1,16 +1,15 @@
 #include "CharacterGraphicsComponent.hpp"
 
-#include "../player/IPlayerView.hpp"
+#include "../player/Player.hpp"
 #include "../hitbox/CircleHitbox.hpp"
 
 #include <raylib.h>
 #include <algorithm>
-#include <iostream>
-#include <cassert>
 
 CharacterGraphicsComponent::CharacterGraphicsComponent() {
     setVisible(false);
-    Shader loadedShader = LoadShader(0, "./src/game/character/white_silhouette.fs");
+    setLayer(Unit::Layer::Character);
+    Shader loadedShader = LoadShader(0, "../src/game/character/white_silhouette.fs");
     whiteSilhouette = new Shader(loadedShader);
 }
 
@@ -22,12 +21,17 @@ CharacterGraphicsComponent::~CharacterGraphicsComponent() {
     }
 }
 
-void CharacterGraphicsComponent::registerPlayer(IPlayerView* playerView) {
+void CharacterGraphicsComponent::registerPlayer(Player* playerView) {
     player = playerView;
+}
+
+std::array<int, 4> CharacterGraphicsComponent::getSignatureColor() const {
+    return signatureColor;
 }
 
 void CharacterGraphicsComponent::init() {
     setVisible(true);
+    playAnim("idle");
     if (!player) {
         throw std::runtime_error("CharacterGraphicsComponent::init - CharacterGraphicsComponent must be initialized with a player before calling init()");
     }
@@ -134,7 +138,7 @@ void CharacterGraphicsComponent::renderUnderlay() const {
     Vector2 center = { pos.x, pos.y };
 
     // Draw health as hearts below player
-    const float heartSpacing = 22;
+    constexpr float heartSpacing = 22;
     for (int i = 0; i < 3; ++i) {
         Vector2 heartPos = { pos.x - 12 - heartSpacing + i * heartSpacing, pos.y + 70 };
         if (i < player->getHealth()) {
@@ -145,7 +149,7 @@ void CharacterGraphicsComponent::renderUnderlay() const {
     }
 
     // Draw stock as small blue circles below hearts
-    const float stockRadius = 6;
+    constexpr float stockRadius = 6;
     for (int i = 0; i < player->getStock(); ++i) {
         Vector2 stockPos = { pos.x - stockRadius - 5 + i * heartSpacing, pos.y + 100 };
         DrawCircleV(stockPos, stockRadius, BLUE);
@@ -177,7 +181,7 @@ void CharacterGraphicsComponent::renderUnderlay() const {
 
     // Draw arrow
     Unit::Vec2D arrow = player->getArrow();
-    Vector2 arrowEnd = { pos.x + arrow.x * 40, pos.y + arrow.y * 40 };
+    Vector2 arrowEnd = { pos.x + arrow.x * 80, pos.y + arrow.y * 80 };
     DrawLineEx(center, arrowEnd, 3.0f, RED);
     Vector2 perp = { -arrow.y, arrow.x };  // perpendicular vector
     Vector2 tip = arrowEnd;
@@ -196,7 +200,8 @@ void CharacterGraphicsComponent::renderOverlay() const {
         Unit::Vec2D pos = hitbox->getPosition();
         Vector2 center = { pos.x, pos.y };
         float radius = hitbox->getRadius();
-        DrawCircleV(center, radius, RED);
+        DrawCircleV(center, radius * 4, Fade(RED, 0.7f));
+        DrawCircleV(center, radius, BLACK);
     }
 }
 
@@ -231,6 +236,7 @@ void CharacterGraphicsComponent::renderCharacter() const {
     float inv = player->getInvincibility();
 
     if (inv > Unit::EPS) {
+        constexpr float flashFrequency = 4.0f;
         float flashAlpha = 0.5f * (sinf(time * flashFrequency * 2.0f * PI) + 1.0f); // 0.5 * [-1, 1]
         flashAlpha *= 0.7; // to avoid bright flashes
         BeginShaderMode(*whiteSilhouette);

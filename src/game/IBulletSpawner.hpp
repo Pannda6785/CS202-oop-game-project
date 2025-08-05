@@ -9,7 +9,7 @@ class IBulletSpawner {
 public:
     virtual ~IBulletSpawner() = default;
 
-    virtual void spawnBullet(std::unique_ptr<Bullet> bullet) = 0;
+    virtual void spawnBullet(std::shared_ptr<Bullet> bullet) = 0;
 
 };
 

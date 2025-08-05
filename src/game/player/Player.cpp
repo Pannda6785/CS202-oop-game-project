@@ -4,11 +4,11 @@
 #include "../IBulletSpawner.hpp"
 #include "../bullet/Bullet.hpp"
 
-#include "../hitbox/CircleHitbox.hpp"
 #include "../character/CharacterGraphicsComponent.hpp"
 
 #include <algorithm>
 #include <cmath>
+#include <random>
 
 Player::Player(int playerId, IWorldView* worldView, IBulletSpawner* bulletSpawner,
             std::unique_ptr<Character> character, std::shared_ptr<InputInterpreter> inputInterpreter) 
@@ -19,12 +19,17 @@ Player::Player(int playerId, IWorldView* worldView, IBulletSpawner* bulletSpawne
 
     health = 3;
     stock = 2;
+    invincibility = {0, 0};
 
-    pos = {500 + playerId * 500.0f, 300 + playerId * 100.0f};
+    static std::mt19937 gen(std::random_device{}());
+    std::uniform_real_distribution<float> distX(0, Unit::BATTLEFIELD_WIDTH);
+    std::uniform_real_distribution<float> distY(0, Unit::BATTLEFIELD_HEIGHT);
+    setPosition({distX(gen), distY(gen)});
+    
     arrow = {0.0f, 1.0f};
     movement = {0.0f, 0.0f};
     
-    hitbox = std::make_unique<CircleHitbox>(pos, 6.0f);
+    hitbox = std::make_unique<CircleHitbox>(pos, HITBOX_RADIUS);
 }
 
 // --- Update methods ---
@@ -47,12 +52,10 @@ void Player::update(float dt) {
 }
 
 void Player::takeHit() {
-    setHealth(health - 1);
-    if (health == 0 && stock > 0) {
-        stock--;
-        roundReset();
-    }
-    applyInvincibility(3.0f);
+    health = std::max(health - 1, 0);
+    if (health == 0 && stock > 0) stock--;
+
+    applyInvincibility(3.0f, true);
     applyModifier(Unit::Modifier::MovementModifier, 2.0f * modifiers[static_cast<int>(Unit::Modifier::StaggerModifier)].second, 0.5f);
     applyLock(Unit::Lock::MovementLock, 1.5f * modifiers[static_cast<int>(Unit::Modifier::StaggerModifier)].second);
     applyLock(Unit::Lock::BasicLock, 1.6f * modifiers[static_cast<int>(Unit::Modifier::StaggerModifier)].second);
@@ -63,7 +66,7 @@ void Player::takeHit() {
 }
 
 void Player::confirmHit() {
-    applyInvincibility(1.2f);
+    applyInvincibility(1.2f, false);
 }
 
 void Player::roundReset() {
@@ -72,8 +75,14 @@ void Player::roundReset() {
     for (auto& mod : modifiers) mod = {0.0f, 1.0f};
 }
 
-// --- Operations ---
-void Player::spawnBullet(std::unique_ptr<Bullet> bullet) {
+// --- World interaction ---
+
+const IWorldView* Player::getWorld() const {
+    return world;
+}
+
+void Player::spawnBullet(std::shared_ptr<Bullet> bullet) {
+    bullet->resize(modifiers[static_cast<int>(Unit::Modifier::BulletSizeModifier)].second);
     bulletSpawner->spawnBullet(move(bullet));
 }
 
@@ -90,15 +99,7 @@ int Player::getStock() const {
     return stock;
 }
 
-void Player::setHealth(int h) {
-    health = std::max(0, h);
-}
-
-void Player::setStock(int s) {
-    stock = std::max(0, s);
-}
-
-const Hitbox* Player::getHitbox() const {
+const CircleHitbox* Player::getHitbox() const {
     return hitbox.get();
 }
 
@@ -126,11 +127,14 @@ Unit::Vec2D Player::getTargetPosition() const {
 
 void Player::setPosition(const Unit::Vec2D& newPos) {
     pos = newPos;
+    pos.x = std::clamp(pos.x, 0.0f, Unit::BATTLEFIELD_WIDTH);
+    pos.y = std::clamp(pos.y, 0.0f, Unit::BATTLEFIELD_HEIGHT);
 }
 
 // --- Status data ---
-float Player::getInvincibility() const {
-    return invincibility;
+float Player::getInvincibility(bool major) const {
+    if (major) return invincibility[major];
+    return std::max(invincibility[0], invincibility[1]);
 }
 
 std::pair<float, float> Player::getModifier(Unit::Modifier mod) const {
@@ -145,20 +149,27 @@ float Player::getCooldown(Unit::Move move) const {
     return cooldown[static_cast<int>(move)];
 }
 
-void Player::applyInvincibility(float duration, bool force) {
+void Player::applyInvincibility(float duration, bool major, bool force) {
     if (force) {
-        invincibility = duration;
+        invincibility[0] = invincibility[1] = duration;
     } else {
-        invincibility = std::max(invincibility, duration);
+        invincibility[major] = std::max(invincibility[major], duration);
     }
 }
 
 void Player::applyModifier(Unit::Modifier mod, float duration, float value, bool force) {
-    // always force, i guess
-    modifiers[static_cast<int>(mod)] = {duration, value};
+    if (force) {
+        modifiers[static_cast<int>(mod)] = {duration, value};
+    } else {
+        // only if the previous duration is very long should the previous effect be continued
+        if (modifiers[static_cast<int>(mod)].first < 1000) {
+            modifiers[static_cast<int>(mod)] = {duration, value};
+        }
+    }
 }
 
 void Player::applyLock(Unit::Lock lock, float duration, bool force) {
+    duration *= modifiers[static_cast<int>(Unit::Modifier::CooldownModifier)].second;
     if (force) {
         locks[static_cast<int>(lock)] = duration;
     } else {
@@ -167,6 +178,7 @@ void Player::applyLock(Unit::Lock lock, float duration, bool force) {
 }
 
 void Player::applyCooldown(Unit::Move move, float duration, bool force) {
+    duration *= modifiers[static_cast<int>(Unit::Modifier::CooldownModifier)].second;
     if (force) {
         cooldown[static_cast<int>(move)] = duration;
     } else {
@@ -174,11 +186,20 @@ void Player::applyCooldown(Unit::Move move, float duration, bool force) {
     }
 }
 
-void Player::applyImplicitMoveLock() {
-    applyLock(Unit::Lock::BasicLock, 0.2f);
-    applyLock(Unit::Lock::WideLock, 0.2f);
-    applyLock(Unit::Lock::OffensiveLock, 0.2f);
-    applyLock(Unit::Lock::DefensiveLock, 0.2f);
+void Player::applyImplicitMoveLock(bool force) {
+    applyLock(Unit::Lock::BasicLock, 0.2f, force);
+    applyLock(Unit::Lock::WideLock, 0.2f, force);
+    applyLock(Unit::Lock::OffensiveLock, 0.2f, force);
+    applyLock(Unit::Lock::DefensiveLock, 0.2f, force);
+}
+
+// --- Export data ---
+std::string Player::getName() const {
+    return character->getName();
+}
+
+std::array<int, 4> Player::getSignatureColor() const {
+    return character->getGraphics()->getSignatureColor();
 }
 
 // --- Private helpers ---
@@ -190,17 +211,17 @@ void Player::updateMovement(float dt) {
     if (modifiers[static_cast<int>(Unit::Modifier::MovementModifier)].first > 0.0f) {
         speed *= modifiers[static_cast<int>(Unit::Modifier::MovementModifier)].second;
     }
-    if (locks[static_cast<int>(Unit::Lock::MovementLock)] > 0.0f) {
+    if (locks[static_cast<int>(Unit::Lock::MovementLock)] > Unit::EPS) {
         speed = 0;
     }
     movement = input->getMovement() * speed;
-    pos += movement * dt;
+    setPosition(pos + movement * dt);
 
     hitbox->setPosition(pos);
 }
 
 void Player::updateArrow(float dt) {
-    if (locks[static_cast<int>(Unit::Lock::ArrowLock)] > 0.0f) {
+    if (locks[static_cast<int>(Unit::Lock::ArrowLock)] > Unit::EPS) {
         return;
     }
 
@@ -235,7 +256,8 @@ void Player::updateArrow(float dt) {
     float cross = arrow.x * targetDir.y - arrow.y * targetDir.x;
     float direction = (cross > 0) ? 1.0f : -1.0f;
 
-    constexpr float turnSpeedScale = 10.0f;
+    float turnSpeedScale = input->isHoldingKey(Unit::Input::Focus) ? 15.0f : 10.0f;
+    turnSpeedScale *= modifiers[static_cast<int>(Unit::Modifier::ArrowModifier)].second;
     float rotateBy = std::min(angleDiff, turnSpeedScale * angleDiff * dt);
 
     float cosA = std::cos(rotateBy);
@@ -250,14 +272,15 @@ void Player::updateArrow(float dt) {
 }
 
 void Player::updateStatus(float dt) {
-    invincibility = std::max(0.0f, invincibility - dt);
+    invincibility[0] = std::max(0.0f, invincibility[0] - dt);
+    invincibility[1] = std::max(0.0f, invincibility[1] - dt);
 
     for (auto& [duration, value] : modifiers) {
         if (duration > 0.0f) {
             duration = std::max(duration - dt, 0.0f);
-            if (duration < Unit::EPS) {
-                value = 1.0f;
-            }
+        }
+        if (duration < Unit::EPS) {
+            value = 1.0f;
         }
     }
 
@@ -270,5 +293,10 @@ void Player::updateStatus(float dt) {
         if (cd > 0.0f) 
             cd = std::max(cd - dt, 0.0f);
     }
+
+    float scale = modifiers[static_cast<int>(Unit::Modifier::SizeModifier)].second;
+    float shouldBeRadius = HITBOX_RADIUS * scale;
+    hitbox->resize(shouldBeRadius / hitbox->getRadius());
+    character->getGraphics()->resize(scale / character->getGraphics()->getSize());
 }
 

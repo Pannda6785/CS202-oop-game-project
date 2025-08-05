@@ -9,10 +9,10 @@ public:
     virtual ~TapHandler() = default;
 
     bool tryRegister(InputBufferer* input) override final;
-    void update(float) override {}
+    void update(float dt, const InputBufferer* input) override {}
 
 protected:
-    virtual void tap() = 0;
+    virtual void tap(bool isFocusing) = 0;
 
 protected:
     Unit::Move move;

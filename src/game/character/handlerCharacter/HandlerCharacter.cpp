@@ -1,7 +1,7 @@
 #include "HandlerCharacter.hpp"
 
 #include "MoveHandler.hpp"
-#include "../../player/IPlayerControl.hpp"
+#include "../../player/Player.hpp"
 #include "../../player/InputBufferer.hpp"
 
 HandlerCharacter::HandlerCharacter(std::string name, float moveSpeed, float focusedSpeed, std::unique_ptr<CharacterGraphicsComponent> graphics)
@@ -10,7 +10,7 @@ HandlerCharacter::HandlerCharacter(std::string name, float moveSpeed, float focu
     order = {};
 }
 
-void HandlerCharacter::registerPlayer(IPlayerControl* playerRef) {
+void HandlerCharacter::registerPlayer(Player* playerRef) {
     Character::registerPlayer(playerRef);
     for (auto& handler : moveHandlers) {
         if (handler) {
@@ -37,7 +37,7 @@ void HandlerCharacter::update(float dt, InputBufferer* input) {
             if (registeredMove != Unit::Move::MoveCount) {
                 handler->listen(registeredMove);
             }
-            handler->update(dt);
+            handler->update(dt, input);
         }
     }
 }

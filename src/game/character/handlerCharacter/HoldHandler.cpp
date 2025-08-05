@@ -1,46 +1,25 @@
 #include "HoldHandler.hpp"
 
 #include "../../player/InputBufferer.hpp"
-#include "../../player/IPlayerControl.hpp"
-#include "HandlerCharacter.hpp"
+#include "../../player/Player.hpp"
 
-HoldHandler::HoldHandler(Unit::Move move, float minHoldingTime)
-    : move(move), minHoldingTime(minHoldingTime) {}
+HoldHandler::HoldHandler(Unit::Move move)
+    : move(move) {}
 
 bool HoldHandler::tryRegister(InputBufferer* input) {
     if (!player || !character) {
         throw std::runtime_error("HoldHandler::tryRegister - HoldHandler must be registered with a player and character before use.");
     }
 
-    float lock = player->getLock(static_cast<Unit::Lock>(move));
+    float lock = player->getLock(Unit::moveToLock(move));
     float cooldown = player->getCooldown(move);
     if (lock > Unit::EPS || cooldown > Unit::EPS) return false;
 
-    Unit::Input inputKey = Unit::moveToInput(move);
-
-    if (!isHolding) {
-        if (input->isHoldingKey(inputKey)) {
-            input->tryRegister(inputKey); // flush any previous input
-            isHolding = true;
-            holdingTime = 0.0f;
-            onHoldStart();
-            return true;
-        } else {
-            return false;
-        }
-    } else {
-        if (input->isHoldingKey(inputKey)) {
-            return true;
-        } else {
-            onHoldRelease();
-            isHolding = false;
-            return true;
-        }
+    if (input->isHoldingKey(Unit::moveToInput(move))) {
+        input->tryRegister(Unit::moveToInput(move)); // flush any previous input
+        tick(input->isHoldingKey(Unit::Input::Focus));
+        return true;
     }
-}
 
-void HoldHandler::update(float dt) {
-    if (isHolding) {
-        holdingTime += dt;
-    }
+    return false;
 }
