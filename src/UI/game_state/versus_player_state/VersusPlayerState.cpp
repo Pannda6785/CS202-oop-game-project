@@ -63,6 +63,16 @@ void VersusPlayerState::initializeWorld(const std::string& player1Character, con
 
     inputInterpreters.push_back(player1Input);
     inputInterpreters.push_back(player2Input);
+
+    inputInterpreters[1]->setKeyMapping(Unit::Input::MoveUp, KEY_W);
+    inputInterpreters[1]->setKeyMapping(Unit::Input::MoveDown, KEY_S);
+    inputInterpreters[1]->setKeyMapping(Unit::Input::MoveLeft, KEY_A);
+    inputInterpreters[1]->setKeyMapping(Unit::Input::MoveRight, KEY_D);
+
+    inputInterpreters[1]->setKeyMapping(Unit::Input::Basic, KEY_ONE);
+    inputInterpreters[1]->setKeyMapping(Unit::Input::Wide, KEY_TWO); 
+    inputInterpreters[1]->setKeyMapping(Unit::Input::Offensive, KEY_THREE);
+    inputInterpreters[1]->setKeyMapping(Unit::Input::Defensive, KEY_FOUR);
     
     // Create characters
     auto player1Char = createCharacter(player1CharacterName);
@@ -74,10 +84,6 @@ void VersusPlayerState::initializeWorld(const std::string& player1Character, con
     
     auto player2 = std::make_unique<Player>(
         1, world.get(), world.get(), std::move(player2Char), player2Input);
-    
-    // Set initial positions (facing each other)
-    player1->setPosition({-10.0f, 0.0f});
-    player2->setPosition({10.0f, 0.0f});
     
     // Add players to world
     world->addPlayer(std::move(player1));
@@ -91,7 +97,19 @@ void VersusPlayerState::initializeWorld(const std::string& player1Character, con
 std::unique_ptr<Character> VersusPlayerState::createCharacter(const std::string& characterName) {
     if (characterName == "Sun Priestess") {
         return std::make_unique<Priestess>();
+    } else if (characterName == "Royal Arcanist") {
+        return std::make_unique<Priestess>();
     } else if (characterName == "Hero of Frost") {
+        return std::make_unique<Hero>();
+    } else if (characterName == "Dreadwyrm Heir") {
+        return std::make_unique<Wyrm>();
+    } else if (characterName == "Lich of Flowers") {
+        return std::make_unique<Priestess>();
+    } else if (characterName == "Depth's Secret") {
+        return std::make_unique<Depth>();
+    } else if (characterName == "Stormbeast") {
+        return std::make_unique<Priestess>();
+    } else if (characterName == "Silent Redhood") {
         return std::make_unique<Priestess>();
     } else {
         // Default to Sun Priestess if invalid name
