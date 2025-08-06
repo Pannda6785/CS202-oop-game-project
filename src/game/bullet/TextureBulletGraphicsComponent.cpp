@@ -111,6 +111,10 @@ void TextureBulletGraphicsComponent::render() const {
         opacity *= 1.0f - (time - fadeoutStart) / (fadeoutEnd - fadeoutStart);
     } else if (time >= fadeoutEnd) {
         opacity *= 0.0f;
+    } 
+    if (madeDone) {
+        float factor = 1 - std::min(1.0f, std::max(0.0f, (time - whenMadeDone) / howLongAfterMadeDone));
+        opacity *= factor;
     }
 
     // Bloom/debloom
@@ -122,6 +126,13 @@ void TextureBulletGraphicsComponent::render() const {
         scale *= 1.0f - (time - debloomStart) / (debloomEnd - debloomStart);
     } else if (time >= debloomEnd) {
         scale *= 0.0f;
+    }
+    if (madeDone) {
+        float progress = std::min(1.0f, std::max(0.0f, (time - whenMadeDone) / howLongAfterMadeDone));
+        // maxFactor is 0 for big bullet and 1.8 for small bullet, is a spectrum for [50, 150]
+        float size = tex->width * scale;
+        float maxFactor = 1.8f * (1.0f - std::min(1.0f, (size - 50.0f) / 100.0f));
+        scale *= 1.0f + maxFactor * progress;
     }
 
     // Render the texture
@@ -150,4 +161,11 @@ void TextureBulletGraphicsComponent::render() const {
     }
 
     BulletGraphicsComponent::drawHitboxes();
+}
+
+void TextureBulletGraphicsComponent::makeDone() {
+    BulletGraphicsComponent::makeDone();
+    if (madeDone) return;
+    madeDone = true;
+    whenMadeDone = time;
 }

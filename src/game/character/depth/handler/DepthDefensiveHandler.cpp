@@ -100,7 +100,7 @@ void DepthDefensiveHandler::onCastRelease(bool isInterupted) {
 
         // After startup, bullet starts moving
         bullet->addDamagingHitbox(castReleaseTime + STARTUP, std::make_unique<CircleHitbox>(bullet->getPosition(), getRadius()));
-        bullet->addCleansingHitbox(castReleaseTime + STARTUP, std::make_unique<CircleHitbox>(bullet->getPosition(), getRadius() * 0.85f));
+        bullet->addCleansingHitbox(castReleaseTime + STARTUP, std::make_unique<CircleHitbox>(bullet->getPosition(), getRadius() * CLEANSE_RADIUS_RATIO));
     }
 }
 

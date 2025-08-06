@@ -15,6 +15,7 @@ public:
 
     virtual void update(float dt) = 0;
     virtual bool isDone() const = 0;
+    virtual void makeDone() = 0;
 
     virtual Unit::Vec2D getPosition() const;
     virtual Unit::Vec2D getVelocity() const;

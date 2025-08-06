@@ -15,6 +15,7 @@ public:
     
     virtual void render() const;
     virtual void update(float dt) {}
+    virtual void makeDone() {}
 
 protected:
     void drawHitboxes() const;
