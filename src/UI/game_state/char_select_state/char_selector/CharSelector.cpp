@@ -1,8 +1,12 @@
 #include "CharSelector.hpp"
-#include "../../../audio/AudioManager.hpp"
+#include "../../../../audio/AudioManager.hpp"
 
 CharSelector::CharSelector() : graphic(*this), currentSelection(0), changeSelection(false) {}
-CharSelector::~CharSelector() = default;
+// CharSelector::~CharSelector() = default;
+
+CharSelector::~CharSelector(){
+    unloadTextures();
+}
 
 void CharSelector::loadTexture(const std::string& texturePath) {
     graphic.loadTexture(texturePath);

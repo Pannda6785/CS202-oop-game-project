@@ -14,6 +14,7 @@ public:
     void changeState(std::unique_ptr<GameState> state);
     void pushState(std::unique_ptr<GameState> state);
     void popState();
+    void changeCurrentState(std::unique_ptr<GameState> state); // Added new function
 
     // Main loop delegation
     void update(float dt);
@@ -35,6 +36,7 @@ private:
         ChangeState,
         PushState,
         PopState,
+        ChangeCurrentState, // Added new action
         None
     };
     StateAction currentAction = StateAction::None;
@@ -43,6 +45,7 @@ private:
     void applyChangeState();
     void applyPushState();
     void applyPopState();
+    void applyChangeCurrentState(); // Added new apply function
 };
 
 #endif // GAME_STATE_MANAGER_HPP

@@ -1,5 +1,6 @@
 #include "CharSelectorGraphicsComponent.hpp"
 #include "CharSelector.hpp"
+#include "../../../../graphics/TextureManager.hpp"
 #include <iostream>
 
 CharSelectorGraphicsComponent::CharSelectorGraphicsComponent(CharSelector& charSelector)
@@ -8,14 +9,12 @@ CharSelectorGraphicsComponent::CharSelectorGraphicsComponent(CharSelector& charS
     }
 
 void CharSelectorGraphicsComponent::loadTexture(const std::string& texturePath) {
-    selectionCursorTexture = LoadTexture(texturePath.c_str());
+    // selectionCursorTexture = LoadTexture(texturePath.c_str());
+    selectionCursorTexture = TextureManager::instance().getTexture(texturePath);
 }
 
 void CharSelectorGraphicsComponent::unloadTextures() {
-    if (selectionCursorTexture.id != 0) {
-        UnloadTexture(selectionCursorTexture);
-        selectionCursorTexture = {0};
-    }
+    // selectionCursorTexture = nullptr;
 }
 
 void CharSelectorGraphicsComponent::setStartPosition(Vector2 position) {
@@ -31,8 +30,8 @@ void CharSelectorGraphicsComponent::setAngleRotate(float angle) {
 }
 
 void CharSelectorGraphicsComponent::setOriginRotate(bool upper, bool left) {
-    originRotate.x = left ? 0 : selectionCursorTexture.width;
-    originRotate.y = upper ? 0 : selectionCursorTexture.height;
+    originRotate.x = left ? 0 : selectionCursorTexture->width;
+    originRotate.y = upper ? 0 : selectionCursorTexture->height;
 }
 
 void CharSelectorGraphicsComponent::render() const {
@@ -50,9 +49,9 @@ void CharSelectorGraphicsComponent::render() const {
     };
 
     DrawTexturePro(
-        selectionCursorTexture,
-        {0, 0, (float)selectionCursorTexture.width, (float)selectionCursorTexture.height},
-        {positionToDraw.x, positionToDraw.y, (float)selectionCursorTexture.width / 2.0f, (float)selectionCursorTexture.height / 2.0f},
+        *selectionCursorTexture,
+        {0, 0, (float)selectionCursorTexture->width, (float)selectionCursorTexture->height},
+        {positionToDraw.x, positionToDraw.y, (float)selectionCursorTexture->width / 2.0f, (float)selectionCursorTexture->height / 2.0f},
         originRotate,
         angleRotate,
         tint

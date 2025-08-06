@@ -33,9 +33,7 @@ SilentRedhoodPreview::SilentRedhoodPreview(bool isLeft) : CharSelectPreview() {
     enter();
 }
 
-SilentRedhoodPreview::~SilentRedhoodPreview() {
-    // Cleanup if necessary
-}
+SilentRedhoodPreview::~SilentRedhoodPreview() = default;
 
 void SilentRedhoodPreview::setSide(bool isLeft) {
     CharSelectPreview::setSide(isLeft);

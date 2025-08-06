@@ -34,9 +34,7 @@ SunPriestessPreview::SunPriestessPreview(bool isLeft) : CharSelectPreview() {
     enter();
 }
 
-SunPriestessPreview::~SunPriestessPreview() {
-    // Cleanup if necessary
-}
+SunPriestessPreview::~SunPriestessPreview() = default;
 
 void SunPriestessPreview::setSide(bool isLeft) {
     CharSelectPreview::setSide(isLeft);

@@ -7,9 +7,11 @@
 CharSelectPreview::CharSelectPreview() {
 }
 
-CharSelectPreview::~CharSelectPreview() {
-    exit();
-}
+// CharSelectPreview::~CharSelectPreview() {
+//     exit();
+// }
+
+CharSelectPreview::~CharSelectPreview() = default;
 
 void CharSelectPreview::enter() {
     if(!isLeft) {
@@ -91,7 +93,7 @@ void CharSelectPreview::enter() {
     } else{
         frontTile.setRestrictArea({(float)GetScreenWidth() / 2.0f, 0, GetScreenWidth() / 2.0f, (float)GetScreenHeight()});
     }
-    frontTile.setInitialNumTiles(isLeft ? 6 : 9);
+    frontTile.setInitialNumTiles(isLeft ? 8 : 10);
     frontTile.setStartPosition({ribbonBackgroundRect.x, (float)GetScreenHeight() - 22.0f});
     frontTile.setAngle(90.0f);
     frontTile.setSpeed(50.0f);
@@ -141,13 +143,13 @@ void CharSelectPreview::setMovingTileBackgroundColor(Color color) {
 }
 
 void CharSelectPreview::exit() {
-    mainPortrait.unloadTextures();
-    idleAnimPreview.unloadTextures();
-    for(int i = 0; i < 3; i++){
-        backgroundTiles[i].unloadTextures();
-    }
-    frontTile.unloadTextures();
-    charName.unloadFont();
+    // mainPortrait.unloadTextures();
+    // idleAnimPreview.unloadTextures();
+    // for(int i = 0; i < 3; i++){
+    //     backgroundTiles[i].unloadTextures();
+    // }
+    // frontTile.unloadTextures();
+    // charName.unloadFont();
 }
 
 void CharSelectPreview::update(float dt) {
@@ -155,9 +157,19 @@ void CharSelectPreview::update(float dt) {
     if(mainPortrait.finishedFadeIn() && !backgroundTiles[0].getStartExpand()) {
         AudioManager::getInstance().playSound("CharSelectRibbon");
     }
+    if(!mainPortrait.finishedFadeIn()){
+        checkFadeIn = true;
+    }
+    if(mainPortrait.finishedFadeIn()){
+        assert(checkFadeIn);
+    }
     for(int i = 0; i < 3; i++){
         if(mainPortrait.finishedFadeIn()) {
             backgroundTiles[i].setStartExpand(true);
+            // if(debugFlag && !out){
+            //     out = true;
+            //     std::cout << "HAHAHAHAHAHAHAHAHAHAHAHAHAHAHAH" << std::endl;
+            // }
         }
         backgroundTiles[i].update(dt);
         if(backgroundTiles[i].getStartExpand()) {
@@ -166,6 +178,10 @@ void CharSelectPreview::update(float dt) {
             Vector2 pos = backgroundTiles[i].getMiddlePostion();
             movingTileBackground[i].setBackgroundRect({pos.x, pos.y, size.x, size.y});
             movingTileBackground[i].setOriginMiddle();
+            if(debugFlag && !out){
+                out = true;
+                std::cout << "HAHAHAHAHAHAHAHAHAHAHAHAHAHAHAH" << std::endl;
+            }
         } 
     }
     frontTile.update(dt);

@@ -4,7 +4,7 @@
 #include <vector>
 #include <memory>
 
-#include "CharSelector.hpp"
+#include "./char_selector/CharSelector.hpp"
 #include "LayerInfoProvider.hpp"
 #include "../GameState.hpp"
 #include "../decorative_components/Artwork.hpp"
@@ -45,6 +45,8 @@ private:
 
     CharSelectPreviewManager charSelectPreviewManagerLeft;
     CharSelectPreviewManager charSelectPreviewManagerRight;
+
+    void startGame();
 };
 
 #endif // CHAR_SELECT_STATE_HPP

@@ -1,5 +1,6 @@
 #include "CharSelectState.hpp"
 #include "../GameStateManager.hpp"
+#include "../versus_player_state/VersusPlayerState.hpp"
 #include <iostream>
 
 CharSelectState::CharSelectState(GameStateManager& gsm)
@@ -7,14 +8,7 @@ CharSelectState::CharSelectState(GameStateManager& gsm)
     enter();
 }
 
-// CharSelectState::CharSelectState(GameStateManager& gsm)
-//     : gameStateManager(gsm) {
-//     enter();
-// }
-
-CharSelectState::~CharSelectState() {
-    exit();
-}
+CharSelectState::~CharSelectState() = default;
 
 void CharSelectState::enter() {
     LayerInfoProvider::getInstance().init();
@@ -76,7 +70,6 @@ void CharSelectState::update(float dt) {
         movingTileEffect[i].update(dt);
     }
 
-    // Update character selectors
     charSelectorLeft.update(dt);
     charSelectorRight.update(dt);
 
@@ -90,13 +83,18 @@ void CharSelectState::update(float dt) {
 
     charSelectPreviewManagerLeft.update(dt);
     charSelectPreviewManagerRight.update(dt);
+
+    if(charSelectorLeft.isLocked() && charSelectorRight.isLocked()) {
+        startGame();
+    }
+}
+
+void CharSelectState::startGame(){
+    std::string player1Character = selectOptions[charSelectorLeft.getCurrentSelection()];
+    std::string player2Character = selectOptions[charSelectorRight.getCurrentSelection()];
+
+    gameStateManager.changeCurrentState(std::make_unique<VersusPlayerState>(gameStateManager, player1Character, player2Character));
 }
 
 void CharSelectState::exit() {
-    for(int i = 0; i < 2; i++) {
-        movingTileEffect[i].unloadTextures();
-    }
-    characterSelectArtwork.unloadTextures();
-    charSelectorLeft.unloadTextures();
-    charSelectorRight.unloadTextures();
 }

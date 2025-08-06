@@ -1,4 +1,5 @@
 #include "MovingTileGraphicsComponent.hpp"
+#include "../../../graphics/TextureManager.hpp"
 #include <cmath>
 #include <cassert>
 #include <iostream>
@@ -6,32 +7,29 @@
 MovingTileGraphicsComponent::MovingTileGraphicsComponent() = default;
 
 MovingTileGraphicsComponent::~MovingTileGraphicsComponent() {
+    unloadTextures();
 }
 
-void MovingTileGraphicsComponent::addTexture(const std::string& texturePath){
-    Texture2D texture = {0};
-    texture = LoadTexture(texturePath.c_str());
-    textures.push_back(texture);
+void MovingTileGraphicsComponent::addTexture(const std::string& texturePath) {
+    textures.push_back(TextureManager::instance().getTexture(texturePath));
 }
 
 void MovingTileGraphicsComponent::unloadTextures() {
-    for (auto& texture : textures) {
-        if (texture.id != 0) UnloadTexture(texture);
-    }
-    textures.clear();
 }
 
-
 void MovingTileGraphicsComponent::init() {
-    if(textures.empty() || textures[0].id == 0) {
+    if (textures.empty() || textures[0] == nullptr || textures[0]->id == 0) {
         return;
     }
+    
+    positions.clear();
     positions.push_back(startPosition);
     int numTiles = initialNumTiles;
-    int tileHeight = textures[0].height * scale;
+    int tileHeight = textures[0]->height * scale;
     float deltaX = sin(angle * (PI / 180.0)) * tileHeight;
     float deltaY = cos(angle * (PI / 180.0)) * tileHeight;
-    for (int i = 0; i < numTiles; ++i) {
+    
+    for (int i = 0; i < numTiles - 1; ++i) {
         float x = startPosition.x + i * deltaX * (upward ? 1 : -1);
         float y = startPosition.y + i * deltaY * (upward ? 1 : -1);
         positions.push_back({x, y});
@@ -72,7 +70,7 @@ void MovingTileGraphicsComponent::setColor(Color color) {
 
 void MovingTileGraphicsComponent::setExpandingTime(float time) {
     expandingTime = time;
-    expandingTimer = 0.2f * expandingTime;
+    expandingTimer = 0.4f * expandingTime;
     startExpand = false;
 }
 
@@ -85,9 +83,9 @@ void MovingTileGraphicsComponent::setStartExpand(bool startExpand) {
 }
 
 float MovingTileGraphicsComponent::getTileWidth() const {
-    if (textures.empty() || textures[0].id == 0) return 0.0f;
+    if (textures.empty() || textures[0] == nullptr || textures[0]->id == 0) return 0.0f;
     float ratio = expandingTime > 0.0f ? expandingTimer / expandingTime : 1.0f;
-    return textures[0].width * scale * ratio;
+    return textures[0]->width * scale * ratio;
 }
 
 float MovingTileGraphicsComponent::getRatio() const {
@@ -120,14 +118,14 @@ Vector2 MovingTileGraphicsComponent::getPositionToDraw(Vector2 pos, float textur
 }
 
 void MovingTileGraphicsComponent::update(float dt) {
-
-    if(textures.empty() || textures[0].id == 0){
+    if (textures.empty() || textures[0] == nullptr || textures[0]->id == 0) {
         return;
     }
+    
     float ratio = expandingTime > 0.0f ? expandingTimer / expandingTime : 1.0f;
-    if(ratio == 1.0f){
-        int tileHeight = textures[0].height * scale;
-        int tileWidth = textures[0].width * scale;
+    if (ratio == 1.0f) {
+        int tileHeight = textures[0]->height * scale;
+        int tileWidth = textures[0]->width * scale;
         float sina = sin(angle * (PI / 180.0));
         float cosa = cos(angle * (PI / 180.0));
         for(int i = 0; i < positions.size(); ++i) {
@@ -143,40 +141,50 @@ void MovingTileGraphicsComponent::update(float dt) {
             positions.push_back(newPosition);
         }
     } else {
-        if(!startExpand){
+        if (!startExpand) {
             positions.clear();
             return;
         }
         expandingTimer += dt;
-        if(expandingTimer >= expandingTime) {
+        if (expandingTimer >= expandingTime) {
             expandingTimer = expandingTime;
         }
         positions.clear();
         positions.push_back(startPosition);
         int numTiles = initialNumTiles;
-        int tileHeight = textures[0].height * scale * ratio;
+        int tileHeight = textures[0]->height * scale * ratio;
         float deltaX = sin(angle * (PI / 180.0)) * tileHeight * ratio;
         float deltaY = cos(angle * (PI / 180.0)) * tileHeight * ratio;
-        for (int i = 0; i < numTiles; ++i) {
+        for (int i = 0; i < numTiles - 1; ++i) {
             float x = startPosition.x + i * deltaX * (upward ? 1 : -1);
             float y = startPosition.y + i * deltaY * (upward ? 1 : -1);
             positions.push_back({x, y});
         }
     }
-
 }
 
 void MovingTileGraphicsComponent::render() const {
-    if (textures.empty() || !isVisible() || textures[0].id == 0) return;
+    if (textures.empty() || !isVisible() || textures[0] == nullptr || textures[0]->id == 0) return;
+    
+    // Replace debug output with one-time warning
+    static bool mismatchWarned = false;
+    if (positions.size() != initialNumTiles && !mismatchWarned) {
+        std::cerr << "Warning: Tile count mismatch: " << positions.size() 
+                 << " vs expected " << initialNumTiles << std::endl;
+        mismatchWarned = true;
+    }
+    
     for (const auto& pos : positions) {
-        for(const auto& texture : textures){
-            Rectangle source = { 0, 0, (float)texture.width, (float)texture.height };
+        for (const auto& texture : textures) {
+            if (texture == nullptr) continue;
+            
+            Rectangle source = { 0, 0, (float)texture->width, (float)texture->height };
             float ratio = expandingTime > 0.0f ? expandingTimer / expandingTime : 1.0f;
-            Vector2 posToDraw = getPositionToDraw(pos, texture.width, ratio);
-            Rectangle dest = { posToDraw.x, posToDraw.y, texture.width * scale * ratio, texture.height * scale };
+            Vector2 posToDraw = getPositionToDraw(pos, texture->width, ratio);
+            Rectangle dest = { posToDraw.x, posToDraw.y, texture->width * scale * ratio, texture->height * scale };
             Vector2 origin = { 0, 0 };
             float rotation = -angle;
-            DrawTexturePro(texture, source, dest, origin, rotation, color);
+            DrawTexturePro(*texture, source, dest, origin, rotation, color);
         }
     }
 }

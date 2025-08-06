@@ -40,10 +40,10 @@ private:
     float angle = 0.0f;
     float scale = 1.0f;
     std::vector<Vector2> positions;
-    std::vector<Texture2D> textures;
+    std::vector<const Texture2D*> textures;
     bool upward = true;
     Rectangle restrictArea = {0, 0, (float)GetScreenWidth(), (float)GetScreenHeight()};
-    int initialNumTiles = 200;
+    int initialNumTiles = 50;
     Color color = WHITE;
     float expandingTime = 0.0f;
     float expandingTimer = 0.0f;

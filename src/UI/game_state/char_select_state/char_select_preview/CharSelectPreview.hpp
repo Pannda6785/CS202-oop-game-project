@@ -83,6 +83,9 @@ private:
     bool isLeft = true;
     Vector2 getSymetricPos(Vector2 pos);
 
+    bool debugFlag = true;
+    bool out = false;
+    bool checkFadeIn = false;
 };
 
 #endif // CHAR_SELECT_PREVIEW_HPP

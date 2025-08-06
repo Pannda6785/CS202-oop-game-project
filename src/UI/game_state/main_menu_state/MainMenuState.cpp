@@ -1,6 +1,7 @@
 #include "MainMenuState.hpp"
 #include "../GameStateManager.hpp"
 #include "../solo_mode_state/SoloModeState.hpp"
+#include "../versus_player_state/VersusPlayerState.hpp"
 #include "../char_select_state/CharSelectState.hpp"
 #include "../options_state/OptionsState.hpp"
 #include "../../../audio/AudioManager.hpp"
@@ -72,6 +73,7 @@ void MainMenuState::enter() {
         // gameStateManager.changeState(std::make_unique<SoloModeState>(gameStateManager));
         setVisible(false);
         gameStateManager.pushState(std::make_unique<CharSelectState>(gameStateManager));
+        // gameStateManager.pushState(std::make_unique<VersusPlayerState>(gameStateManager, "Sun Priestess", "Hero of Frost"));
     });
     versusButton->setOnHoverEnterListener([this]() {
         std::cout << "Hovered over Versus button!" << std::endl;

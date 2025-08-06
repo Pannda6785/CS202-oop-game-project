@@ -4,8 +4,7 @@ CharSelectPreviewManager::CharSelectPreviewManager() : preview(nullptr)
 {
 }
 
-CharSelectPreviewManager::~CharSelectPreviewManager() {
-}
+CharSelectPreviewManager::~CharSelectPreviewManager() = default;
 
 void CharSelectPreviewManager::init(bool isLeft) {
     this->isLeft = isLeft;

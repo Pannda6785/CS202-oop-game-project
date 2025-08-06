@@ -1,7 +1,7 @@
 #ifndef CHAR_SELECTOR_GRAPHICS_COMPONENT_HPP
 #define CHAR_SELECTOR_GRAPHICS_COMPONENT_HPP
 
-#include "../../../graphics/GraphicsComponent.hpp"
+#include "../../../../graphics/GraphicsComponent.hpp"
 #include <raylib.h>
 
 class CharSelector;
@@ -24,7 +24,7 @@ private:
     CharSelector& charSelector;
     Vector2 startPosition = {0.0f, 0.0f};
     Vector2 direction = {0.0f, 0.0f};
-    Texture selectionCursorTexture = {0};
+    const Texture* selectionCursorTexture = nullptr;
     float angleRotate = 0.0f;
     Vector2 originRotate = {0.0f, 0.0f};
 

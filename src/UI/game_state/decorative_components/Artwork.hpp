@@ -9,7 +9,6 @@
 class Artwork : public GraphicsComponent {
 public:
     Artwork();
-    Artwork(float period);
     ~Artwork() override;
 
     void update(float dt);
@@ -32,7 +31,7 @@ public:
     float getFadeInTimer() const;
 
 private:
-    std::vector<Texture2D> textures;
+    std::vector<const Texture2D*> textures;
     std::vector<std::string> texturePaths;
     Vector2 origin = {0.0f, 0.0f};
     float period = 0.1f;

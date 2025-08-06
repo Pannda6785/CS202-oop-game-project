@@ -99,7 +99,7 @@ namespace Unit {
         LockCount // This should always be the last element
     };
     const int NUM_LOCKS = static_cast<int>(Lock::LockCount);
-    
+
     enum Layer {
         Background = 0,
         Underlay = 10,
