@@ -2,8 +2,6 @@
 #define CHAR_SELECT_PREVIEW_MANAGER_HPP
 
 #include "CharSelectPreview.hpp"
-#include "SunPriestessPreview.hpp"
-#include "SilentRedhoodPreview.hpp"
 #include <memory>
 
 class CharSelectPreviewManager {

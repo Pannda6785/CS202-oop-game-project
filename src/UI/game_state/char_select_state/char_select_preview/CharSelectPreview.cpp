@@ -15,10 +15,10 @@ CharSelectPreview::~CharSelectPreview() = default;
 
 void CharSelectPreview::enter() {
     if(!isLeft) {
-        mainPortrait.setScale(0.37f);
+        mainPortrait.setScale(mainPortraitScale);
         mainPortraitPosition = getSymetricPos(mainPortraitPosition);
         mainPortraitPosition.x -= mainPortrait.getWidth();
-        mainPortrait.setFlip(true);
+        mainPortrait.setFlip(false);
 
         idleAnimPreview.setScale(0.45f);
         idleAnimPreviewPosition = getSymetricPos(idleAnimPreviewPosition);
@@ -39,7 +39,7 @@ void CharSelectPreview::enter() {
     }
 
     mainPortrait.setMiddle(true);
-    mainPortrait.setScale(0.37f);
+    mainPortrait.setScale(mainPortraitScale);
     mainPortrait.setPosition(mainPortraitPosition.x, mainPortraitPosition.y);
     mainPortrait.setLayer(LayerInfoProvider::getInstance().getLayer("main_portrait"));
     mainPortrait.setFadeInTime(portraitFadeInTime);

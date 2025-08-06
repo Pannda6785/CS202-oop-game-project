@@ -8,7 +8,7 @@ SunPriestessPreview::SunPriestessPreview() {
     addTextureBackgroundTiles(0, "../assets/UI_sprites/char_select_preview/ribbon.png");
     addTextureBackgroundTiles(1, "../assets/UI_sprites/char_select_preview/ribbon.png");
     addTextureBackgroundTiles(2, "../assets/UI_sprites/char_select_preview/ribbon.png");
-    addTextureFrontTile("../assets/charselect/sun_priestess_front_tile.png");
+    addTextureFrontTile("../assets/UI_sprites/side_ribbon.png");
     setCharName("Sun Priestess");
     setBackgroundColor({212, 155, 105, 255});
     setRibbonBackgroundColor({214, 70, 62, 255});

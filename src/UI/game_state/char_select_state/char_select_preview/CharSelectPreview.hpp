@@ -33,7 +33,8 @@ public:
 private:
     // Main portrait of the character
     Artwork mainPortrait = Artwork();
-    Vector2 mainPortraitPosition = {10.0f, 60.0f};
+    Vector2 mainPortraitPosition = {-10.0f, 60.0f};
+    float mainPortraitScale = 0.37f;
     float portraitFadeInTime = 0.45f;
 
     // Idle animation preview

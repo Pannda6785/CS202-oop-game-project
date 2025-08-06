@@ -17,18 +17,18 @@ void CharSelectState::enter() {
     movingTileEffect[0].setScale(0.75f);
     movingTileEffect[0].setUpward(false);
     movingTileEffect[0].setRestrictArea({0.0f, 0.0f, (float)GetScreenWidth(), (float)GetScreenHeight() + 100});
-    movingTileEffect[0].setStartPosition({680.0f, GetScreenHeight() * 1.0f});
+    movingTileEffect[0].setStartPosition({690.0f, GetScreenHeight() * 1.0f});
     movingTileEffect[0].setAngle(10.0f);
-    movingTileEffect[0].setSpeed(100.0f);
+    movingTileEffect[0].setSpeed(75.0f);
     movingTileEffect[0].setLayer(LayerInfoProvider::getInstance().getLayer("middle_tile_0"));
     movingTileEffect[0].init();
 
     movingTileEffect[1].addTexture("../assets/UI_sprites/charselect_ribbon_mid.png");
     movingTileEffect[1].setScale(0.75f);
     movingTileEffect[1].setRestrictArea({0.0f, -100.0f, (float)GetScreenWidth(), (float)GetScreenHeight() + 100.0f});
-    movingTileEffect[1].setStartPosition({550.0f, 0.0f});
+    movingTileEffect[1].setStartPosition({580.0f, 0.0f});
     movingTileEffect[1].setAngle(6.0f);
-    movingTileEffect[1].setSpeed(120.0f);
+    movingTileEffect[1].setSpeed(80.0f);
     movingTileEffect[1].setLayer(LayerInfoProvider::getInstance().getLayer("middle_tile_0"));
     movingTileEffect[1].init();
 
@@ -74,11 +74,49 @@ void CharSelectState::update(float dt) {
     charSelectorRight.update(dt);
 
     if(charSelectorLeft.getChangeSelection()){
-        charSelectPreviewManagerLeft.setPreview("Sun Priestess", true);
+        std::string characterName = selectOptions[charSelectorLeft.getCurrentSelection()];
+        if(characterName == "Random Select") {
+            int randomIndex = GetRandomValue(0, selectOptions.size() - 2);
+            if(randomIndex >= charSelectorLeft.getCurrentSelection()) randomIndex++;
+            characterName = selectOptions[randomIndex];
+        }
+        
+        if(characterName == "Sun Priestess" || 
+           characterName == "Silent Redhood" ||
+           characterName == "Royal Arcanist" ||
+           characterName == "Hero of Frost" ||
+           characterName == "Dreadwyrm Heir" ||
+           characterName == "Lich of Flowers" ||
+           characterName == "Depth's Secret" ||
+           characterName == "Stormbeast") {
+            
+            charSelectPreviewManagerLeft.setPreview(characterName, true);
+        } else {
+            charSelectPreviewManagerLeft.setPreview("Sun Priestess", true);
+        }
     }
 
     if(charSelectorRight.getChangeSelection()){
-        charSelectPreviewManagerRight.setPreview("Sun Priestess", false);
+        std::string characterName = selectOptions[charSelectorRight.getCurrentSelection()];
+        if(characterName == "Random Select") {
+            int randomIndex = GetRandomValue(0, selectOptions.size() - 2); // Exclude "Random Select"
+            if(randomIndex >= charSelectorRight.getCurrentSelection()) randomIndex++;
+            characterName = selectOptions[randomIndex];
+        }
+        
+        if(characterName == "Sun Priestess" || 
+           characterName == "Silent Redhood" ||
+           characterName == "Royal Arcanist" ||
+           characterName == "Hero of Frost" ||
+           characterName == "Dreadwyrm Heir" ||
+           characterName == "Lich of Flowers" ||
+           characterName == "Depth's Secret" ||
+           characterName == "Stormbeast") {
+            
+            charSelectPreviewManagerRight.setPreview(characterName, false);
+        } else {
+            charSelectPreviewManagerRight.setPreview("Sun Priestess", false);
+        }
     }
 
     charSelectPreviewManagerLeft.update(dt);
