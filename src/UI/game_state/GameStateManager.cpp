@@ -23,6 +23,11 @@ void GameStateManager::popState() {
     currentAction = StateAction::PopState;
 }
 
+void GameStateManager::changeCurrentState(std::unique_ptr<GameState> state) {
+    currentAction = StateAction::ChangeCurrentState;
+    pendingState = std::move(state);
+}
+
 void GameStateManager::update(float dt) {
     if(!stateStack.empty()){
         stateStack.top()->update(dt);
@@ -48,6 +53,9 @@ void GameStateManager::processPendingStateChanges() {
         case StateAction::PopState:
             applyPopState();
             break;
+        case StateAction::ChangeCurrentState:
+            applyChangeCurrentState();
+            break;
         default:
             break;
     }
@@ -65,4 +73,14 @@ void GameStateManager::applyPushState(){
 
 void GameStateManager::applyPopState(){
     if(!stateStack.empty()) stateStack.pop();
+}
+
+void GameStateManager::applyChangeCurrentState() {
+    if (!stateStack.empty()) {
+        stateStack.pop();  // Remove current state
+        stateStack.push(std::move(pendingState));  // Add new state
+    } else {
+        // If stack is empty, behave like changeState
+        stateStack.push(std::move(pendingState));
+    }
 }

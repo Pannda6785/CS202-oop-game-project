@@ -10,7 +10,6 @@ public:
     GameText();
     ~GameText() override;
 
-    // Setters
     void setText(const std::string& text);
     void loadFont(const std::string& fontPath);
     void unloadFont();
@@ -18,11 +17,11 @@ public:
     void setColor(Color color);
     void setFontSize(int size);
 
-    // Getters
     const std::string& getText() const;
     int getX() const;
     int getY() const;
     int getFontSize() const;
+    float getWidth() const;
     Color getColor() const;
 
     void render() const override;

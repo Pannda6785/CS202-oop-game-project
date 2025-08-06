@@ -1,6 +1,7 @@
 #include "MainMenuState.hpp"
 #include "../GameStateManager.hpp"
 #include "../solo_mode_state/SoloModeState.hpp"
+#include "../versus_player_state/VersusPlayerState.hpp"
 #include "../char_select_state/CharSelectState.hpp"
 #include "../options_state/OptionsState.hpp"
 #include "../../../audio/AudioManager.hpp"
@@ -72,6 +73,7 @@ void MainMenuState::enter() {
         // gameStateManager.changeState(std::make_unique<SoloModeState>(gameStateManager));
         setVisible(false);
         gameStateManager.pushState(std::make_unique<CharSelectState>(gameStateManager));
+        // gameStateManager.pushState(std::make_unique<VersusPlayerState>(gameStateManager, "Sun Priestess", "Hero of Frost"));
     });
     versusButton->setOnHoverEnterListener([this]() {
         std::cout << "Hovered over Versus button!" << std::endl;
@@ -168,8 +170,16 @@ void MainMenuState::enter() {
         AudioManager::getInstance().playSound("MenuCursor");
     });
     buttonManager.addButton(std::move(exitButton));
-    movingTileEffect[0].init({500, 0}, 10.0f, 100.0f, 10);
-    movingTileEffect[1].init({550, 0}, 6.0f, 120.0f, 9);
+    movingTileEffect[0].setStartPosition({500.0f, 0.0f});
+    movingTileEffect[0].setAngle(10.0f);
+    movingTileEffect[0].setSpeed(100.0f);
+    movingTileEffect[0].setLayer(10);
+    movingTileEffect[0].init();
+    movingTileEffect[1].setStartPosition({550.0f, 0.0f});
+    movingTileEffect[1].setAngle(6.0f);
+    movingTileEffect[1].setSpeed(120.0f);
+    movingTileEffect[1].setLayer(9);
+    movingTileEffect[1].init();
     behindDots.init();
 }
 

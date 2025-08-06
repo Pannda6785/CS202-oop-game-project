@@ -1,7 +1,7 @@
 #ifndef SILENT_REDHOOD_PREVIEW_HPP
 #define SILENT_REDHOOD_PREVIEW_HPP
 
-#include "CharSelectPreview.hpp"
+#include "../CharSelectPreview.hpp"
 
 class SilentRedhoodPreview : public CharSelectPreview {
 public:

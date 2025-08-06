@@ -2,8 +2,6 @@
 #define CHAR_SELECT_PREVIEW_MANAGER_HPP
 
 #include "CharSelectPreview.hpp"
-#include "SunPriestessPreview.hpp"
-#include "SilentRedhoodPreview.hpp"
 #include <memory>
 
 class CharSelectPreviewManager {
@@ -18,9 +16,6 @@ public:
 private:
     bool isLeft = true;
     std::unique_ptr<CharSelectPreview> preview = nullptr;
-    // std::shared_ptr<CharSelectPreview> sunPriestessPreview = nullptr;
-    // std::shared_ptr<CharSelectPreview> silentRedhoodPreview = nullptr;
-
 };
 
 #endif // CHAR_SELECT_PREVIEW_MANAGER_HPP

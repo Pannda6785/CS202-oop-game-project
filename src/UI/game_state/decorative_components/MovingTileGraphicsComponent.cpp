@@ -1,4 +1,5 @@
 #include "MovingTileGraphicsComponent.hpp"
+#include "../../../graphics/TextureManager.hpp"
 #include <cmath>
 #include <cassert>
 #include <iostream>
@@ -6,41 +7,45 @@
 MovingTileGraphicsComponent::MovingTileGraphicsComponent() = default;
 
 MovingTileGraphicsComponent::~MovingTileGraphicsComponent() {
+    unloadTextures();
 }
 
-void MovingTileGraphicsComponent::addTexture(const std::string& texturePath){
-    Texture2D texture = {0};
-    texture = LoadTexture(texturePath.c_str());
-    textures.push_back(texture);
+void MovingTileGraphicsComponent::addTexture(const std::string& texturePath) {
+    textures.push_back(TextureManager::instance().getTexture(texturePath));
 }
 
 void MovingTileGraphicsComponent::unloadTextures() {
-    for (auto& texture : textures) {
-        if (texture.id != 0) UnloadTexture(texture);
-    }
-    textures.clear();
 }
 
-void MovingTileGraphicsComponent::init(Vector2 _startPosition, float _angle, float _speed, int layer) {
-    if(textures.empty() || textures[0].id == 0) {
+void MovingTileGraphicsComponent::init() {
+    if (textures.empty() || textures[0] == nullptr || textures[0]->id == 0) {
         return;
     }
-    startPosition = _startPosition;
-    angle = _angle;
-    speed = _speed;
-    setLayer(layer);
-    color = WHITE;
+    
     positions.clear();
     positions.push_back(startPosition);
     int numTiles = initialNumTiles;
-    int tileHeight = textures[0].height * scale;
+    int tileHeight = textures[0]->height * scale;
     float deltaX = sin(angle * (PI / 180.0)) * tileHeight;
     float deltaY = cos(angle * (PI / 180.0)) * tileHeight;
-    for (int i = 0; i < numTiles; ++i) {
+    
+    for (int i = 0; i < numTiles - 1; ++i) {
         float x = startPosition.x + i * deltaX * (upward ? 1 : -1);
         float y = startPosition.y + i * deltaY * (upward ? 1 : -1);
         positions.push_back({x, y});
     }
+}
+
+void MovingTileGraphicsComponent::setStartPosition(Vector2 startPosition) {
+    this->startPosition = startPosition;
+}
+
+void MovingTileGraphicsComponent::setSpeed(float speed) {
+    this->speed = speed;
+}
+
+void MovingTileGraphicsComponent::setAngle(float angle) {
+    this->angle = angle;
 }
 
 void MovingTileGraphicsComponent::setUpward(bool upward) {
@@ -63,48 +68,123 @@ void MovingTileGraphicsComponent::setColor(Color color) {
     this->color = color;
 }
 
+void MovingTileGraphicsComponent::setExpandingTime(float time) {
+    expandingTime = time;
+    expandingTimer = 0.4f * expandingTime;
+    startExpand = false;
+}
+
+bool MovingTileGraphicsComponent::getStartExpand() const {
+    return startExpand;
+}
+
+void MovingTileGraphicsComponent::setStartExpand(bool startExpand) {
+    this->startExpand = startExpand;
+}
+
+float MovingTileGraphicsComponent::getTileWidth() const {
+    if (textures.empty() || textures[0] == nullptr || textures[0]->id == 0) return 0.0f;
+    float ratio = expandingTime > 0.0f ? expandingTimer / expandingTime : 1.0f;
+    return textures[0]->width * scale * ratio;
+}
+
+float MovingTileGraphicsComponent::getRatio() const {
+    return expandingTime > 0.0f ? expandingTimer / expandingTime : 1.0f;
+}
+
+Vector2 MovingTileGraphicsComponent::getStartPositionToDraw() const {
+    return positions.empty() ? Vector2({0.0f, 0.0f}) : getPositionToDraw(positions[0], getTileWidth(), getRatio());
+}
+
+Vector2 MovingTileGraphicsComponent::getStartPosition() const {
+    return positions.empty() ? Vector2({0.0f, 0.0f}) : positions[0];
+}
+
+Vector2 MovingTileGraphicsComponent::getMiddlePostion() const {
+    Vector2 pos = startPosition;
+    float width = getTileWidth() / getRatio();
+    float dx = width / 2.0f * cos(angle * (PI / 180.0));
+    float dy = width / 2.0f * sin(angle * (PI / 180.0));
+    Vector2 posToDraw = { pos.x + dx, pos.y - dy};
+    return posToDraw;
+}
+
+Vector2 MovingTileGraphicsComponent::getPositionToDraw(Vector2 pos, float textureWidth, float ratio) const {
+    float width = textureWidth * scale;
+    float dx = width / 2.0f * cos(angle * (PI / 180.0)) * (1.0f - ratio);
+    float dy = width / 2.0f * sin(angle * (PI / 180.0)) * (1.0f - ratio);
+    Vector2 posToDraw = { pos.x + dx, pos.y - dy};
+    return posToDraw;
+}
+
 void MovingTileGraphicsComponent::update(float dt) {
-    if(textures.empty() || textures[0].id == 0){
-        return; // Check if the texture is loaded
+    if (textures.empty() || textures[0] == nullptr || textures[0]->id == 0) {
+        return;
     }
-    int tileHeight = textures[0].height * scale; // Height of the tile texture
-    int tileWidth = textures[0].width * scale; // Width of the tile texture
-    float sina = sin(angle * (PI / 180.0));
-    float cosa = cos(angle * (PI / 180.0));
-    for(int i = 0; i < positions.size(); ++i) {
-        // Update each position based on speed and angle
-        positions[i].x -= speed * dt * sina * (upward ? 1 : -1);
-        positions[i].y -= speed * dt * cosa * (upward ? 1 : -1);
+    
+    float ratio = expandingTime > 0.0f ? expandingTimer / expandingTime : 1.0f;
+    if (ratio == 1.0f) {
+        int tileHeight = textures[0]->height * scale;
+        int tileWidth = textures[0]->width * scale;
+        float sina = sin(angle * (PI / 180.0));
+        float cosa = cos(angle * (PI / 180.0));
+        for(int i = 0; i < positions.size(); ++i) {
+            positions[i].x -= speed * dt * sina * (upward ? 1 : -1);
+            positions[i].y -= speed * dt * cosa * (upward ? 1 : -1);
+        }
+        if(positions[0].y < restrictArea.y || 
+            positions[0].y > restrictArea.y + restrictArea.height ||
+            positions[0].x > restrictArea.x + restrictArea.width || 
+            positions[0].x < restrictArea.x) {
+            positions.erase(positions.begin());
+            Vector2 newPosition = { positions.back().x + sina * tileHeight * (upward ? 1 : -1), positions.back().y + cosa * tileHeight * (upward ? 1 : -1) };
+            positions.push_back(newPosition);
+        }
+    } else {
+        if (!startExpand) {
+            positions.clear();
+            return;
+        }
+        expandingTimer += dt;
+        if (expandingTimer >= expandingTime) {
+            expandingTimer = expandingTime;
+        }
+        positions.clear();
+        positions.push_back(startPosition);
+        int numTiles = initialNumTiles;
+        int tileHeight = textures[0]->height * scale * ratio;
+        float deltaX = sin(angle * (PI / 180.0)) * tileHeight * ratio;
+        float deltaY = cos(angle * (PI / 180.0)) * tileHeight * ratio;
+        for (int i = 0; i < numTiles - 1; ++i) {
+            float x = startPosition.x + i * deltaX * (upward ? 1 : -1);
+            float y = startPosition.y + i * deltaY * (upward ? 1 : -1);
+            positions.push_back({x, y});
+        }
     }
-    // assert(positions.size() > 0);
-    if(positions[0].y < restrictArea.y || 
-        positions[0].y > restrictArea.y + restrictArea.height ||
-        positions[0].x > restrictArea.x + restrictArea.width || 
-        positions[0].x < restrictArea.x) {
-        // If the first tile is out of the screen, remove it and add a new one at the bottom
-        positions.erase(positions.begin());
-        // Add a new position at the bottom of the screen
-        Vector2 newPosition = { positions.back().x + sina * tileHeight * (upward ? 1 : -1), positions.back().y + cosa * tileHeight * (upward ? 1 : -1) };
-        positions.push_back(newPosition);
-    }
-    // if(positions[0].y + textures[0].height < 0) {
-    //     positions.erase(positions.begin());
-    //     // Add a new position at the bottom of the screen
-    //     Vector2 newPosition = { positions.back().x + sina * tileHeight, positions.back().y + cosa * tileHeight };
-    //     positions.push_back(newPosition);
-    // }
 }
 
 void MovingTileGraphicsComponent::render() const {
-    if (textures.empty() || !isVisible() || textures[0].id == 0) return; // Check if the texture is loaded
-
+    if (textures.empty() || !isVisible() || textures[0] == nullptr || textures[0]->id == 0) return;
+    
+    // Replace debug output with one-time warning
+    static bool mismatchWarned = false;
+    if (positions.size() != initialNumTiles && !mismatchWarned) {
+        std::cerr << "Warning: Tile count mismatch: " << positions.size() 
+                 << " vs expected " << initialNumTiles << std::endl;
+        mismatchWarned = true;
+    }
+    
     for (const auto& pos : positions) {
-        for(const auto& texture : textures){
-            Rectangle source = { 0, 0, (float)texture.width, (float)texture.height };
-            Rectangle dest = { pos.x, pos.y, texture.width * scale, texture.height * scale };
+        for (const auto& texture : textures) {
+            if (texture == nullptr) continue;
+            
+            Rectangle source = { 0, 0, (float)texture->width, (float)texture->height };
+            float ratio = expandingTime > 0.0f ? expandingTimer / expandingTime : 1.0f;
+            Vector2 posToDraw = getPositionToDraw(pos, texture->width, ratio);
+            Rectangle dest = { posToDraw.x, posToDraw.y, texture->width * scale * ratio, texture->height * scale };
             Vector2 origin = { 0, 0 };
             float rotation = -angle;
-            DrawTexturePro(texture, source, dest, origin, rotation, color);
+            DrawTexturePro(*texture, source, dest, origin, rotation, color);
         }
     }
 }

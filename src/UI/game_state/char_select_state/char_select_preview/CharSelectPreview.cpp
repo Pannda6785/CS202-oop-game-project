@@ -1,91 +1,112 @@
 #include "CharSelectPreview.hpp"
+#include "../../../../audio/AudioManager.hpp"
 #include <iostream>
-#include <cassert>
+#include <assert.h> 
 #include <algorithm>
 
 CharSelectPreview::CharSelectPreview() {
-    enter();
 }
 
-CharSelectPreview::~CharSelectPreview() {
-    exit();
-}
+// CharSelectPreview::~CharSelectPreview() {
+//     exit();
+// }
+
+CharSelectPreview::~CharSelectPreview() = default;
 
 void CharSelectPreview::enter() {
-    layers = {"background",
-              "background_tile_0", 
-              "background_tile_1", 
-              "background_tile_2", 
-              "main_portrait", 
-              "ribbon_background",
-              "front_tile",
-              "below_background",
-              "idle_anim_preview",
-              "char_name"};
-    if(isLeft){
-        background.setBackgroundRect({0, 0, GetScreenWidth() / 2.0f, GetScreenHeight()});
-    } else{
-        mainPortraitPosition = {mainPortraitPosition.x + GetScreenWidth() / 2.0f, mainPortraitPosition.y};
-        idleAnimPreviewPosition = {idleAnimPreviewPosition.x + GetScreenWidth() / 2.0f, idleAnimPreviewPosition.y};
-        for(int i = 0; i < 3; i++){
-            backgroundTilesPosition[i] = {backgroundTilesPosition[i].x + GetScreenWidth() / 2.0f, backgroundTilesPosition[i].y};
-        }
-        frontTilePosition = {frontTilePosition.x + GetScreenWidth() / 2.0f, frontTilePosition.y};
-        charNamePosition = {charNamePosition.x + GetScreenWidth() / 2, charNamePosition.y};
-        background.setBackgroundRect({GetScreenWidth() / 2.0f, 0, GetScreenWidth() / 2.0f, GetScreenHeight()});
-    }
-    mainPortrait.setPosition(mainPortraitPosition.x, mainPortraitPosition.y);
-    mainPortrait.setScale(0.37f); // Set scale for main portrait
-    mainPortrait.setLayer(getLayer("main_portrait"));
-    mainPortrait.setFadeInTime(portraitFadeInTime);
-    idleAnimPreview.setPosition(idleAnimPreviewPosition.x, idleAnimPreviewPosition.y);
-    idleAnimPreview.setPeriod(0.28f); // Set animation period for idle animation
-    idleAnimPreview.setScale(0.45f); // Set scale for idle animation
-    idleAnimPreview.setLayer(getLayer("idle_anim_preview"));
+    if(!isLeft) {
+        mainPortrait.setScale(mainPortraitScale);
+        mainPortraitPosition = getSymetricPos(mainPortraitPosition);
+        mainPortraitPosition.x -= mainPortrait.getWidth();
+        mainPortrait.setFlip(false);
 
-    for(int i = 0; i < 3; i++){
-        backgroundTiles[i].setScale(0.60f);
-        backgroundTiles[i].setRestrictArea({0, 0, (float)GetScreenWidth() / 2.0f, (float)GetScreenHeight()});
-        backgroundTiles[i].setUpward(false);
-        backgroundTilesLayer[i] = getLayer("background_tile_" + std::to_string(i));
-        backgroundTiles[i].init(backgroundTilesPosition[i], backgroundTilesAngle[i], backgroundTilesSpeed[i], backgroundTilesLayer[i]);
+        idleAnimPreview.setScale(0.45f);
+        idleAnimPreviewPosition = getSymetricPos(idleAnimPreviewPosition);
+        idleAnimPreviewPosition.x -= idleAnimPreview.getWidth();
+        idleAnimPreview.setFlip(true);
+        
+        charNamePosition = getSymetricPos(charNamePosition);
+        charNamePosition.x -= charName.getWidth();
+        
+        ribbonBackgroundRect = {GetScreenWidth() / 2.0f, (float)GetScreenHeight() - belowBackgroundHeight - ribbonBackgroundHeight, (float)GetScreenWidth() / 2.0f, ribbonBackgroundHeight};
+        
+        backgroundRect = {GetScreenWidth() / 2.0f, 0.0f, GetScreenWidth() / 2.0f, GetScreenHeight() * 1.0f};
+        
+        for(int i = 0; i < 3; i++){
+            backgroundTilesPosition[i] = getSymetricPos(backgroundTilesPosition[i]);
+            backgroundTilesAngle[i] = 180.0f - backgroundTilesAngle[i];
+        }
     }
+
+    mainPortrait.setMiddle(true);
+    mainPortrait.setScale(mainPortraitScale);
+    mainPortrait.setPosition(mainPortraitPosition.x, mainPortraitPosition.y);
+    mainPortrait.setLayer(LayerInfoProvider::getInstance().getLayer("main_portrait"));
+    mainPortrait.setFadeInTime(portraitFadeInTime);
     
+    idleAnimPreview.setMiddle(true);
+    idleAnimPreview.setScale(0.45f);
+    idleAnimPreview.setPosition(idleAnimPreviewPosition.x, idleAnimPreviewPosition.y);
+    idleAnimPreview.setLayer(LayerInfoProvider::getInstance().getLayer("idle_anim_preview"));
+    idleAnimPreview.setPeriod(0.28f);
+
     charName.setPosition(charNamePosition.x, charNamePosition.y);
     charName.loadFont("../assets/fonts/Redressed.ttf");
     charName.setFontSize(50);
     charName.setColor(WHITE);
-    charName.setLayer(getLayer("char_name"));
+    charName.setLayer(LayerInfoProvider::getInstance().getLayer("char_name"));
 
-    background.setLayer(getLayer("background"));
+    background.setBackgroundRect(backgroundRect);
+    background.setLayer(LayerInfoProvider::getInstance().getLayer("background"));
 
-    belowBackground.setLayer(getLayer("below_background"));
-    belowBackground.setBackgroundRect({0, (float)GetScreenHeight() - belowBackgroundHeight, (float)GetScreenWidth() / 2.0f, belowBackgroundHeight});
+    belowBackground.setLayer(LayerInfoProvider::getInstance().getLayer("below_background"));
+    belowBackground.setBackgroundRect({isLeft ? 0 : GetScreenWidth() / 2.0f, (float)GetScreenHeight() - belowBackgroundHeight, (float)GetScreenWidth() / 2.0f, belowBackgroundHeight});
     belowBackground.setBackgroundColor(BLACK);
 
-    ribbonBackground.setLayer(getLayer("ribbon_background"));   
+    ribbonBackground.setLayer(LayerInfoProvider::getInstance().getLayer("ribbon_background"));
     ribbonBackground.setBackgroundRect(ribbonBackgroundRect);
+
+    for(int i = 0; i < 3; i++){
+        movingTileBackground[i].setLayer(LayerInfoProvider::getInstance().getLayer("tile_rect_" + std::to_string(i)));
+        movingTileBackground[i].setBackgroundColor(movingTileBackgroundColor);
+        if(isLeft) movingTileBackground[i].setAngle(-(90.0f + backgroundTilesAngle[i]));
+        else movingTileBackground[i].setAngle(-(backgroundTilesAngle[i] - 90.0f));
+    }
+
+    for(int i = 0; i < 3; i++){
+        backgroundTiles[i].setScale(0.60f);
+        backgroundTiles[i].setRestrictArea({isLeft ? 0 : (float)GetScreenWidth() / 2.0f, 0, (float)GetScreenWidth() / 2.0f, (float)GetScreenHeight()});
+        backgroundTiles[i].setUpward(!isLeft);
+        backgroundTilesLayer[i] = LayerInfoProvider::getInstance().getLayer("background_tile_" + std::to_string(i));
+        backgroundTiles[i].setExpandingTime(expandingTilesTime);
+        backgroundTiles[i].setStartPosition(backgroundTilesPosition[i]);
+        backgroundTiles[i].setAngle(backgroundTilesAngle[i]);
+        backgroundTiles[i].setSpeed(backgroundTilesSpeed[i]);
+        backgroundTiles[i].setLayer(backgroundTilesLayer[i]);
+        backgroundTiles[i].init();
+    }
 
     frontTile.setScale(0.60f);
     frontTile.addTexture("../assets/UI_sprites/side_ribbon.png");
-    frontTile.setRestrictArea({-100, 0, (float)GetScreenWidth() / 2.0f, (float)GetScreenHeight()});
-    std::cout << ribbonBackgroundRect.x << ' ' << ribbonBackgroundRect.y << std::endl;
-    frontTile.init({ribbonBackgroundRect.x, (float)GetScreenHeight() - 22.0f}, 90.0f, 50.0f, getLayer("front_tile"));
-    frontTile.setInitialNumTiles(7);
-}
-
-void CharSelectPreview::setSide(bool isLeft) {
-    this->isLeft = isLeft;
+    if(isLeft){
+        frontTile.setRestrictArea({-100, 0, (float)GetScreenWidth() / 2.0f, (float)GetScreenHeight()});
+    } else{
+        frontTile.setRestrictArea({(float)GetScreenWidth() / 2.0f, 0, GetScreenWidth() / 2.0f, (float)GetScreenHeight()});
+    }
+    frontTile.setInitialNumTiles(isLeft ? 8 : 10);
+    frontTile.setStartPosition({ribbonBackgroundRect.x, (float)GetScreenHeight() - 22.0f});
+    frontTile.setAngle(90.0f);
+    frontTile.setSpeed(50.0f);
+    frontTile.setLayer(LayerInfoProvider::getInstance().getLayer("front_tile"));
+    frontTile.init();
 }
 
 void CharSelectPreview::addTextureMainPortrait(const std::string & texturePath) {
     mainPortrait.addTexture(texturePath);
-    mainPortrait.setPosition(mainPortraitPosition.x, mainPortraitPosition.y);
 }
 
 void CharSelectPreview::addTextureIdleAnimPreview(const std::string & texturePath) {
     idleAnimPreview.addTexture(texturePath);
-    idleAnimPreview.setPosition(idleAnimPreviewPosition.x, idleAnimPreviewPosition.y);
 }
 
 void CharSelectPreview::addTextureBackgroundTiles(int id, const std::string & texturePath) {
@@ -95,6 +116,10 @@ void CharSelectPreview::addTextureBackgroundTiles(int id, const std::string & te
 
 void CharSelectPreview::addTextureFrontTile(const std::string & texturePath) {
     frontTile.addTexture(texturePath);
+}
+
+void CharSelectPreview::setSide(bool isLeft) {
+    this->isLeft = isLeft;
 }
 
 void CharSelectPreview::setBackgroundColor(Color color) {
@@ -107,36 +132,62 @@ void CharSelectPreview::setRibbonBackgroundColor(Color color) {
 
 void CharSelectPreview::setCharName(const std::string& text) {
     charName.setText(text);
-    charName.setPosition(charNamePosition.x, charNamePosition.y);
 }
 
 void CharSelectPreview::setFrontTileColor(Color color) {
     frontTile.setColor(color);
 }
 
+void CharSelectPreview::setMovingTileBackgroundColor(Color color) {
+    movingTileBackgroundColor = color;
+}
+
 void CharSelectPreview::exit() {
-    mainPortrait.unloadTextures();
-    idleAnimPreview.unloadTextures();
-    for(int i = 0; i < 3; i++){
-        backgroundTiles[i].unloadTextures();
-    }
-    frontTile.unloadTextures();
-    charName.unloadFont();
+    // mainPortrait.unloadTextures();
+    // idleAnimPreview.unloadTextures();
+    // for(int i = 0; i < 3; i++){
+    //     backgroundTiles[i].unloadTextures();
+    // }
+    // frontTile.unloadTextures();
+    // charName.unloadFont();
 }
 
 void CharSelectPreview::update(float dt) {
     mainPortrait.update(dt);
+    if(mainPortrait.finishedFadeIn() && !backgroundTiles[0].getStartExpand()) {
+        AudioManager::getInstance().playSound("CharSelectRibbon");
+    }
+    if(!mainPortrait.finishedFadeIn()){
+        checkFadeIn = true;
+    }
+    if(mainPortrait.finishedFadeIn()){
+        assert(checkFadeIn);
+    }
     for(int i = 0; i < 3; i++){
+        if(mainPortrait.finishedFadeIn()) {
+            backgroundTiles[i].setStartExpand(true);
+            // if(debugFlag && !out){
+            //     out = true;
+            //     std::cout << "HAHAHAHAHAHAHAHAHAHAHAHAHAHAHAH" << std::endl;
+            // }
+        }
         backgroundTiles[i].update(dt);
+        if(backgroundTiles[i].getStartExpand()) {
+            float ratioRect = 0.6f;
+            Vector2 size = {1000.0f, backgroundTiles[i].getTileWidth() * ratioRect};
+            Vector2 pos = backgroundTiles[i].getMiddlePostion();
+            movingTileBackground[i].setBackgroundRect({pos.x, pos.y, size.x, size.y});
+            movingTileBackground[i].setOriginMiddle();
+            if(debugFlag && !out){
+                out = true;
+                std::cout << "HAHAHAHAHAHAHAHAHAHAHAHAHAHAHAH" << std::endl;
+            }
+        } 
     }
     frontTile.update(dt);
 }
 
-int CharSelectPreview::getLayer(std::string layerName) {
-    auto it = std::find(layers.begin(), layers.end(), layerName);
-    if (it != layers.end()) {
-        return std::distance(layers.begin(), it) + 1;
-    }
-    assert(false);
-    return 0; // Layer not found
+Vector2 CharSelectPreview::getSymetricPos(Vector2 pos) {
+    float dx = GetScreenWidth() / 2.0f - pos.x;
+    return {GetScreenWidth() / 2.0f + dx, pos.y};
 }

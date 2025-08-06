@@ -1,18 +1,16 @@
 #ifndef CHAR_SELECT_STATE_HPP
 #define CHAR_SELECT_STATE_HPP
 
+#include <vector>
+#include <memory>
+
+#include "./char_selector/CharSelector.hpp"
+#include "LayerInfoProvider.hpp"
 #include "../GameState.hpp"
-#include "CharSelector.hpp"
-// #include "../../button/ButtonManager.hpp"
-// #include "../../button/Button.hpp"
-// #include "../state_heading/StateHeading.hpp"
-// #include "../decorative_components/BehindDots.hpp"
+#include "../decorative_components/Artwork.hpp"
 #include "../decorative_components/MovingTileGraphicsComponent.hpp"
 #include "../../../input/KeyboardInputInterpreter.hpp"
 #include "./char_select_preview/CharSelectPreviewManager.hpp"
-#include <vector>
-#include <memory>
-#include "../decorative_components/Artwork.hpp"
 
 class GameStateManager;
 
@@ -45,8 +43,10 @@ private:
     CharSelector charSelectorLeft;
     CharSelector charSelectorRight;
 
-    CharSelectPreviewManager charSelectPreviewManager;
+    CharSelectPreviewManager charSelectPreviewManagerLeft;
+    CharSelectPreviewManager charSelectPreviewManagerRight;
 
+    void startGame();
 };
 
 #endif // CHAR_SELECT_STATE_HPP

@@ -10,27 +10,44 @@ public:
     MovingTileGraphicsComponent();
     virtual ~MovingTileGraphicsComponent();
 
-    void addTexture(const std::string& texturePath);
-    void unloadTextures();
-    void init(Vector2 _startPosition, float _angle, float _speed, int layer);
     void update(float dt);
     void render() const override;
+
+    void addTexture(const std::string& texturePath);
+    void unloadTextures();
+    void setStartPosition(Vector2 startPosition);
+    void setSpeed(float speed);
+    void setAngle(float angle);
     void setUpward(bool upward);
     void setRestrictArea(Rectangle area);
     void setScale(float scale);
     void setInitialNumTiles(int numTiles);
     void setColor(Color color);
+    void setExpandingTime(float time);
+    void setStartExpand(bool startExpand);
+    void init();
+
+    bool getStartExpand() const;
+    float getTileWidth() const;
+    float getRatio() const;
+    Vector2 getStartPositionToDraw() const;
+    Vector2 getStartPosition() const;
+    Vector2 getMiddlePostion() const;
+    Vector2 getPositionToDraw(Vector2 pos, float textureHeight, float ratio) const;
 private:
-    Vector2 startPosition;
-    float speed;
-    float angle;
-    float scale = 1.0f; // Scale factor for rendering
+    Vector2 startPosition = {0.0f, 0.0f};
+    float speed = 0.0f;
+    float angle = 0.0f;
+    float scale = 1.0f;
     std::vector<Vector2> positions;
-    std::vector<Texture2D> textures;
-    bool upward = true; // Direction of movement
-    Rectangle restrictArea = {0, 0, (float)GetScreenWidth(), (float)GetScreenHeight()}; // Default restrict area to screen size
-    int initialNumTiles = 15; // Number of tiles to generate
-    Color color = WHITE; // Default color for rendering
+    std::vector<const Texture2D*> textures;
+    bool upward = true;
+    Rectangle restrictArea = {0, 0, (float)GetScreenWidth(), (float)GetScreenHeight()};
+    int initialNumTiles = 50;
+    Color color = WHITE;
+    float expandingTime = 0.0f;
+    float expandingTimer = 0.0f;
+    bool startExpand = false;
 };
 
 #endif // MOVING_TILE_GRAPHICS_COMPONENT_HPP

@@ -120,6 +120,7 @@ namespace Unit {
             default:              return Input::InputCount; // Invalid input fallback
         }
     }
+
     inline Lock moveToLock(Move move) {
         switch (move) {
             case Move::Basic:     return Lock::BasicLock;
@@ -129,6 +130,7 @@ namespace Unit {
             default:              return Lock::LockCount; // Invalid lock fallback
         }
     }
+
 };
 
 #endif // UNIT_HPP

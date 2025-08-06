@@ -1,24 +1,23 @@
 #include "CharSelector.hpp"
+#include "../../../../audio/AudioManager.hpp"
 
 CharSelector::CharSelector() : graphic(*this), currentSelection(0), changeSelection(false) {}
-CharSelector::~CharSelector() = default;
+// CharSelector::~CharSelector() = default;
 
-int CharSelector::getCurrentSelection() const {
-    return currentSelection;
+CharSelector::~CharSelector(){
+    unloadTextures();
 }
 
-bool CharSelector::getChangeSelection() const {
-    return changeSelection;
+void CharSelector::loadTexture(const std::string& texturePath) {
+    graphic.loadTexture(texturePath);
 }
 
-void CharSelector::init(std::vector<std::string> options) {
+void CharSelector::unloadTextures() {
+    graphic.unloadTextures();
+}
+
+void CharSelector::setOptions(const std::vector<std::string>& options) {
     characterOptions = options;
-    currentSelection = 0;
-    lockSelect = false;
-    isLeftSide = true; // Default to left side
-    graphic.setStartPosition({0, 0});
-    graphic.setDirection({1, 0});
-    graphic.setAngleRotate(0.0f);
 }
 
 void CharSelector::setKeyUp(int raylibKey) {
@@ -57,12 +56,16 @@ void CharSelector::setLayer(int layer) {
     graphic.setLayer(layer);
 }
 
-void CharSelector::loadSelectionCursorTexture(const std::string& texturePath) {
-    graphic.loadSelectionCursorTexture(texturePath);
+int CharSelector::getCurrentSelection() const {
+    return currentSelection;
 }
 
-void CharSelector::unloadTextures() {
-    graphic.unloadTextures();
+bool CharSelector::getChangeSelection() const {
+    return changeSelection;
+}
+
+bool CharSelector::isLocked() const {
+    return lockSelect;
 }
 
 void CharSelector::update(float dt) {
@@ -77,7 +80,11 @@ void CharSelector::update(float dt) {
         change = true;
     }
     if (inputInterpreter.isInputPressed(Unit::Input::Confirm) && !lockSelect) {
-        lockSelect = true; // Lock selection to prevent multiple confirmations
+        lockSelect = true;
+        AudioManager::getInstance().playSound("ConfirmSelectChar");
     }
     changeSelection = change;
+    if(change){
+        AudioManager::getInstance().playSound("MenuCursor");
+    }
 }
