@@ -31,6 +31,7 @@ public:
 
     void render() const override;
     void update(float dt) override;
+    void makeDone() override;
 
 private:
     // constant data
@@ -57,6 +58,9 @@ private:
 
     // dynamic data
     float time = 0.0f;
+    bool madeDone = false;
+    float whenMadeDone;
+    const float howLongAfterMadeDone = 0.18f; // how long to linger after made done
 
 };
 

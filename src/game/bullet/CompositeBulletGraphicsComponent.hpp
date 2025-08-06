@@ -11,6 +11,7 @@ public:
 
     void update(float dt) override;
     void render() const override;
+    void makeDone() override;
 
 private:
     struct TimedComponent {

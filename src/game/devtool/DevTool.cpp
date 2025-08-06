@@ -20,6 +20,8 @@ void DevTool::update(float dt) {
     if (IsKeyPressed(KEY_F3)) resetCooldown();
     if (IsKeyPressed(KEY_F4)) timeDown();
     if (IsKeyPressed(KEY_F5)) timeUp();
+    if (IsKeyPressed(KEY_F6)) clearBullets();
+    if (IsKeyPressed(KEY_F7)) log();
 }
 
 float DevTool::getTimeScale() const {
@@ -63,4 +65,26 @@ void DevTool::timeDown() {
 void DevTool::timeUp() {
     if (timeScale > 3.9) return;
     timeScale *= 2;
+}
+
+void DevTool::clearBullets() {
+    for (auto& bullet : world->bullets) {
+        bullet->makeDone();
+    }
+    world->bullets.clear();
+    world->pendingBullets.clear();
+}
+
+void DevTool::log() {
+    std::cout << "Number of Pending bullets: " << world->pendingBullets.size() << "\n";
+    std::cout << "Number of Bullets: " << world->bullets.size() << "\n";
+    std::cout << "Number of Players: " << world->players.size() << ", they are:\n";
+    for (const auto& player : world->players) {
+        std::string name = player->getName();
+        int health = player->getHealth();
+        int stock = player->getStock();
+        auto pos = player->getPosition();
+        std::cout << "Player: " << name << ", Health: " << health << ", Stock: " << stock
+                  << ", Position: " << pos << "\n";
+    }
 }

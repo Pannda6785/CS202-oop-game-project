@@ -23,6 +23,8 @@ public:
 
     void update(float dt) override;
     bool isDone() const override;
+    void makeDone() override {}
+
     void detonate();
 
     Unit::Vec2D getPosition() const override;

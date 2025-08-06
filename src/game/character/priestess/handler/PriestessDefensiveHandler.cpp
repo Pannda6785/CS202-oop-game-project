@@ -57,7 +57,7 @@ void PriestessDefensiveHandler::spawnBullet() {
 
         auto decorate = std::make_unique<DecorateGraphicsComponent>();
         decorate->setLayer(Unit::Layer::Underlay - 2);
-        auto color = graphics->getSignatureColor(); color[3] = 100;
+        auto color = graphics->getSignatureColor(); color[3] = 75;
         decorate->addCircle(color, BASE_RADIUS * 0.98f);
 
         dynamic_cast<CompositeBulletGraphicsComponent*>(bullet->getGraphics())->addComponent(std::move(texture));

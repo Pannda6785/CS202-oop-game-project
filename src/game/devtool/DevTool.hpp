@@ -21,6 +21,8 @@ private:
     void toggleInvincibility();
     void timeDown();
     void timeUp();
+    void clearBullets();
+    void log();
 };
 
 #endif // DEV_TOOL_HPP

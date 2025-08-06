@@ -28,3 +28,10 @@ void CompositeBulletGraphicsComponent::render() const {
     BulletGraphicsComponent::render(); 
     // the rest are *composed* so they render themselves through GraphicsComponentManager
 }
+
+void CompositeBulletGraphicsComponent::makeDone() {
+    BulletGraphicsComponent::makeDone();
+    for (auto& tc : components) {
+        tc.component->makeDone();
+    }
+}

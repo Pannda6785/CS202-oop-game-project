@@ -20,6 +20,9 @@ void StraightBullet::update(float dt) {
     if (isDone()) return;
 
     timer += dt;
+    if (timer >= lifetime) {
+        makeDone();
+    }
 
     resolvePendingHitboxes();
 
@@ -45,13 +48,23 @@ void StraightBullet::update(float dt) {
 }
 
 void StraightBullet::makeDone() {
-    forcedDone = true;
+    if (madeDone) return; // Already made done
+    madeDone = true;
+    whenMadeDone = timer;
+    if (graphics) graphics->makeDone();
+    if (lifeHitbox) lifeHitbox = nullptr;
+    if (damagingHitbox) damagingHitbox = nullptr;
+    if (cleansingHitbox) cleansingHitbox = nullptr;
+    invincibilityHitboxes.clear();
+    modifierHitboxes.clear();
+    lockHitboxes.clear();
 }
 
 bool StraightBullet::isDone() const {
-    if (timer > lifetime) return true;
-    if (forcedDone) return true;
-
+    if (madeDone && timer >= whenMadeDone + howLongAfterMadeDone) {
+        return true;
+    }
+    
     float margin = 1000.0f;
     float minX = -margin;
     float maxX = Unit::BATTLEFIELD_WIDTH + margin;
