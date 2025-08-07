@@ -1,7 +1,7 @@
 #include "MainMenuState.hpp"
 #include "../GameStateManager.hpp"
 #include "../solo_mode_state/SoloModeState.hpp"
-#include "../versus_player_state/VersusPlayerState.hpp"
+#include "../versus_mode_state/versus_player_state/VersusPlayerState.hpp"
 #include "../char_select_state/CharSelectState.hpp"
 #include "../options_state/OptionsState.hpp"
 #include "../../../audio/AudioManager.hpp"

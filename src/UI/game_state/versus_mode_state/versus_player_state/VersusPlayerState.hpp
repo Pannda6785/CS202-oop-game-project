@@ -1,12 +1,12 @@
 #ifndef VERSUS_PLAYER_STATE_HPP
 #define VERSUS_PLAYER_STATE_HPP
 
-#include "../GameState.hpp"
-#include "../../../input/InputInterpreter.hpp"
-#include "../../../input/KeyboardInputInterpreter.hpp"
-#include "../../../game/World.hpp"
-#include "../../../game/player/Player.hpp"
-#include "../../button/ButtonManager.hpp"
+#include "../../GameState.hpp"
+#include "../../../../input/InputInterpreter.hpp"
+#include "../../../../input/KeyboardInputInterpreter.hpp"
+#include "../../../../game/World.hpp"
+#include "../../../../game/player/Player.hpp"
+#include "../../../button/ButtonManager.hpp"
 #include <memory>
 #include <vector>
 #include <string>

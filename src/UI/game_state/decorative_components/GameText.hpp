@@ -22,6 +22,7 @@ public:
     int getY() const;
     int getFontSize() const;
     float getWidth() const;
+    float getHeight() const;
     Color getColor() const;
 
     void render() const override;

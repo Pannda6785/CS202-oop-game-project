@@ -1,6 +1,6 @@
 #include "CharSelectState.hpp"
 #include "../GameStateManager.hpp"
-#include "../versus_player_state/VersusPlayerState.hpp"
+#include "../versus_mode_state/versus_player_state/VersusPlayerState.hpp"
 #include <iostream>
 
 CharSelectState::CharSelectState(GameStateManager& gsm)

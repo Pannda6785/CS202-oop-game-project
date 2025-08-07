@@ -1,16 +1,12 @@
 #include "VersusPlayerState.hpp"
-#include "../GameStateManager.hpp"
-#include "../../../audio/AudioManager.hpp"
-#include "../../button/Button.hpp"
+#include "../../GameStateManager.hpp"
+#include "../../../../audio/AudioManager.hpp"
+#include "../../../button/Button.hpp"
 
-#include "../../../game/character/priestess/Priestess.hpp"
-// #include "../../../game/character/redhood/Redhood.hpp"
-// #include "../../../game/character/arcanist/Arcanist.hpp"
-#include "../../../game/character/hero/Hero.hpp"
-#include "../../../game/character/wyrm/Wyrm.hpp"
-// #include "../../../game/character/lich/Lich.hpp"
-#include "../../../game/character/depth/Depth.hpp"
-// #include "../../../game/character/stormbeast/Stormbeast.hpp"
+#include "../../../../game/character/priestess/Priestess.hpp"
+#include "../../../../game/character/hero/Hero.hpp"
+#include "../../../../game/character/wyrm/Wyrm.hpp"
+#include "../../../../game/character/depth/Depth.hpp"
 
 #include <iostream>
 
@@ -23,26 +19,10 @@ VersusPlayerState::VersusPlayerState(GameStateManager& gsm, const std::string& p
     enter();
 }
 
-VersusPlayerState::~VersusPlayerState() {
-}
-
 void VersusPlayerState::enter() {
     if (!isInitialized && !player1CharacterName.empty() && !player2CharacterName.empty()) {
         initializeWorld(player1CharacterName, player2CharacterName);
     }
-}
-
-void VersusPlayerState::update(float dt) {
-    if (world) {
-        world->update(dt);
-    }
-}
-
-void VersusPlayerState::exit() {
-    // Clean up resources
-    world.reset();
-    inputInterpreters.clear();
-    isInitialized = false;
 }
 
 void VersusPlayerState::initializeWorld(const std::string& player1Character, const std::string& player2Character) {
@@ -119,4 +99,20 @@ std::unique_ptr<Character> VersusPlayerState::createCharacter(const std::string&
 }
 
 void VersusPlayerState::setupUI() {
+}
+
+VersusPlayerState::~VersusPlayerState() {
+}
+
+void VersusPlayerState::update(float dt) {
+    if (world) {
+        world->update(dt);
+    }
+}
+
+void VersusPlayerState::exit() {
+    // Clean up resources
+    world.reset();
+    inputInterpreters.clear();
+    isInitialized = false;
 }

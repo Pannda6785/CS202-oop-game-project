@@ -21,6 +21,7 @@ void World::update(float dt) {
         pendingBullets.pop_back();
     }
     handleCollisions();
+    combatFeedbackManager.update(dt);
 }
 
 void World::init() {
@@ -154,24 +155,39 @@ void World::handleCollisions() {
     }
 
     /* Apply damage to player */
+    Unit::Vec2D hitLocation;
+    float hitDuration = 1.0f;
     for (int hitPlayer : hitPlayers) {
         for (auto& player : players) {
             if (player->getPlayerId() == hitPlayer) {
                 player->takeHit();
+                hitLocation = player->getPosition();
+                hitDuration = player->getLock(Unit::Lock::MovementLock);
                 break;
             }
         }
     }
 
     /* Confirm hit to non-hit player */
+    Unit::Vec2D hitterLocation = { Unit::BATTLEFIELD_WIDTH / 2, Unit::BATTLEFIELD_WIDTH / 2 };
     if (!hitPlayers.empty()) {
         for (auto& player : players) {
             if (std::find(hitPlayers.begin(), hitPlayers.end(), player->getPlayerId()) == hitPlayers.end()) {
                 player->confirmHit();
+                hitterLocation = player->getPosition();
             }
         }
     }
     
+    /* send feedback */
+   if (!hitPlayers.empty()){
+        combatFeedbackManager.addHitText({hitLocation.x, hitLocation.y}, 
+                                         {hitterLocation.x, hitterLocation.y}, 
+                                          hitDuration);
+        combatFeedbackManager.addHitEffect({hitLocation.x, hitLocation.y}, 
+                                           {hitterLocation.x, hitterLocation.y});
+   }
+
     /* Remove to-delete bullets */
     bullets.erase(
         std::remove_if(

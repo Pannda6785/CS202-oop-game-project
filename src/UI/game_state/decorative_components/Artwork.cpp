@@ -75,6 +75,7 @@ float Artwork::getFadeInTimer() const {
 }
 
 void Artwork::update(float dt) {
+    timer += dt;
     if (fadeInTime > 0.0f) {
         fadeInTimer += dt;
         // std::cout << "adding " << dt << ' ' << fadeInTimer << std::endl;
@@ -86,8 +87,10 @@ void Artwork::update(float dt) {
 
 void Artwork::render() const {
     if (textures.empty() || textures[0] == nullptr) return;
-    float time = GetTime();
-    const Texture2D* tex = textures[static_cast<int>(time / period) % textures.size()];
+    const Texture2D* tex = textures[static_cast<int>(timer / period) % textures.size()];
+    tmp = static_cast<int>(timer / period) % textures.size();
+    if(tmp != preTmp) std::cout << "tmp: " << tmp << std::endl;
+    preTmp = tmp;
     int w = drawWidth > 0 ? drawWidth : tex->width;
     int h = drawHeight > 0 ? drawHeight : tex->height;
     Vector2 origin = {0.0f, 0.0f};

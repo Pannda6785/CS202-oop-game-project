@@ -16,6 +16,13 @@
 #include "audio/AudioManager.hpp"
 #include "UI/custom_cursor/CustomCursor.hpp"
 
+#include "UI/game_state/versus_mode_state/combat_feedback/CombatFeedback.hpp"
+
+#include <algorithm>
+#include <iostream>
+
+#include "UI/game_state/versus_mode_state/combat_feedback/CombatFeedbackManager.hpp"
+
 int main() {
     const int screenWidth = 1440;
     const int screenHeight = 900;
@@ -48,6 +55,9 @@ int main() {
     Vector2 initialPoint = { -1, -1 };
     Vector2 endPoint = { -1, -1 };
     bool measuring = false;
+
+    CombatFeedbackManager combatFeedbackManager;
+    bool added = false;
 
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
@@ -82,13 +92,22 @@ int main() {
             }
         }
 
-        if(IsKeyPressed(KEY_ESCAPE)){
-            gameStateManager.popState();
+        // if(IsKeyPressed(KEY_ESCAPE)){
+        //     gameStateManager.popState();
+        // }
+
+        if(!added){
+            combatFeedbackManager.addHitEffect({100, 100}, {0, 0});
+            added = true;
         }
 
         gameStateManager.processPendingStateChanges();
 
         gameStateManager.update(dt); // Update game state manager
+
+        combatFeedbackManager.update(dt); // Update combat feedback manager
+
+
         if(!tool) CustomCursor::getInstance().update(dt); // Update custom cursor
 
         if(gameStateManager.isEmpty()) {
@@ -97,6 +116,8 @@ int main() {
         }
 
         GraphicsComponentManager::instance().render(); // Update graphics components
+
+        
 
         EndDrawing();
     }

@@ -1,5 +1,6 @@
 #include "GameText.hpp"
 #include <raylib.h>
+#include <iostream>
 
 GameText::GameText() : GraphicsComponent(), font(GetFontDefault()), fontLoaded(false), x(0), y(0), fontSize(32), color(WHITE) {}
 
@@ -67,6 +68,14 @@ float GameText::getWidth() const {
         return MeasureTextEx(font, text.c_str(), (float)fontSize, 1).x;
     } else {
         return MeasureText(text.c_str(), fontSize);
+    }
+}
+
+float GameText::getHeight() const {
+    if (fontLoaded) {
+        return MeasureTextEx(font, text.c_str(), (float)fontSize, 1).y;
+    } else {
+        return fontSize; // Default height based on font size
     }
 }
 

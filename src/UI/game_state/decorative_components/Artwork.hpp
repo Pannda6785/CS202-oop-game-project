@@ -38,10 +38,13 @@ private:
     int posX = 0, posY = 0;
     int drawWidth = 0, drawHeight = 0;
     float scale = 1.0f;
+    mutable float timer = 0.0f;
     float fadeInTime = 0.0f;
     float fadeInTimer = 0.0f;
     bool middle = false;
     bool flip = false;
+    mutable int preTmp = -1;
+    mutable int tmp = -1;
 };
 
 #endif // ARTWORK_HPP
