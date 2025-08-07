@@ -8,13 +8,6 @@
 */
 
 class DemoPattern : public Pattern {
-public:
-    explicit DemoPattern(IBulletSpawner* spawner);
-
-    void init() override;
-    void update(float dt) override;
-
-private:
     static constexpr int OWNER_ID = 2; // used for all bullets in of 3rd party pattern 
     static constexpr float WAVE_INTERVAL = 7.0f; // spawn a wave every X seconds. Each wave contains multiple barrage
     static constexpr int NUM_BARRAGES = 4; // how long the wave lasts
@@ -24,10 +17,18 @@ private:
     static constexpr float BULLET_SPEED = 480.0f;
     static constexpr float BULLET_STARTUP = 0.2f;
     static constexpr float BULLET_LIFESPAN = 10000.0f;
-
+    
     static constexpr const char* TEXTURE_PATH = "../assets/sprites/stormbeast/bullet/beast_bullets_0_p1_0002.png";
     static constexpr float VISIBLE_RATIO = 0.25f;
     static constexpr float TEXTURE_WIDTH = 150;
+
+    public:
+    explicit DemoPattern(IBulletSpawner* spawner);
+
+    void init() override;
+    void update(float dt) override;
+
+private:
 
     float timer;
 };
