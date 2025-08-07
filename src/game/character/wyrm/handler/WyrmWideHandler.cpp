@@ -14,7 +14,7 @@ WyrmWideHandler::WyrmWideHandler(WyrmGraphicsComponent* graphics)
     : TapHandler(Unit::Move::Wide), graphics(graphics) {}
 
 void WyrmWideHandler::tap(bool isFocusing) {
-    graphics->roar(MOVEMENT_LOCK_DURATION, 0.25f);
+    graphics->roar(MOVEMENT_LOCK_DURATION * 2 / 3, 0.25f);
 
     spawnBullet();
 

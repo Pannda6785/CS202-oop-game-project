@@ -14,6 +14,7 @@ public:
     void registerPlayer(Player* playerRef) override final;
     void update(float dt, InputBufferer* input) override final;
 
+    void setHandler(Unit::Move move, std::unique_ptr<MoveHandler> handler); // set a specific move handler for a move
     void setOrder(std::vector<Unit::Move> newOrder); // set new priority order 
     virtual void neutralize() = 0; // go back to default priority order
 

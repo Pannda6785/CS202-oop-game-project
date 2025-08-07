@@ -28,7 +28,7 @@ void WyrmBasicHandler::listen(Unit::Move move) {
 }
 
 void WyrmBasicHandler::tap(bool isFocusing) {
-    graphics->useBasic();
+    graphics->command(0.1f, 0.250f);
 
     spawnBullet();
 

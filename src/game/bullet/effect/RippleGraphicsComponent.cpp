@@ -56,3 +56,8 @@ void RippleGraphicsComponent::render() const {
         );
     }
 }
+
+void RippleGraphicsComponent::reset() {
+    time = 0.0f;
+    setVisible(true);
+}

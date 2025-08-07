@@ -3,14 +3,19 @@
 
 #include "../CharacterGraphicsComponent.hpp"
 
+#include <string>
+
 class WyrmGraphicsComponent : public CharacterGraphicsComponent {
 public:
     WyrmGraphicsComponent();
     ~WyrmGraphicsComponent() override;
 
-    void useBasic();
-    void useOffensive(bool firstUse, float chargeDuration, float offensiveDuration);
-    void roar(float chargeDuration, float roarDuration);
+    void transform();
+    void detransform();
+
+    void command(float chargeDuration, float loopDuration);
+    void blast(float chargeDuration, float loopDuration);
+    void roar(float chargeDuration, float loopDuration);
 
 protected:
     void loadTextures() override;
@@ -18,10 +23,14 @@ protected:
     bool characterSpecificUpdate(float dt) override;
 
 private:
-    float remainingRoarChargeTime = 0.0f;
-    float remainingRoarTime = 0.0f;
-    float remainingOffensiveChargeTime = 0.0f;
-    float remainingOffensiveTime = 0.0f;
+    float remainingCommandCharge = 0.0f;
+    float remainingCommandLoop = 0.0f;
+    float remainingRoarCharge = 0.0f;
+    float remainingRoarLoop = 0.0f;
+    float remainingBlastCharge = 0.0f;
+    float remainingBlastLoop = 0.0f;
+
+    void _loadTextures(std::string path);
 };
 
 #endif // WYRM_GRAPHICS_COMPONENT_HPP

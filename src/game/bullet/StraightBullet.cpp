@@ -88,6 +88,7 @@ Unit::Vec2D StraightBullet::getPosition() const {
 Unit::Vec2D StraightBullet::getVelocity() const {
     float t = timer;
     float speed = speedFunc(t);
+    speed = std::max(speed, 0.001f);
     return dir * speed;
 }
 

@@ -55,7 +55,6 @@ void ChargeGraphicsComponent::render() const {
     Unit::Vec2D pos = bullet->getPosition();
     float scale = bullet->getSize();
 
-
     const Texture* tex = TextureManager::instance().getTexture("../assets/sprites/universal/spr_bullet_warning_0_1.png");
     constexpr float visibleRatio = 1.0f;
     float resize = 2.0f * radius * scale / (visibleRatio * tex->width);
@@ -74,5 +73,14 @@ void ChargeGraphicsComponent::render() const {
         Rectangle innerDest = { pos.x, pos.y, tex->width * innerResize, tex->height * innerResize };
         Vector2 innerOrigin = { innerDest.width / 2.0f, innerDest.height / 2.0f };
         DrawTexturePro(*tex, source, innerDest, innerOrigin, 0.0f, innerColor);
+    }
+}
+
+void ChargeGraphicsComponent::reset() {
+    time = 0.0f;
+    radius = startRadius;
+    for (auto& inner : inners) {
+        inner.radius = radius;
+        inner.timer = 0.0f;
     }
 }

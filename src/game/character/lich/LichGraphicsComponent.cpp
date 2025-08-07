@@ -30,7 +30,7 @@ void LichGraphicsComponent::loadTextures() {
     animations["stagger"] = Animation(loadAnim(character_path + "hit/stagger", 3), 6, true);
     animations["wake"] = Animation(loadAnim(character_path + "hit/wake", 6), 6, false);
 
-    animations["command_start"] = Animation(loadAnim(character_path + "moveset/command", 1), 8, true);
+    animations["command_start"] = Animation(loadAnim(character_path + "moveset/command", 1), 1, true);
     animations["command_loop"] = Animation(loadAnim(character_path + "moveset/command", 2, 1), 8, true);
 
     animations["offensive_start"] = Animation(loadAnim(character_path + "moveset/offensive", 1), 8, true);
@@ -74,7 +74,6 @@ void LichGraphicsComponent::endCastingDefensive(float startup) {
 }
 
 bool LichGraphicsComponent::characterSpecificUpdate(float dt) {
-
     auto work = [&](std::string start, std::string loop, float &remCharge, float &remLoop) -> bool{
         if (currentAnimName == start && remCharge > Unit::EPS) {
             remCharge -= dt;

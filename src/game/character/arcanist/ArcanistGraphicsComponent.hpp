@@ -8,11 +8,16 @@ public:
     ArcanistGraphicsComponent();
     ~ArcanistGraphicsComponent() override;
 
+    void useOffensive();
+
 protected:
     void loadTextures() override;
     void unloadTextures() override {};
+    bool characterSpecificUpdate(float dt) override;
 
 private:
+    float remainingSmugCharge = 0.0f;
+    float remainingSmugLoop = 0.0f;
 
 };
 
