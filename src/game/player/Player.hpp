@@ -29,6 +29,7 @@ public:
 
     // World interaction
     const IWorldView* getWorld() const;
+    IBulletSpawner* getBulletSpawner() const;
     void spawnBullet(std::shared_ptr<Bullet> bullet);
 
     // Life data

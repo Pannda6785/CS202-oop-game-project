@@ -45,3 +45,13 @@ void HandlerCharacter::update(float dt, InputBufferer* input) {
 void HandlerCharacter::setOrder(std::vector<Unit::Move> newOrder) {
     order = std::move(newOrder);
 }
+
+void HandlerCharacter::setHandler(Unit::Move move, std::unique_ptr<MoveHandler> handler) {
+    if (static_cast<int>(move) < 0 || static_cast<int>(move) >= Unit::NUM_MOVES) {
+        std::cerr << "Warning: HandlerCharacter::setHandler - Invalid move type" << std::endl;
+        return;
+    }
+    handler->registerCharacter(this);
+    handler->registerPlayer(player);
+    moveHandlers[static_cast<int>(move)] = std::move(handler);
+}

@@ -21,6 +21,7 @@ public:
 
     void update(float dt) override;
     void render() const override;
+    void reset();
 
 private:
     struct Inner {
@@ -32,12 +33,13 @@ private:
     };
 
     std::array<int, 4> color;
-    float startRadius;
+    float startRadius = 0.0f;
     float endRadius;
     float duration;
-    float time = 0.0f;
     float radius;
     bool automatic;
+
+    float time = 0.0f;
 
     std::vector<Inner> inners;
 };

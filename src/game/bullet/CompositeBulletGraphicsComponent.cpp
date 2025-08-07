@@ -1,10 +1,10 @@
 #include "CompositeBulletGraphicsComponent.hpp"
 #include "BulletGraphicsComponent.hpp"
 
-void CompositeBulletGraphicsComponent::addComponent(std::unique_ptr<BulletGraphicsComponent> component, float start, float end) {
+void CompositeBulletGraphicsComponent::addComponent(std::unique_ptr<BulletGraphicsComponent> component, float start, float end, bool isAlreadyActive) {
     component->registerBullet(bullet);
     component->setVisible(false);
-    components.push_back(TimedComponent{std::move(component), start, end});
+    components.push_back(TimedComponent{std::move(component), start, end, isAlreadyActive});
 }
 
 void CompositeBulletGraphicsComponent::update(float dt) {

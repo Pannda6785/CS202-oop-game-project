@@ -1,7 +1,7 @@
 #include "LichOffensiveHandler.hpp"
 #include "../../../player/Player.hpp"
 #include "../LichGraphicsComponent.hpp"
-#include "../bullet/ButterflyThrall.hpp"
+#include "../extra/ButterflyThrall.hpp"
 
 LichOffensiveHandler::LichOffensiveHandler(LichGraphicsComponent* graphics)
     : TapHandler(Unit::Move::Offensive), graphics(graphics) {}

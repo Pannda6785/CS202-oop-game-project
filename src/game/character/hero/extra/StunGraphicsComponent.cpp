@@ -22,7 +22,7 @@ void StunGraphicsComponent::update(float dt) {
         const CircleHitbox* hitbox = dynamic_cast<const CircleHitbox*>(std::get<0>(bullet->getLockHitboxes().front()));
         for (auto p : world->getPlayers()) {
             if (p->getPlayerId() == bullet->isWhose()) continue;
-            if (hitbox->collidesWithCircle(*p->getHitbox())) {
+            if (hitbox->collidesWithCircle(*p->getHitbox()) && p->getInvincibility(true) < Unit::EPS) {
                 active = true;
                 timer = 0.0f;
                 pos = p->getPosition();
