@@ -75,11 +75,6 @@ void CharSelectState::update(float dt) {
 
     if(charSelectorLeft.getChangeSelection()){
         std::string characterName = selectOptions[charSelectorLeft.getCurrentSelection()];
-        if(characterName == "Random Select") {
-            int randomIndex = GetRandomValue(0, selectOptions.size() - 2);
-            if(randomIndex >= charSelectorLeft.getCurrentSelection()) randomIndex++;
-            characterName = selectOptions[randomIndex];
-        }
         
         if(characterName == "Sun Priestess" || 
            characterName == "Silent Redhood" ||
@@ -88,7 +83,8 @@ void CharSelectState::update(float dt) {
            characterName == "Dreadwyrm Heir" ||
            characterName == "Lich of Flowers" ||
            characterName == "Depth's Secret" ||
-           characterName == "Stormbeast") {
+           characterName == "Stormbeast" || 
+           characterName == "Random Select") {
             
             charSelectPreviewManagerLeft.setPreview(characterName, true);
         } else {
@@ -98,11 +94,6 @@ void CharSelectState::update(float dt) {
 
     if(charSelectorRight.getChangeSelection()){
         std::string characterName = selectOptions[charSelectorRight.getCurrentSelection()];
-        if(characterName == "Random Select") {
-            int randomIndex = GetRandomValue(0, selectOptions.size() - 2); // Exclude "Random Select"
-            if(randomIndex >= charSelectorRight.getCurrentSelection()) randomIndex++;
-            characterName = selectOptions[randomIndex];
-        }
         
         if(characterName == "Sun Priestess" || 
            characterName == "Silent Redhood" ||
@@ -111,7 +102,8 @@ void CharSelectState::update(float dt) {
            characterName == "Dreadwyrm Heir" ||
            characterName == "Lich of Flowers" ||
            characterName == "Depth's Secret" ||
-           characterName == "Stormbeast") {
+           characterName == "Stormbeast" || 
+           characterName == "Random Select") {
             
             charSelectPreviewManagerRight.setPreview(characterName, false);
         } else {
@@ -129,7 +121,17 @@ void CharSelectState::update(float dt) {
 
 void CharSelectState::startGame(){
     std::string player1Character = selectOptions[charSelectorLeft.getCurrentSelection()];
+    if(player1Character == "Random Select") {
+        int randomIndex = GetRandomValue(0, selectOptions.size() - 2); // Exclude "Random Select"
+        if(randomIndex >= charSelectorLeft.getCurrentSelection()) randomIndex++;
+        player1Character = selectOptions[randomIndex];
+    }
     std::string player2Character = selectOptions[charSelectorRight.getCurrentSelection()];
+    if(player2Character == "Random Select") {
+        int randomIndex = GetRandomValue(0, selectOptions.size() - 2); // Exclude "Random Select"
+        if(randomIndex >= charSelectorRight.getCurrentSelection()) randomIndex++;
+        player2Character = selectOptions[randomIndex];
+    }
 
     gameStateManager.changeCurrentState(std::make_unique<VersusPlayerState>(gameStateManager, player1Character, player2Character));
 }
