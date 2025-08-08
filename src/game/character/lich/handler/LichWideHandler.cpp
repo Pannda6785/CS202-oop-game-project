@@ -44,6 +44,8 @@ void LichWideHandler::tap(bool isFocusing) {
 }
 
 void LichWideHandler::spawnBullet() {
+    const float MY_PI = 3.14159265358979323846f;
+
     Unit::Vec2D center = player->getPosition();
     Unit::Vec2D toTargetDir = player->getTargetPosition() - center;
 
@@ -85,7 +87,7 @@ void LichWideHandler::spawnBullet() {
         float angleToTarget = std::atan2(toTargetDir.y, toTargetDir.x);
 
         for (int i = 0; i < numFlowers; ++i) {
-            float angle = angleToTarget + 2.0f * M_PI * (i + 0.5f) / numFlowers;
+            float angle = angleToTarget + 2.0f * MY_PI * (i + 0.5f) / numFlowers;
             Unit::Vec2D pos = center + Unit::Vec2D(std::cos(angle), std::sin(angle)) * radius;
 
             auto bullet = std::make_shared<StraightBullet>(
