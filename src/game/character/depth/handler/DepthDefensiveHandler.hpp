@@ -21,6 +21,7 @@ class DepthDefensiveHandler : public CastHandler {
     static constexpr float MAX_RADIUS = 222;
     static constexpr float SPEED = 720;
     static constexpr float STARTUP = 0.380f;
+    static constexpr float CLEANSE_RADIUS_RATIO = 0.96f;
     
     static constexpr float COOLDOWN = 7.0f;
     static constexpr float SPELL_LOCK = 0.480f;

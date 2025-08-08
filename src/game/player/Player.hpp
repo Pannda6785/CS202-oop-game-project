@@ -29,6 +29,7 @@ public:
 
     // World interaction
     const IWorldView* getWorld() const;
+    IBulletSpawner* getBulletSpawner() const;
     void spawnBullet(std::shared_ptr<Bullet> bullet);
 
     // Life data
@@ -59,6 +60,7 @@ public:
     // Export data
     std::string getName() const;
     std::array<int, 4> getSignatureColor() const;
+    bool isFocused() const;
 
 private:
     IWorldView* world;

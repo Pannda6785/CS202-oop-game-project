@@ -43,7 +43,7 @@ void HeroDefensiveHandler::spawnBullet() {
     bullet->addLockHitbox(STARTUP, std::make_unique<CircleHitbox>(player->getPosition(), RADIUS), Unit::Lock::WideLock, player->getPlayerId() ^ 1, STUN_DURATION);
     bullet->addLockHitbox(STARTUP, std::make_unique<CircleHitbox>(player->getPosition(), RADIUS), Unit::Lock::OffensiveLock, player->getPlayerId() ^ 1, STUN_DURATION);
     bullet->addLockHitbox(STARTUP, std::make_unique<CircleHitbox>(player->getPosition(), RADIUS), Unit::Lock::DefensiveLock, player->getPlayerId() ^ 1, STUN_DURATION);
-    bullet->addCleansingHitbox(STARTUP, std::make_unique<CircleHitbox>(player->getPosition(), RADIUS));
+    bullet->addCleansingHitbox(STARTUP, std::make_unique<CircleHitbox>(player->getPosition(), CLEANSE_RADIUS));
 
     bullet->removeCleansingHitbox(STARTUP + 0.02f);
     bullet->removeLockHitboxes(STARTUP + 0.02f);

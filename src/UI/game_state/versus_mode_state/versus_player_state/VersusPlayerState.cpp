@@ -3,10 +3,14 @@
 #include "../../../../audio/AudioManager.hpp"
 #include "../../../button/Button.hpp"
 
-#include "../../../../game/character/priestess/Priestess.hpp"
-#include "../../../../game/character/hero/Hero.hpp"
-#include "../../../../game/character/wyrm/Wyrm.hpp"
-#include "../../../../game/character/depth/Depth.hpp"
+#include "../../../game/character/priestess/Priestess.hpp"
+#include "../../../game/character/redhood/Redhood.hpp"
+#include "../../../game/character/arcanist/Arcanist.hpp"
+#include "../../../game/character/hero/Hero.hpp"
+#include "../../../game/character/wyrm/Wyrm.hpp"
+#include "../../../game/character/lich/Lich.hpp"
+#include "../../../game/character/depth/Depth.hpp"
+#include "../../../game/character/stormbeast/Stormbeast.hpp"
 
 #include <iostream>
 
@@ -78,19 +82,19 @@ std::unique_ptr<Character> VersusPlayerState::createCharacter(const std::string&
     if (characterName == "Sun Priestess") {
         return std::make_unique<Priestess>();
     } else if (characterName == "Royal Arcanist") {
-        return std::make_unique<Priestess>();
+        return std::make_unique<Arcanist>();
     } else if (characterName == "Hero of Frost") {
         return std::make_unique<Hero>();
     } else if (characterName == "Dreadwyrm Heir") {
         return std::make_unique<Wyrm>();
     } else if (characterName == "Lich of Flowers") {
-        return std::make_unique<Priestess>();
+        return std::make_unique<Lich>();
     } else if (characterName == "Depth's Secret") {
         return std::make_unique<Depth>();
     } else if (characterName == "Stormbeast") {
-        return std::make_unique<Priestess>();
+        return std::make_unique<Stormbeast>();
     } else if (characterName == "Silent Redhood") {
-        return std::make_unique<Priestess>();
+        return std::make_unique<Redhood>();
     } else {
         // Default to Sun Priestess if invalid name
         std::cerr << "Unknown character: " << characterName << ". Defaulting to Sun Priestess." << std::endl;

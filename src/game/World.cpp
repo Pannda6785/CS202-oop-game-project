@@ -16,10 +16,7 @@ void World::update(float dt) {
     for (auto& bullet : bullets) {
         bullet->update(dt);
     }
-    while (!pendingBullets.empty()) {
-        bullets.push_back(std::move(pendingBullets.back()));
-        pendingBullets.pop_back();
-    }
+    handlePendings(dt);
     handleCollisions();
     combatFeedbackManager.update(dt);
 }
@@ -69,34 +66,51 @@ void World::addPlayer(std::unique_ptr<Player> player) {
     players.push_back(std::move(player));
 }
 
-void World::addPattern(std::unique_ptr<Pattern> pattern) {
-    patterns.push_back(std::move(pattern));
+void World::addPattern(std::unique_ptr<Pattern> pattern, float time) {
+    pendingPatterns.emplace_back(std::move(pattern), time);
 }
 
 void World::spawnBullet(std::shared_ptr<Bullet> bullet) {
     pendingBullets.push_back(std::move(bullet));
 }
 
+void World::handlePendings(float dt) {
+    while (!pendingBullets.empty()) {
+        bullets.push_back(std::move(pendingBullets.back()));
+        pendingBullets.pop_back();
+    }
+    for (auto it = pendingPatterns.begin(); it != pendingPatterns.end();) {
+        if (it->second <= 0.0f) {
+            patterns.push_back(std::move(it->first));
+            it = pendingPatterns.erase(it);
+        } else {
+            it->second -= dt; // Decrease the time by a small value
+            ++it;
+        }
+    }
+}
+
 void World::handleCollisions() {
+
     /* Bullet vs Bullet */ 
-    std::vector<bool> toDelete(bullets.size(), false);
+    std::vector<bool> toMakeDone(bullets.size(), false);
     for (size_t i = 0; i < bullets.size(); ++i) {
         if (bullets[i]->isDone()) continue;
         const Hitbox* cleaner = bullets[i]->getCleansingHitbox();
         if (!cleaner) continue;
 
         for (size_t j = 0; j < bullets.size(); ++j) {
-            if (bullets[j]->isWhose() == bullets[i]->isWhose() || bullets[j]->isDone() || toDelete[j]) continue;
+            if (bullets[j]->isWhose() == bullets[i]->isWhose() || bullets[j]->isDone() || toMakeDone[j]) continue;
             const Hitbox* body = bullets[j]->getLifeHitbox();
             if (body && cleaner->collidesWith(*body)) {
-                toDelete[j] = true;
+                toMakeDone[j] = true;
             }
         }
     }
     
     /* Bullet vs Player: Invincibility applying */
     for (size_t i = 0; i < bullets.size(); ++i) {
-        if (toDelete[i] || bullets[i]->isDone()) continue;
+        if (toMakeDone[i] || bullets[i]->isDone()) continue;
         for (const auto& [hb, major, who, duration] : bullets[i]->getInvincibilityHitboxes()) {
             if (!hb) continue;
             for (auto& player : players) {
@@ -109,7 +123,7 @@ void World::handleCollisions() {
 
     /* Bullet vs Player: Modifier applying */
     for (size_t i = 0; i < bullets.size(); ++i) {
-        if (toDelete[i] || bullets[i]->isDone()) continue;
+        if (toMakeDone[i] || bullets[i]->isDone()) continue;
         for (const auto& [hb, mod, who, duration, value] : bullets[i]->getModifierHitboxes()) {
             if (!hb) continue;
             for (auto& player : players) {
@@ -122,7 +136,7 @@ void World::handleCollisions() {
 
     /* Bullet vs Player: Lock applying */
     for (size_t i = 0; i < bullets.size(); ++i) {
-        if (toDelete[i] || bullets[i]->isDone()) continue;
+        if (toMakeDone[i] || bullets[i]->isDone()) continue;
         for (const auto& [hb, lock, who, duration] : bullets[i]->getLockHitboxes()) {
             if (!hb) continue;
             for (auto& player : players) {
@@ -136,7 +150,7 @@ void World::handleCollisions() {
     /* Bullet vs Player: Damage applying */
     std::vector<int> hitPlayers;
     for (size_t i = 0; i < bullets.size(); ++i) {
-        if (toDelete[i] || bullets[i]->isDone()) continue;
+        if (toMakeDone[i] || bullets[i]->isDone()) continue;
         const Hitbox* dmg = bullets[i]->getDamagingHitbox();
         if (dmg) {
             for (auto& player : players) {
@@ -146,7 +160,7 @@ void World::handleCollisions() {
                         && dmg->collidesWith(*player->getHitbox())) {
                     hitPlayers.emplace_back(player->getPlayerId());
                     if (bullets[i]->getLifeHitbox()) {
-                        toDelete[i] = true; 
+                        toMakeDone[i] = true; 
                     }
                     break; 
                 }
@@ -189,13 +203,18 @@ void World::handleCollisions() {
    }
 
     /* Remove to-delete bullets */
+    for (size_t i = 0; i < bullets.size(); ++i) {
+        if (toMakeDone[i]) {
+            bullets[i]->makeDone();
+        }
+    }
     bullets.erase(
         std::remove_if(
             bullets.begin(),
             bullets.end(),
             [&](const std::shared_ptr<Bullet>& bullet) {
                 size_t i = &bullet - &bullets[0];
-                return toDelete[i] || bullet->isDone();
+                return bullet->isDone();
             }
         ),
         bullets.end()

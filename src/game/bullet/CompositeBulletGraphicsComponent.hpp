@@ -7,10 +7,11 @@
 
 class CompositeBulletGraphicsComponent : public BulletGraphicsComponent {
 public:
-    void addComponent(std::unique_ptr<BulletGraphicsComponent> component, float start = 0.0f, float end = 1e9);
+    void addComponent(std::unique_ptr<BulletGraphicsComponent> component, float start = 0.0f, float end = 1e9, bool isAlreadyActive = false);
 
     void update(float dt) override;
     void render() const override;
+    void makeDone() override;
 
 private:
     struct TimedComponent {

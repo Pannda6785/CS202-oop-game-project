@@ -81,6 +81,10 @@ const IWorldView* Player::getWorld() const {
     return world;
 }
 
+IBulletSpawner* Player::getBulletSpawner() const {
+    return bulletSpawner;
+}
+
 void Player::spawnBullet(std::shared_ptr<Bullet> bullet) {
     bullet->resize(modifiers[static_cast<int>(Unit::Modifier::BulletSizeModifier)].second);
     bulletSpawner->spawnBullet(move(bullet));
@@ -200,6 +204,10 @@ std::string Player::getName() const {
 
 std::array<int, 4> Player::getSignatureColor() const {
     return character->getGraphics()->getSignatureColor();
+}
+
+bool Player::isFocused() const {
+    return input->isHoldingKey(Unit::Input::Focus);
 }
 
 // --- Private helpers ---

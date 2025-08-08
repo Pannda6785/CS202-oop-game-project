@@ -18,6 +18,7 @@ class HeroDefensiveHandler : public TapHandler {
     // bullet
     static constexpr float STARTUP = 0.425f;
     static constexpr float RADIUS = 335;
+    static constexpr float CLEANSE_RADIUS = RADIUS * 0.96f;
     static constexpr float LIFETIME = 1.800f;
 
 public:

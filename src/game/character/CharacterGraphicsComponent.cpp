@@ -2,6 +2,7 @@
 
 #include "../player/Player.hpp"
 #include "../hitbox/CircleHitbox.hpp"
+#include "../../graphics/TextureManager.hpp"
 
 #include <raylib.h>
 #include <algorithm>
@@ -46,6 +47,26 @@ void CharacterGraphicsComponent::render() const {
 void CharacterGraphicsComponent::update(float dt) {
     time += dt;
 
+    if (player->isFocused()) {
+        if (currentRingRadius > INNER_RING_RADIUS) {
+            currentRingRadius -= dt / TRANSITION_SPEED * (OUTER_RING_RADIUS - INNER_RING_RADIUS);
+            currentRingRadius = std::max(currentRingRadius, INNER_RING_RADIUS);
+        }
+        if (currentOpacity < 1.0f) {
+            currentOpacity += dt / TRANSITION_SPEED * (1.0f - MIN_OPACITY);
+            currentOpacity = std::min(currentOpacity, 1.0f);
+        }
+    } else {
+        if (currentRingRadius < OUTER_RING_RADIUS) {
+            currentRingRadius += dt / TRANSITION_SPEED * (OUTER_RING_RADIUS - INNER_RING_RADIUS);
+            currentRingRadius = std::min(currentRingRadius, OUTER_RING_RADIUS);
+        }
+        if (currentOpacity > MIN_OPACITY) {
+            currentOpacity -= dt / TRANSITION_SPEED * (1.0f - MIN_OPACITY);
+            currentOpacity = std::max(currentOpacity, MIN_OPACITY);
+        }
+    }
+
     if (remainingStaggerTime > Unit::EPS) {
         playAnim("stagger");
         remainingStaggerTime -= dt;
@@ -67,7 +88,6 @@ void CharacterGraphicsComponent::update(float dt) {
             }
         }
     }
-    
 }
 
 void CharacterGraphicsComponent::resize(float scale) {
@@ -132,76 +152,75 @@ bool CharacterGraphicsComponent::animFinished() const {
 }
 
 void CharacterGraphicsComponent::renderUnderlay() const {
-    // TO DO: Properly do this right
-
     Unit::Vec2D pos = player->getPosition();
     Vector2 center = { pos.x, pos.y };
 
-    // Draw health as hearts below player
-    constexpr float heartSpacing = 22;
-    for (int i = 0; i < 3; ++i) {
-        Vector2 heartPos = { pos.x - 12 - heartSpacing + i * heartSpacing, pos.y + 70 };
-        if (i < player->getHealth()) {
-            DrawText("<3", static_cast<int>(heartPos.x), static_cast<int>(heartPos.y), 20, RED);
-        } else {
-            DrawText("<3", static_cast<int>(heartPos.x), static_cast<int>(heartPos.y), 20, DARKGRAY);
-        }
-    }
+    // Magic ring (underlay), always rotating with RPS, with currentOpacity
+    const Texture* magicCircle = TextureManager::instance().getTexture("../assets/sprites/universal/spr_direction_circle_0.png");
+    const float magicCircleResize = (2 * MAGIC_CIRCLE_RADIUS) / ((3.5f / 6.0f) * magicCircle->width); 
+    float angle = fmodf(time * RPS * 360.0f, 360.0f);
 
-    // Draw stock as small blue circles below hearts
-    constexpr float stockRadius = 6;
-    for (int i = 0; i < player->getStock(); ++i) {
-        Vector2 stockPos = { pos.x - stockRadius - 5 + i * heartSpacing, pos.y + 100 };
-        DrawCircleV(stockPos, stockRadius, BLUE);
-        DrawCircleLines(static_cast<int>(stockPos.x), static_cast<int>(stockPos.y), stockRadius, DARKBLUE);
-    }
-
-    // Draw invincibility indicator
-    float invTime = player->getInvincibility();
-    if (invTime > 0.0f) {
-        float maxTime = 3.0f; // total invincibility duration
-        float percent = std::clamp(invTime / maxTime, 0.0f, 1.0f);
-
-        float radius = 58.0f;
-        float thickness = 4.0f;
-
-        float startAngle = -90.0f; // top of the circle
-        float endAngle = startAngle + 360.0f * percent;
-
-        DrawRing(
-            center,
-            radius - thickness / 2.0f, // inner radius
-            radius + thickness / 2.0f, // outer radius
-            startAngle,
-            endAngle,
-            64,                        // smoothness
-            GREEN
-        );
-    }
-
-    // Draw arrow
-    Unit::Vec2D arrow = player->getArrow();
-    Vector2 arrowEnd = { pos.x + arrow.x * 80, pos.y + arrow.y * 80 };
-    DrawLineEx(center, arrowEnd, 3.0f, RED);
-    Vector2 perp = { -arrow.y, arrow.x };  // perpendicular vector
-    Vector2 tip = arrowEnd;
-    Vector2 baseLeft = { tip.x - arrow.x * 10 + perp.x * 5, tip.y - arrow.y * 10 + perp.y * 5 };
-    Vector2 baseRight = { tip.x - arrow.x * 10 - perp.x * 5, tip.y - arrow.y * 10 - perp.y * 5 };
-    Vector2 points[3] = { tip, baseLeft, baseRight };
-    DrawTriangle(points[0], points[1], points[2], RED);
+    Color ringColor = Fade(WHITE, currentOpacity);
+    DrawTexturePro(
+        *magicCircle,
+        {0, 0, (float)magicCircle->width, (float)magicCircle->height},
+        {center.x, center.y, magicCircle->width * magicCircleResize, magicCircle->height * magicCircleResize},
+        {magicCircle->width * magicCircleResize / 2.0f, magicCircle->height * magicCircleResize / 2.0f},
+        angle,
+        ringColor
+    );
 }
 
 void CharacterGraphicsComponent::renderOverlay() const {
-    // TO DO: Properly do this right
+    Unit::Vec2D pos = player->getPosition();
+    Vector2 center = { pos.x, pos.y };
 
-    // Draw hitbox
+    // Draw the arrow (overlay), rotate to player->getArrow(), with currentOpacity
+    const Texture* arrow = TextureManager::instance().getTexture("../assets/sprites/universal/spr_direction_pointer_0.png");
+    const float arrowResize = (2 * ARROW_RADIUS) / ((3.5f / 6.0f) * arrow->width);
+    float arrowAngle = atan2f(player->getArrow().y, player->getArrow().x) * 180.0f / PI;
+
+    Color arrowColor = Fade(WHITE, currentOpacity);
+    DrawTexturePro(
+        *arrow,
+        {0, 0, (float)arrow->width, (float)arrow->height},
+        {center.x, center.y, arrow->width * arrowResize, arrow->height * arrowResize},
+        {arrow->width * arrowResize / 2.0f, arrow->height * arrowResize / 2.0f},
+        arrowAngle,
+        arrowColor
+    );
+
+    // Draw the ring (overlay), no rotate, using currentRingRadius
+    const Texture* ring = TextureManager::instance().getTexture("../assets/sprites/universal/spr_direction_circle_2_0.png");
+    const float ringResize = (2 * currentRingRadius) / ((3.5f / 6.0f) * ring->width);
+    DrawTexturePro(
+        *ring,
+        {0, 0, (float)ring->width, (float)ring->height},
+        {center.x, center.y, ring->width * ringResize, ring->height * ringResize},
+        {ring->width * ringResize / 2.0f, ring->height * ringResize / 2.0f},
+        0.0f,
+        Fade(WHITE, currentOpacity)
+    );
+
+    // Draw hitbox (overlay), with currentOpacity
     const CircleHitbox* hitbox = dynamic_cast<const CircleHitbox*>(player->getHitbox());
     if (hitbox) {
-        Unit::Vec2D pos = hitbox->getPosition();
-        Vector2 center = { pos.x, pos.y };
         float radius = hitbox->getRadius();
-        DrawCircleV(center, radius * 4, Fade(RED, 0.7f));
-        DrawCircleV(center, radius, BLACK);
+        Unit::Vec2D hitboxPos = hitbox->getPosition();
+        Vector2 hitboxCenter = { hitboxPos.x, hitboxPos.y };
+
+        // Draw a faint circle for the "visual" hitbox
+        DrawCircleV(hitboxCenter, radius * HITBOX_RADIUS_RATIO, Fade(RED, currentOpacity * 0.7f));
+        DrawCircleV(hitboxCenter, radius, Fade(BLACK, currentOpacity));
+
+        // Draw the TRUE hitbox as a solid circle with signature color
+        Color sigColor = { 
+            (unsigned char)signatureColor[0], 
+            (unsigned char)signatureColor[1], 
+            (unsigned char)signatureColor[2], 
+            (unsigned char)signatureColor[3] 
+        };
+        DrawCircleV(hitboxCenter, radius * 0.5f, sigColor);
     }
 }
 
@@ -215,7 +234,8 @@ void CharacterGraphicsComponent::renderCharacter() const {
     Unit::Vec2D pos = player->getPosition();
     Vector2 center = { pos.x, pos.y };
 
-    float scale = 0.25f * size;
+    const float resize = CHARACTER_HEIGHT / (4 / 6.0f * tex.height);
+    float scale = resize * size;
     float direction = ((player->getTargetPosition()).x < (player->getPosition()).x) ? -1.0f : 1.0f;
 
     Rectangle srcRect = {
@@ -236,8 +256,7 @@ void CharacterGraphicsComponent::renderCharacter() const {
     float inv = player->getInvincibility();
 
     if (inv > Unit::EPS) {
-        constexpr float flashFrequency = 4.0f;
-        float flashAlpha = 0.5f * (sinf(time * flashFrequency * 2.0f * PI) + 1.0f); // 0.5 * [-1, 1]
+        float flashAlpha = 0.5f * (sinf(time * FLASH_FREQUENCY * 2.0f * PI) + 1.0f); // 0.5 * [-1, 1]
         flashAlpha *= 0.7; // to avoid bright flashes
         BeginShaderMode(*whiteSilhouette);
         int flashLoc = GetShaderLocation(*whiteSilhouette, "flashAmount");

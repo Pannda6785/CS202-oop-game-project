@@ -17,6 +17,7 @@ public:
 
     void update(float dt) override;
     void render() const override;
+    void reset();
 
 private:
     int numRipples;

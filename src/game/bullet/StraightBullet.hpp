@@ -41,7 +41,7 @@ public:
 
     void update(float dt) override;
     bool isDone() const override;
-    void makeDone();
+    void makeDone() override;
 
     Unit::Vec2D getPosition() const override;
     Unit::Vec2D getVelocity() const override;
@@ -56,7 +56,9 @@ private:
     // tracking fields
     Unit::Vec2D pos;
     float timer = 0.0f;
-    bool forcedDone = false;
+    bool madeDone = false;
+    float whenMadeDone;
+    const float howLongAfterMadeDone = 0.18f;
 
     // hitboxes trackers
     std::vector<std::pair<float, std::unique_ptr<Hitbox>>> pendingLifeHitbox;
