@@ -7,6 +7,7 @@
 #include "bullet/Bullet.hpp"
 #include "pattern/Pattern.hpp"
 #include "devtool/DevTool.hpp"
+#include "../UI/game_state/versus_mode_state/combat_feedback/CombatFeedbackManager.hpp"
 
 #include <memory>
 
@@ -32,6 +33,8 @@ private:
 
     std::vector<std::shared_ptr<Bullet>> pendingBullets;
     std::vector<std::pair<std::unique_ptr<Pattern>, float>> pendingPatterns;
+
+    CombatFeedbackManager combatFeedbackManager;
 
     void handlePendings(float dt);
     void handleCollisions();

@@ -25,7 +25,7 @@ public:
 private:
     GameStateManager& gameStateManager;
     MovingTileGraphicsComponent movingTileEffect[2];
-    Artwork characterSelectArtwork;
+    Artwork characterSelectArtwork = Artwork();
     float charSelectFrameHeight = 80.0f;
     float distanceBetweenFrames = 10.0f;
     float firstFrameY = 100.0f;

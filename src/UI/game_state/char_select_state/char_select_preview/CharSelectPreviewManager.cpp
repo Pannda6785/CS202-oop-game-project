@@ -7,6 +7,7 @@
 #include "./lich_of_flowers_preview/LichOfFlowersPreview.hpp"
 #include "./royal_arcanist_preview/RoyalArcanistPreview.hpp"
 #include "./stormbeast_preview/StormbeastPreview.hpp"   
+#include "./random_char_preview/RandomCharPreview.hpp"
 
 CharSelectPreviewManager::CharSelectPreviewManager() : preview(nullptr)
 {
@@ -36,7 +37,9 @@ void CharSelectPreviewManager::setPreview(std::string characterName, bool isLeft
         preview = std::make_unique<RoyalArcanistPreview>(isLeft);
     } else if (characterName == "Stormbeast") {
         preview = std::make_unique<StormbeastPreview>(isLeft);
-    } else{
+    } else if (characterName == "Random Select") {
+        preview = std::make_unique<RandomCharPreview>(isLeft);
+    } else {
         preview = std::make_unique<SunPriestessPreview>(isLeft);
     }
 }

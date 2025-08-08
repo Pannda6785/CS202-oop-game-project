@@ -1,10 +1,12 @@
 #include "GameStateManager.hpp"
 #include "main_menu_state/MainMenuState.hpp"
 #include "solo_mode_state/SoloModeState.hpp"
+#include "versus_mode_state/versus_player_state/VersusPlayerState.hpp"
 
 GameStateManager::GameStateManager() : currentAction(StateAction::None) {
     // Initialize the game state manager with the main menu state
-    changeState(std::make_unique<SoloModeState>(*this));
+    changeState(std::make_unique<MainMenuState>(*this));
+    // changeState(std::make_unique<VersusPlayerState>(*this, "Sun Priestess", "Hero of Frost"));
 }
 
 GameStateManager::~GameStateManager() = default;

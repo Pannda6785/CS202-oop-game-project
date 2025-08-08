@@ -16,6 +16,13 @@
 #include "audio/AudioManager.hpp"
 #include "UI/custom_cursor/CustomCursor.hpp"
 
+#include "UI/game_state/versus_mode_state/combat_feedback/CombatFeedback.hpp"
+
+#include <algorithm>
+#include <iostream>
+
+#include "UI/game_state/versus_mode_state/combat_feedback/CombatFeedbackManager.hpp"
+
 int main() {
     const int screenWidth = 1440;
     const int screenHeight = 900;
@@ -48,6 +55,12 @@ int main() {
     Vector2 initialPoint = { -1, -1 };
     Vector2 endPoint = { -1, -1 };
     bool measuring = false;
+
+    // CombatFeedbackManager combatFeedbackManager;
+    // bool added = false;
+
+    // Texture2D tmp;
+    // bool addTmp = false;
 
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
@@ -82,13 +95,48 @@ int main() {
             }
         }
 
-        if(IsKeyPressed(KEY_ESCAPE)){
-            gameStateManager.popState();
-        }
+        // if(IsKeyPressed(KEY_ESCAPE)){
+        //     gameStateManager.popState();
+        // }
+
+        // if(!added){
+        //     combatFeedbackManager.addHitEffect({0, 0}, {0, 0});
+        //     added = true;
+        // }
+
+        // if(!addTmp){
+        //     tmp = LoadTexture("../assets/UI_sprites/spr_splatter_0.png");
+        //     addTmp = true;
+        // }
+        // bool isLeft = true;
+        // bool isUp = false;
+        // Rectangle sourceRec = {0, 0, static_cast<float>(tmp.width), static_cast<float>(tmp.height) };
+        // float scale = 0.7f;
+        // Vector2 originRatio = {0.75, 0.83};
+        // if(!isLeft) {
+        //     sourceRec.width = -static_cast<float>(tmp.width);
+        //     originRatio.x = 1.0f - originRatio.x;
+        // }
+        // if(!isUp) {
+        //     sourceRec.height = -static_cast<float>(tmp.height);
+        //     originRatio.y = 1.0f - originRatio.y;
+        // }
+        // Vector2 pos = {200.0f, 200.0f};
+        // Rectangle destRec = { pos.x, pos.y, scale * static_cast<float>(tmp.width), scale * static_cast<float>(tmp.height)};
+        // Vector2 origin = { originRatio.x * tmp.width * scale, originRatio.y * tmp.height * scale };
+        // DrawTexturePro(tmp, sourceRec, destRec, origin, 0.0f, WHITE);
+        // DrawRectangle(pos.x, pos.y, 5.0f, 5.0f, WHITE); // Draw a semi-transparent overlay
+        // // destRec = { 100.0f, 100.0f, static_cast<float>(tmp.width), static_cast<float>(tmp.height)};
+        // // origin = { 100.0f, 100.0f };
+        // // DrawTexturePro(tmp, sourceRec, destRec, origin, 0.0f, WHITE);
 
         gameStateManager.processPendingStateChanges();
 
         gameStateManager.update(dt); // Update game state manager
+
+        // combatFeedbackManager.update(dt); // Update combat feedback manager
+
+
         if(!tool) CustomCursor::getInstance().update(dt); // Update custom cursor
 
         if(gameStateManager.isEmpty()) {
@@ -98,8 +146,14 @@ int main() {
 
         GraphicsComponentManager::instance().render(); // Update graphics components
 
+        
+
         EndDrawing();
     }
+
+    // if(addTmp) {
+    //     UnloadTexture(tmp); // Unload temporary texture
+    // }   
 
     CloseWindow();
 
