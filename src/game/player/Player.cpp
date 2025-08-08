@@ -206,6 +206,10 @@ std::array<int, 4> Player::getSignatureColor() const {
     return character->getGraphics()->getSignatureColor();
 }
 
+bool Player::isFocused() const {
+    return input->isHoldingKey(Unit::Input::Focus);
+}
+
 // --- Private helpers ---
 void Player::updateMovement(float dt) {
     movement = {0.0f, 0.0f};
