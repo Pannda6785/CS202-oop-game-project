@@ -14,17 +14,18 @@ class Texture;
 class Shader;
 
 class CharacterGraphicsComponent : public GraphicsComponent {
-    static constexpr float FLASH_FREQUENCY = 4.0f;
+    static constexpr float CHARACTER_HEIGHT = 110;
 
     static constexpr float HITBOX_RADIUS_RATIO = 5;
     static constexpr float MAGIC_CIRCLE_RADIUS = 75;
-    static constexpr float OUTER_RING_RADIUS = 320;
-    static constexpr float INNER_RING_RADIUS = 220;
+    static constexpr float OUTER_RING_RADIUS = 260;
+    static constexpr float INNER_RING_RADIUS = 210;
     static constexpr float ARROW_RADIUS = 85;
     static constexpr float MIN_OPACITY = 0.65f;
     static constexpr float TRANSITION_SPEED = 0.1f; // how fast the ring transitions when focused
-
+    
     static constexpr float RPS = 1 / 2.5f;
+    static constexpr float FLASH_FREQUENCY = 4.0f;
 
 public:
     CharacterGraphicsComponent();

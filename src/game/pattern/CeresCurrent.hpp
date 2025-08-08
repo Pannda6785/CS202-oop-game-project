@@ -17,9 +17,9 @@ class CeresCurrent : public Pattern {
     static constexpr float B2_START_TIME = 5;
     static constexpr float B2_STARTUP = 1.000f;
     static constexpr float B2_MIN_SPEED = 0;
-    static constexpr float B2_MAX_SPEED = 280;
+    static constexpr float B2_MAX_SPEED = 270;
     static constexpr float B2_RADIUS = 480;
-    static constexpr float B2_FREQUENCY = 2.5;
+    static constexpr float B2_FREQUENCY = 3.85f;
 
 public:
     explicit CeresCurrent(IBulletSpawner* spawner);

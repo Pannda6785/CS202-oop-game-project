@@ -234,7 +234,7 @@ void CharacterGraphicsComponent::renderCharacter() const {
     Unit::Vec2D pos = player->getPosition();
     Vector2 center = { pos.x, pos.y };
 
-    const float resize = 130 / 600.0f;
+    const float resize = CHARACTER_HEIGHT / (4 / 6.0f * tex.height);
     float scale = resize * size;
     float direction = ((player->getTargetPosition()).x < (player->getPosition()).x) ? -1.0f : 1.0f;
 
