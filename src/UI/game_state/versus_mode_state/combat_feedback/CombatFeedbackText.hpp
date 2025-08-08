@@ -25,6 +25,7 @@ protected:
     
 private:
     GameText gameText;
+    Vector2 offset = {20.0f, 20.0f};
 };
 
 #endif // COMBAT_FEEDBACK_TEXT_HPP

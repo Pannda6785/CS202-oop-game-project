@@ -47,7 +47,6 @@ protected:
     HorizontalAlignment hAlign = HorizontalAlignment::RIGHT;
     VerticalAlignment vAlign = VerticalAlignment::UP;
     Vector2 position = {0.0f, 0.0f};
-    Vector2 offset = {10.0f, 10.0f};
     
     // Method for subclasses to implement position updates
     virtual void updatePosition() = 0; // Pure virtual

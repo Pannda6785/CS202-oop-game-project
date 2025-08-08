@@ -14,21 +14,23 @@ CombatFeedbackEffect::CombatFeedbackEffect(Vector2 hitPos, Vector2 hitterPos)
     for (const auto& path : texturePaths) {
         artwork.addTexture(path);
     }
-    float period = 100.0f;
+    float period = 0.15f;
     artwork.setLayer(100);
     artwork.setScale(0.7f);
     artwork.setPeriod(period);
     artwork.setPosition(static_cast<int>(hitPos.x), static_cast<int>(hitPos.y));
+    artwork.setOriginRatio(hitEffectOriginRatio);
     setDuration(period * static_cast<float>(texturePaths.size()));
 
-    // Determine alignment based on relative positions
-    hAlign = hitPos.x <= hitterPos.x ? HorizontalAlignment::LEFT : HorizontalAlignment::RIGHT;
-    vAlign = hitPos.y <= hitterPos.y ? VerticalAlignment::UP : VerticalAlignment::DOWN;
+    if(hitPos.x > hitterPos.x){
+        artwork.setFlipVertical(true);
+    }
+    if(hitPos.y > hitterPos.y){
+        artwork.setFlipHorizontal(true);
+    }
 }
 
 CombatFeedbackEffect::~CombatFeedbackEffect() {
-    // Ensure artwork is unloaded properly
-    // (No need to explicitly clear textures as Artwork destructor handles this)
 }
 
 bool CombatFeedbackEffect::addTexture(const std::string& filePath) {
@@ -70,22 +72,5 @@ void CombatFeedbackEffect::activate() {
 void CombatFeedbackEffect::updatePosition() {
     int x = static_cast<int>(position.x);
     int y = static_cast<int>(position.y);
-    
-    int width = artwork.getWidth();
-    
-    // Adjust horizontal position
-    if (hAlign == HorizontalAlignment::LEFT) {
-        x -= width - static_cast<int>(offset.x);
-    } else {
-        x += static_cast<int>(offset.x);
-    }
-    
-    // Adjust vertical position
-    if (vAlign == VerticalAlignment::UP) {
-        y -= width - static_cast<int>(offset.y); // Approximate height with width since artwork might not have getHeight()
-    } else {
-        y += static_cast<int>(offset.y);
-    }
-    
     artwork.setPosition(x, y);
 }

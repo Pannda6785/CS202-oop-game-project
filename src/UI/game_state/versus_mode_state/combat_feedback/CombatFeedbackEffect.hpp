@@ -26,6 +26,7 @@ protected:
     
 private:
     Artwork artwork;
+    Vector2 hitEffectOriginRatio = {0.75f, 0.83f};
 };
 
 #endif // COMBAT_FEEDBACK_EFFECT_HPP

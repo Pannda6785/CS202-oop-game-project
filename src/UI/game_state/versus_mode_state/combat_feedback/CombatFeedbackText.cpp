@@ -13,6 +13,7 @@ CombatFeedbackText::CombatFeedbackText(Vector2 hitPos, Vector2 hitterPos)
     gameText.setPosition(static_cast<int>(hitPos.x), static_cast<int>(hitPos.y));
     hAlign = hitPos.x <= hitterPos.x ? HorizontalAlignment::LEFT : HorizontalAlignment::RIGHT;
     vAlign = hitPos.y <= hitterPos.y ? VerticalAlignment::UP : VerticalAlignment::DOWN;
+    updatePosition();
 }
 
 CombatFeedbackText::~CombatFeedbackText() {
@@ -56,14 +57,14 @@ void CombatFeedbackText::updatePosition() {
     
     // Adjust horizontal position
     if (hAlign == HorizontalAlignment::LEFT) {
-        x -= static_cast<int>(gameText.getWidth()) - static_cast<int>(offset.x);
+        x -= static_cast<int>(gameText.getWidth()) + static_cast<int>(offset.x);
     } else {
         x += static_cast<int>(offset.x);
     }
     
     // Adjust vertical position
     if (vAlign == VerticalAlignment::UP) {
-        y -= static_cast<int>(gameText.getHeight()) - static_cast<int>(offset.y);
+        y -= static_cast<int>(gameText.getHeight()) + static_cast<int>(offset.y);
     } else {
         y += static_cast<int>(offset.y);
     }
