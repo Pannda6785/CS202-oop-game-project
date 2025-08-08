@@ -16,10 +16,7 @@ void World::update(float dt) {
     for (auto& bullet : bullets) {
         bullet->update(dt);
     }
-    while (!pendingBullets.empty()) {
-        bullets.push_back(std::move(pendingBullets.back()));
-        pendingBullets.pop_back();
-    }
+    handlePendings(dt);
     handleCollisions();
 }
 
@@ -68,12 +65,28 @@ void World::addPlayer(std::unique_ptr<Player> player) {
     players.push_back(std::move(player));
 }
 
-void World::addPattern(std::unique_ptr<Pattern> pattern) {
-    patterns.push_back(std::move(pattern));
+void World::addPattern(std::unique_ptr<Pattern> pattern, float time) {
+    pendingPatterns.emplace_back(std::move(pattern), time);
 }
 
 void World::spawnBullet(std::shared_ptr<Bullet> bullet) {
     pendingBullets.push_back(std::move(bullet));
+}
+
+void World::handlePendings(float dt) {
+    while (!pendingBullets.empty()) {
+        bullets.push_back(std::move(pendingBullets.back()));
+        pendingBullets.pop_back();
+    }
+    for (auto it = pendingPatterns.begin(); it != pendingPatterns.end();) {
+        if (it->second <= 0.0f) {
+            patterns.push_back(std::move(it->first));
+            it = pendingPatterns.erase(it);
+        } else {
+            it->second -= dt; // Decrease the time by a small value
+            ++it;
+        }
+    }
 }
 
 void World::handleCollisions() {

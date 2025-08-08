@@ -21,7 +21,7 @@ public:
     std::vector<const Bullet*> getBullets() const override;
 
     void addPlayer(std::unique_ptr<Player> player);
-    void addPattern(std::unique_ptr<Pattern> pattern);
+    void addPattern(std::unique_ptr<Pattern> pattern, float time);
     void spawnBullet(std::shared_ptr<Bullet> bullet);
 
 private:
@@ -31,7 +31,9 @@ private:
     std::unique_ptr<DevTool> devTool;
 
     std::vector<std::shared_ptr<Bullet>> pendingBullets;
+    std::vector<std::pair<std::unique_ptr<Pattern>, float>> pendingPatterns;
 
+    void handlePendings(float dt);
     void handleCollisions();
 };
 
