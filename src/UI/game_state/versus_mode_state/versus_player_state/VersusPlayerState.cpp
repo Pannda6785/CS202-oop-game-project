@@ -3,14 +3,14 @@
 #include "../../../../audio/AudioManager.hpp"
 #include "../../../button/Button.hpp"
 
-#include "../../../game/character/priestess/Priestess.hpp"
-#include "../../../game/character/redhood/Redhood.hpp"
-#include "../../../game/character/arcanist/Arcanist.hpp"
-#include "../../../game/character/hero/Hero.hpp"
-#include "../../../game/character/wyrm/Wyrm.hpp"
-#include "../../../game/character/lich/Lich.hpp"
-#include "../../../game/character/depth/Depth.hpp"
-#include "../../../game/character/stormbeast/Stormbeast.hpp"
+#include "../../../../game/character/priestess/Priestess.hpp"
+#include "../../../../game/character/redhood/Redhood.hpp"
+#include "../../../../game/character/arcanist/Arcanist.hpp"
+#include "../../../../game/character/hero/Hero.hpp"
+#include "../../../../game/character/wyrm/Wyrm.hpp"
+#include "../../../../game/character/lich/Lich.hpp"
+#include "../../../../game/character/depth/Depth.hpp"
+#include "../../../../game/character/stormbeast/Stormbeast.hpp"
 
 #include <iostream>
 

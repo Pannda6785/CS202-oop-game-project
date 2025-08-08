@@ -36,6 +36,9 @@ private:
 
     CombatFeedbackManager combatFeedbackManager;
 
+    float freezeDuration = 0.5f;
+    float freezeTimer = 0.0f;
+
     void handlePendings(float dt);
     void handleCollisions();
 };

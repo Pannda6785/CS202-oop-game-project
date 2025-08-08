@@ -1,4 +1,5 @@
 #include "CombatFeedbackManager.hpp"
+#include "../../../../audio/AudioManager.hpp"
 #include <algorithm>
 
 CombatFeedbackManager::CombatFeedbackManager() = default;
@@ -12,6 +13,7 @@ void CombatFeedbackManager::addHitText(Vector2 hitPos, Vector2 hitterPos, float 
     feedback->setDuration(duration);
     feedback->activate();
     feedbacks.push_back(std::move(feedback));
+    AudioManager::getInstance().playSound("HitPlayer");
 }
 
 void CombatFeedbackManager::addHitEffect(Vector2 hitPos, Vector2 hitterPos) {

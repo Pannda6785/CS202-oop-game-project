@@ -1,8 +1,16 @@
 #include "World.hpp"
 
 #include <algorithm>
+#include <iostream>
 
 void World::update(float dt) {
+    if(freezeTimer > 0.0f) {
+        freezeTimer -= dt;
+        if (freezeTimer <= 0.0f) {
+            freezeTimer = 0.0f;
+        }
+        return;
+    }
     devTool->update(dt);
     dt *= devTool->getTimeScale();
     if (dt < Unit::EPS) return;
@@ -200,6 +208,7 @@ void World::handleCollisions() {
                                           hitDuration);
         combatFeedbackManager.addHitEffect({hitLocation.x, hitLocation.y}, 
                                            {hitterLocation.x, hitterLocation.y});
+        freezeTimer = freezeDuration = 0.5f;
    }
 
     /* Remove to-delete bullets */
@@ -208,12 +217,12 @@ void World::handleCollisions() {
             bullets[i]->makeDone();
         }
     }
+
     bullets.erase(
         std::remove_if(
             bullets.begin(),
             bullets.end(),
             [&](const std::shared_ptr<Bullet>& bullet) {
-                size_t i = &bullet - &bullets[0];
                 return bullet->isDone();
             }
         ),

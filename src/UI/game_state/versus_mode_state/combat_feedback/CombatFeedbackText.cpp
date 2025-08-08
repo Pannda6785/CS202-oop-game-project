@@ -7,12 +7,12 @@ CombatFeedbackText::CombatFeedbackText(Vector2 hitPos, Vector2 hitterPos)
     // Set default properties
     gameText.setLayer(100);
     gameText.loadFont("../assets/fonts/ferrum.otf");
-    gameText.setText("Hit!!");
-    gameText.setFontSize(100);
+    gameText.setText("HIT!!");
+    gameText.setFontSize(140);
     gameText.setColor(WHITE);
     gameText.setPosition(static_cast<int>(hitPos.x), static_cast<int>(hitPos.y));
-    hAlign = hitPos.x <= hitterPos.x ? HorizontalAlignment::LEFT : HorizontalAlignment::RIGHT;
-    vAlign = hitPos.y <= hitterPos.y ? VerticalAlignment::UP : VerticalAlignment::DOWN;
+    hAlign = hitPos.x <= hitterPos.x ? HorizontalAlignment::RIGHT : HorizontalAlignment::LEFT;
+    vAlign = hitPos.y <= hitterPos.y ? VerticalAlignment::DOWN : VerticalAlignment::UP;
     updatePosition();
 }
 
