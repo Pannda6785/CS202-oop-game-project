@@ -61,7 +61,7 @@ void VersusPlayerState::initializeWorld(const std::string& player1Character, con
     // Create characters
     auto player1Char = createCharacter(player1CharacterName);
     auto player2Char = createCharacter(player2CharacterName);
-    
+
     // Create players and add to world
     auto player1 = std::make_unique<Player>(
         0, world.get(), world.get(), std::move(player1Char), player1Input);

@@ -3,7 +3,8 @@
 #include <algorithm>
 #include <iostream>
 
-#include "../UI/game_state/versus_mode_state/HUD/hot_bar/sun_priestess_hot_bar/SunPriestessHotBar.hpp"
+// #include "../UI/game_state/versus_mode_state/HUD/hot_bar/sun_priestess_hot_bar/SunPriestessHotBar.hpp"
+#include "../UI/game_state/versus_mode_state/HUD/hot_bar/HotBarFactory.hpp"
 
 World::World() : devTool(nullptr), combatFeedbackManager(), leftHotBar(nullptr) {
 }
@@ -73,8 +74,8 @@ void World::init() {
         pattern->init();
     }
     devTool = std::make_unique<DevTool>(this);
-    leftHotBar = std::make_unique<SunPriestessHotBar>(true);
-    rightHotBar = std::make_unique<SunPriestessHotBar>(false);
+    leftHotBar = HotBarFactory::createForCharacter(players[0]->getName(), true);
+    rightHotBar = HotBarFactory::createForCharacter(players[1]->getName(), false);
 }
 
 const Player* World::getPlayer(int playerId) const {
