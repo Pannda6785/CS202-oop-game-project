@@ -81,8 +81,12 @@ void Artwork::setFlipHorizontal(bool flipHorizontal) {
 }
 
 void Artwork::setOriginRatio(Vector2 originRatio) {
-    if (textures.empty() || textures[0] == nullptr) return;
     this->originRatio = originRatio;
+}
+
+void Artwork::setAlphaColor(float alpha) {
+    if (textures.empty() || textures[0] == nullptr) return;
+    alphaColor = alpha;
 }
 
 float Artwork::getFadeInTime() const {
@@ -112,7 +116,7 @@ void Artwork::render() const {
     Rectangle source = { 0, 0, (float)tex->width, (float)tex->height };
     Rectangle dest = { posX, posY, tex->width * scale, tex->height * scale };
     float rotation = 0;
-    Color color = { 255, 255, 255, 255 * (fadeInTime > 0.0f ? fadeInTimer / fadeInTime : 1.0f) };
+    Color color = { 255, 255, 255, 255 * (fadeInTime > 0.0f ? fadeInTimer / fadeInTime : alphaColor) };
     if(flip) source.width = -source.width;
     if(flipHorizontal) {
         source.height = -source.height;

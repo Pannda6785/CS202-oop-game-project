@@ -16,6 +16,8 @@ public:
     void setPosition(int x, int y);
     void setColor(Color color);
     void setFontSize(int size);
+    void setOriginRatio(Vector2 originRatio);
+    void setAlphaColor(float alpha);
 
     const std::string& getText() const;
     int getX() const;
@@ -32,6 +34,7 @@ private:
     Font font;
     bool fontLoaded = false;
     int x = 0, y = 0;
+    Vector2 originRatio = {0.0f, 0.0f};
     int fontSize = 32;
     Color color = WHITE;
 };

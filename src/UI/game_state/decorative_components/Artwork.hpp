@@ -25,6 +25,7 @@ public:
     void setFlip(bool flip);
     void setMiddle(bool mid);
     void setOriginRatio(Vector2 originRatio);
+    void setAlphaColor(float alpha);
 
     void setFlipVertical(bool flipVertical);
     void setFlipHorizontal(bool flipHorizontal);
@@ -49,6 +50,7 @@ private:
     mutable float timer = -1.0f;
     float fadeInTime = 0.0f;
     float fadeInTimer = 0.0f;
+    float alphaColor = 1.0f;
     bool middle = false;
     bool flip = false;
     bool flipVertical = false;

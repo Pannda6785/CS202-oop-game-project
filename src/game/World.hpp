@@ -8,12 +8,15 @@
 #include "pattern/Pattern.hpp"
 #include "devtool/DevTool.hpp"
 #include "../UI/game_state/versus_mode_state/combat_feedback/CombatFeedbackManager.hpp"
+#include "../UI/game_state/versus_mode_state/HUD/hot_bar/HotBar.hpp"
 
 #include <memory>
 
 class World : public IWorldView, public IBulletSpawner {
     friend class DevTool;
 public:
+    World();
+
     void update(float dt);
     void init();
     
@@ -39,8 +42,12 @@ private:
     float freezeDuration = 0.5f;
     float freezeTimer = 0.0f;
 
+    std::unique_ptr<HotBar> leftHotBar = nullptr;
+    std::unique_ptr<HotBar> rightHotBar = nullptr;
+
     void handlePendings(float dt);
     void handleCollisions();
+
 };
 
 #endif // WORLD_HPP

@@ -43,6 +43,14 @@ void GameText::setFontSize(int size) {
     fontSize = size;
 }
 
+void GameText::setOriginRatio(Vector2 originRatio) {
+    this->originRatio = originRatio;
+}
+
+void GameText::setAlphaColor(float alpha) {
+    color.a = static_cast<unsigned char>(alpha * 255);
+}
+
 const std::string& GameText::getText() const {
     return text;
 }
@@ -82,7 +90,9 @@ float GameText::getHeight() const {
 void GameText::render() const {
     if (text.empty()) return;
     if (fontLoaded) {
-        DrawTextEx(font, text.c_str(), {(float)x, (float)y}, (float)fontSize, 1, color);
+        // DrawTextEx(font, text.c_str(), {(float)x, (float)y}, (float)fontSize, 1, color);
+        Vector2 origin = {originRatio.x * getWidth(), originRatio.y * getHeight()};
+        DrawTextPro(font, text.c_str(), {(float)x, (float)y}, origin, 0, fontSize, 1, color);
     } else {
         DrawText(text.c_str(), x, y, fontSize, color);
     }

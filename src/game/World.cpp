@@ -3,6 +3,14 @@
 #include <algorithm>
 #include <iostream>
 
+#include "../UI/game_state/versus_mode_state/HUD/hot_bar/sun_priestess_hot_bar/SunPriestessHotBar.hpp"
+
+World::World() : devTool(nullptr), combatFeedbackManager(), leftHotBar(nullptr) {
+}
+
+// World::World() : devTool(nullptr), combatFeedbackManager() {
+// }
+
 void World::update(float dt) {
     if(freezeTimer > 0.0f) {
         freezeTimer -= dt;
@@ -27,6 +35,34 @@ void World::update(float dt) {
     handlePendings(dt);
     handleCollisions();
     combatFeedbackManager.update(dt);
+    if (leftHotBar) {
+        std::vector<float> cooldowns;
+        cooldowns.push_back(players[0]->getCooldown(Unit::Move::Basic));
+        cooldowns.push_back(players[0]->getCooldown(Unit::Move::Wide));
+        cooldowns.push_back(players[0]->getCooldown(Unit::Move::Offensive));
+        cooldowns.push_back(players[0]->getCooldown(Unit::Move::Defensive));
+        leftHotBar->setCooldowns(cooldowns);
+        std::vector<const CircleHitbox*> circleHitboxes;
+        for (auto& player : players) {
+            circleHitboxes.push_back(player->getHitbox());
+        }
+        leftHotBar->checkCollision(circleHitboxes);
+    }
+    if (rightHotBar) {
+        std::vector<float> cooldowns;
+        cooldowns.push_back(players[1]->getCooldown(Unit::Move::Basic));
+        cooldowns.push_back(players[1]->getCooldown(Unit::Move::Wide));
+        cooldowns.push_back(players[1]->getCooldown(Unit::Move::Offensive));
+        cooldowns.push_back(players[1]->getCooldown(Unit::Move::Defensive));
+        rightHotBar->setCooldowns(cooldowns);
+        std::vector<const CircleHitbox*> circleHitboxes;
+        for (auto& player : players) {
+            circleHitboxes.push_back(player->getHitbox());
+        }
+        rightHotBar->checkCollision(circleHitboxes);
+    }
+    leftHotBar->update(dt);
+    rightHotBar->update(dt);
 }
 
 void World::init() {
@@ -37,6 +73,8 @@ void World::init() {
         pattern->init();
     }
     devTool = std::make_unique<DevTool>(this);
+    leftHotBar = std::make_unique<SunPriestessHotBar>(true);
+    rightHotBar = std::make_unique<SunPriestessHotBar>(false);
 }
 
 const Player* World::getPlayer(int playerId) const {
