@@ -1,5 +1,6 @@
 #include "HotBar.hpp"
 #include <iostream>
+#include <algorithm>
 
 HotBar::HotBar() : fadeActive(false), hitbox(nullptr) {
     // Set the default position based on the side
@@ -52,6 +53,7 @@ void HotBar::setCooldowns(const std::vector<float>& cooldowns) {
     for (size_t i = 0; i < slots.size() && i < cooldowns.size(); ++i) {
         slots[i].setCooldownDuration(cooldowns[i]);
     }
+    if(slots.size() > cooldowns.size()) slots.back().setCooldownDuration(cooldowns.back());
 }
 
 void HotBar::setSide(bool isLeft){
@@ -122,13 +124,20 @@ void HotBar::updateSlotPositions() {
     }
     // Set position for each slot
     float posX = startPos.x;
+    std::vector<Vector2> slotPositions;
     for (size_t i = 0; i < slots.size(); ++i) {
         Vector2 slotPos = {
             posX,
             startPos.y
         };
-        slots[i].setPosition(slotPos);
+        slotPositions.push_back(slotPos);
         posX += (slots[i].getWidth() + slotSpacing) * (isLeft ? 1 : -1);
+    }
+    if(!isLeft){
+        std::reverse(slotPositions.begin(), slotPositions.end());
+    }
+    for(size_t i = 0; i < slots.size(); ++i) {
+        slots[i].setPosition(slotPositions[i]);
     }
 }
 

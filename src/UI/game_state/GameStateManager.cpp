@@ -5,9 +5,9 @@
 
 GameStateManager::GameStateManager() : currentAction(StateAction::None) {
     // Initialize the game state manager with the main menu state
-    // changeState(std::make_unique<MainMenuState>(*this));
-    changeState(std::make_unique<VersusPlayerState>(*this, "Sun Priestess", "Hero of Frost"));
-    // changeState(std::make_unique<VersusPlayerState>(*this, "Hero of Frost", "Sun Priestess"));
+    changeState(std::make_unique<MainMenuState>(*this));
+    // changeState(std::make_unique<VersusPlayerState>(*this, "Sun Priestess", "Silent Redhood"));
+    // changeState(std::make_unique<VersusPlayerState>(*this, "Depth's Secret", "Stormbeast"));
 }
 
 GameStateManager::~GameStateManager() = default;
