@@ -16,7 +16,7 @@ CombatFeedbackEffect::CombatFeedbackEffect(Vector2 hitPos, Vector2 hitterPos)
     }
     float period = 0.15f;
     artwork.setLayer(100);
-    artwork.setScale(0.7f);
+    artwork.setScale(0.8f);
     artwork.setPeriod(period);
     artwork.setPosition(static_cast<int>(hitPos.x), static_cast<int>(hitPos.y));
     artwork.setOriginRatio(hitEffectOriginRatio);
