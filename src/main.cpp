@@ -29,6 +29,8 @@
 #include "UI/game_state/versus_mode_state/HUD/hot_bar/HotBarSlot.hpp"
 #include "UI/game_state/versus_mode_state/HUD/hot_bar/sun_priestess_hot_bar/SunPriestessHotBar.hpp"
 
+#include "UI/game_state/versus_mode_state/HUD/health_bar/HealthBar.hpp"
+
 int main() {
     const int screenWidth = 1440;
     const int screenHeight = 900;
@@ -63,9 +65,6 @@ int main() {
     Vector2 initialPoint = { -1, -1 };
     Vector2 endPoint = { -1, -1 };
     bool measuring = false;
-
-    // std::unique_ptr<HotBar> leftHotBar = std::make_unique<SunPriestessHotBar>(true);
-    // std::unique_ptr<HotBar> leftHotBar = std::make_unique<HotBar>();
 
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
@@ -112,8 +111,6 @@ int main() {
         }
 
         GraphicsComponentManager::instance().render(); // Update graphics components
-
-        
 
         EndDrawing();
     }

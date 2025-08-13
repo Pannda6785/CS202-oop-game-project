@@ -8,9 +8,6 @@
 #include "dreadwyrm_heir_hot_bar/DreadwyrmHeirHotBar.hpp"
 #include "depth_secret_hot_bar/DepthSecretHotBar.hpp"
 
-#include <algorithm>
-#include <stdexcept>
-
 std::unique_ptr<HotBar> HotBarFactory::createForCharacter(const std::string& characterName, bool isLeftSide) {
     if (characterName == "Priestess") {
         return std::make_unique<SunPriestessHotBar>(isLeftSide);

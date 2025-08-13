@@ -3,14 +3,13 @@
 #include <algorithm>
 #include <iostream>
 
-// #include "../UI/game_state/versus_mode_state/HUD/hot_bar/sun_priestess_hot_bar/SunPriestessHotBar.hpp"
 #include "../UI/game_state/versus_mode_state/HUD/hot_bar/HotBarFactory.hpp"
+#include "../UI/game_state/versus_mode_state/HUD/health_bar/HealthBarFactory.hpp"
 
-World::World() : devTool(nullptr), combatFeedbackManager(), leftHotBar(nullptr) {
+World::World() : devTool(nullptr), combatFeedbackManager(), 
+                leftHotBar(nullptr), rightHotBar(nullptr),
+                leftHealthBar(nullptr), rightHealthBar(nullptr) {
 }
-
-// World::World() : devTool(nullptr), combatFeedbackManager() {
-// }
 
 void World::update(float dt) {
     if(freezeTimer > 0.0f) {
@@ -35,7 +34,12 @@ void World::update(float dt) {
     }
     handlePendings(dt);
     handleCollisions();
+    
     combatFeedbackManager.update(dt);
+    std::vector<const CircleHitbox*> circleHitboxes;
+    for (auto& player : players) {
+        circleHitboxes.push_back(player->getHitbox());
+    }
     if (leftHotBar) {
         std::vector<float> cooldowns;
         cooldowns.push_back(players[0]->getCooldown(Unit::Move::Basic));
@@ -43,11 +47,8 @@ void World::update(float dt) {
         cooldowns.push_back(players[0]->getCooldown(Unit::Move::Offensive));
         cooldowns.push_back(players[0]->getCooldown(Unit::Move::Defensive));
         leftHotBar->setCooldowns(cooldowns);
-        std::vector<const CircleHitbox*> circleHitboxes;
-        for (auto& player : players) {
-            circleHitboxes.push_back(player->getHitbox());
-        }
         leftHotBar->checkCollision(circleHitboxes);
+        leftHotBar->update(dt);
     }
     if (rightHotBar) {
         std::vector<float> cooldowns;
@@ -56,14 +57,21 @@ void World::update(float dt) {
         cooldowns.push_back(players[1]->getCooldown(Unit::Move::Offensive));
         cooldowns.push_back(players[1]->getCooldown(Unit::Move::Defensive));
         rightHotBar->setCooldowns(cooldowns);
-        std::vector<const CircleHitbox*> circleHitboxes;
-        for (auto& player : players) {
-            circleHitboxes.push_back(player->getHitbox());
-        }
         rightHotBar->checkCollision(circleHitboxes);
+        rightHotBar->update(dt);
     }
-    leftHotBar->update(dt);
-    rightHotBar->update(dt);
+    if (leftHealthBar) {
+        leftHealthBar->checkCollision(circleHitboxes);
+        leftHealthBar->setHealth(players[0]->getHealth());
+        leftHealthBar->setStock(players[0]->getStock());
+        leftHealthBar->update(dt);
+    }
+    if (rightHealthBar) {
+        rightHealthBar->checkCollision(circleHitboxes);
+        rightHealthBar->setHealth(players[1]->getHealth());
+        rightHealthBar->setStock(players[1]->getStock());
+        rightHealthBar->update(dt);
+    }
 }
 
 void World::init() {
@@ -76,6 +84,13 @@ void World::init() {
     devTool = std::make_unique<DevTool>(this);
     leftHotBar = HotBarFactory::createForCharacter(players[0]->getName(), true);
     rightHotBar = HotBarFactory::createForCharacter(players[1]->getName(), false);
+
+    leftHealthBar = HealthBarFactory::createForCharacter(players[0]->getName(), true);
+    leftHealthBar->setHealth(players[0]->getHealth());
+    leftHealthBar->setStock(players[0]->getStock());
+    rightHealthBar = HealthBarFactory::createForCharacter(players[1]->getName(), false);
+    rightHealthBar->setHealth(players[1]->getHealth());
+    rightHealthBar->setStock(players[1]->getStock());
 }
 
 const Player* World::getPlayer(int playerId) const {

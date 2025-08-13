@@ -5,6 +5,7 @@
 #include <raylib.h>
 #include <vector>
 #include <string>
+#include <unordered_map>
 
 class Artwork : public GraphicsComponent {
 public:
@@ -26,9 +27,17 @@ public:
     void setMiddle(bool mid);
     void setOriginRatio(Vector2 originRatio);
     void setAlphaColor(float alpha);
+    void setColor(Color color);
 
     void setFlipVertical(bool flipVertical);
     void setFlipHorizontal(bool flipHorizontal);
+
+    // New shader-related methods
+    void loadShader(const std::string& fragmentShaderPath);
+    void enableShader(bool enable);
+    void setShaderValue(const std::string& uniformName, const void* value, int uniformType);
+    bool hasShader() const;
+    void unloadShader();
 
     bool getFlipVertical() const { return flipVertical; }
     bool getFlipHorizontal() const { return flipHorizontal; }
@@ -43,6 +52,7 @@ private:
     std::vector<std::string> texturePaths;
     Vector2 origin = {0.0f, 0.0f};
     Vector2 originRatio = {0.0f, 0.0f};
+    Color color = WHITE;
     float period = 0.1f;
     int posX = 0, posY = 0;
     int drawWidth = 0, drawHeight = 0;
@@ -55,6 +65,13 @@ private:
     bool flip = false;
     bool flipVertical = false;
     bool flipHorizontal = false;
+    
+    // New shader-related members
+    Shader shader = {0, nullptr};
+    bool shaderEnabled = false;
+    bool shaderLoaded = false;
+    std::string shaderPath;
+    mutable std::unordered_map<std::string, int> uniformLocations;
 };
 
 #endif // ARTWORK_HPP

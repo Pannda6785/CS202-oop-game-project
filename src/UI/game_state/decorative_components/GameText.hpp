@@ -4,6 +4,7 @@
 #include "../../../graphics/GraphicsComponent.hpp"
 #include <raylib.h>
 #include <string>
+#include <unordered_map>
 
 class GameText : public GraphicsComponent {
 public:
@@ -18,6 +19,16 @@ public:
     void setFontSize(int size);
     void setOriginRatio(Vector2 originRatio);
     void setAlphaColor(float alpha);
+    
+    // New shader-related methods
+    void loadShader(const std::string& fragmentShaderPath);
+    void enableShader(bool enable);
+    void setShaderValue(const std::string& uniformName, const void* value, int uniformType);
+    bool hasShader() const;
+    void unloadShader();
+    
+    // New update method for animations and shader effects
+    void update(float dt);
 
     const std::string& getText() const;
     int getX() const;
@@ -37,6 +48,14 @@ private:
     Vector2 originRatio = {0.0f, 0.0f};
     int fontSize = 32;
     Color color = WHITE;
+    
+    // New shader-related members
+    Shader shader = {0, nullptr};
+    bool shaderEnabled = false;
+    bool shaderLoaded = false;
+    std::string shaderPath;
+    mutable std::unordered_map<std::string, int> uniformLocations;
+    float time = 0.0f;  // For tracking time-based effects
 };
 
 #endif // GAME_TEXT_HPP
