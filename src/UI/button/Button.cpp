@@ -59,6 +59,10 @@ void Button::setExitHovered(bool exitHovered) {
     this->exitHovered = exitHovered;
 }
 
+void Button::setLayer(int layer) {
+    graphic->setLayer(layer);
+}
+
 // --- Logic update ---
 void Button::update(float dt) {
     if (disabledState) {

@@ -69,7 +69,7 @@ void Player::confirmHit() {
     applyInvincibility(1.2f, false);
 }
 
-void Player::roundReset() {
+void Player::resetRound() {
     health = 3;
     for (auto& lock : locks) lock = 0.0f;
     for (auto& mod : modifiers) mod = {0.0f, 1.0f};

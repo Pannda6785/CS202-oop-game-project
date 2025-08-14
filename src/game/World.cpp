@@ -34,42 +34,22 @@ void World::update(float dt) {
     }
     handlePendings(dt);
     handleCollisions();
-    
-    combatFeedbackManager.update(dt);
-    std::vector<const CircleHitbox*> circleHitboxes;
-    for (auto& player : players) {
-        circleHitboxes.push_back(player->getHitbox());
+
+    if(players[0]->getHealth() <= 0 || players[1]->getHealth() <= 0) {
+        resetRound();
     }
+
+    combatFeedbackManager.update(dt);
     if (leftHotBar) {
-        std::vector<float> cooldowns;
-        cooldowns.push_back(players[0]->getCooldown(Unit::Move::Basic));
-        cooldowns.push_back(players[0]->getCooldown(Unit::Move::Wide));
-        cooldowns.push_back(players[0]->getCooldown(Unit::Move::Offensive));
-        cooldowns.push_back(players[0]->getCooldown(Unit::Move::Defensive));
-        leftHotBar->setCooldowns(cooldowns);
-        leftHotBar->checkCollision(circleHitboxes);
         leftHotBar->update(dt);
     }
     if (rightHotBar) {
-        std::vector<float> cooldowns;
-        cooldowns.push_back(players[1]->getCooldown(Unit::Move::Basic));
-        cooldowns.push_back(players[1]->getCooldown(Unit::Move::Wide));
-        cooldowns.push_back(players[1]->getCooldown(Unit::Move::Offensive));
-        cooldowns.push_back(players[1]->getCooldown(Unit::Move::Defensive));
-        rightHotBar->setCooldowns(cooldowns);
-        rightHotBar->checkCollision(circleHitboxes);
         rightHotBar->update(dt);
     }
     if (leftHealthBar) {
-        leftHealthBar->checkCollision(circleHitboxes);
-        leftHealthBar->setHealth(players[0]->getHealth());
-        leftHealthBar->setStock(players[0]->getStock());
         leftHealthBar->update(dt);
     }
     if (rightHealthBar) {
-        rightHealthBar->checkCollision(circleHitboxes);
-        rightHealthBar->setHealth(players[1]->getHealth());
-        rightHealthBar->setStock(players[1]->getStock());
         rightHealthBar->update(dt);
     }
 }
@@ -83,14 +63,14 @@ void World::init() {
     }
     devTool = std::make_unique<DevTool>(this);
     leftHotBar = HotBarFactory::createForCharacter(players[0]->getName(), true);
+    leftHotBar->setWorldView(this);
     rightHotBar = HotBarFactory::createForCharacter(players[1]->getName(), false);
+    rightHotBar->setWorldView(this);
 
     leftHealthBar = HealthBarFactory::createForCharacter(players[0]->getName(), true);
-    leftHealthBar->setHealth(players[0]->getHealth());
-    leftHealthBar->setStock(players[0]->getStock());
+    leftHealthBar->setWorldView(this);
     rightHealthBar = HealthBarFactory::createForCharacter(players[1]->getName(), false);
-    rightHealthBar->setHealth(players[1]->getHealth());
-    rightHealthBar->setStock(players[1]->getStock());
+    rightHealthBar->setWorldView(this);
 }
 
 const Player* World::getPlayer(int playerId) const {
@@ -134,6 +114,14 @@ void World::addPattern(std::unique_ptr<Pattern> pattern, float time) {
 
 void World::spawnBullet(std::shared_ptr<Bullet> bullet) {
     pendingBullets.push_back(std::move(bullet));
+}
+
+void World::resetRound(){
+    for(auto &player : players){
+        player->resetRound();
+    }
+    bullets.clear();
+    pendingBullets.clear();
 }
 
 void World::handlePendings(float dt) {
@@ -257,11 +245,23 @@ void World::handleCollisions() {
     
     /* send feedback */
    if (!hitPlayers.empty()){
-        combatFeedbackManager.addHitText({hitLocation.x, hitLocation.y}, 
-                                         {hitterLocation.x, hitterLocation.y}, 
-                                          hitDuration);
-        combatFeedbackManager.addHitEffect({hitLocation.x, hitLocation.y}, 
-                                           {hitterLocation.x, hitterLocation.y});
+        bool isLast = players[hitPlayers[0]]->getHealth() == 1;
+        switch(players[hitPlayers[0]]->getHealth()){
+            case(1):
+                combatFeedbackManager.applyLast({hitLocation.x, hitLocation.y}, 
+                                        {hitterLocation.x, hitterLocation.y}, 
+                                        hitDuration);
+                break;
+            case(0):
+                combatFeedbackManager.applyBreak({hitLocation.x, hitLocation.y}, 
+                                        {hitterLocation.x, hitterLocation.y}, 
+                                        hitDuration);
+                break;
+            default:
+                combatFeedbackManager.applyHit({hitLocation.x, hitLocation.y}, 
+                                            {hitterLocation.x, hitterLocation.y}, 
+                                            hitDuration);
+        }
         freezeTimer = freezeDuration = 0.5f;
    }
 

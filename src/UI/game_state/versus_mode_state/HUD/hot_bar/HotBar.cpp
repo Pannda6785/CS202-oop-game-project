@@ -1,8 +1,10 @@
 #include "HotBar.hpp"
+#include "../../../../../game/player/Player.hpp"
 #include <iostream>
 #include <algorithm>
+#include "../../../../../game/IWorldView.hpp"
 
-HotBar::HotBar() : fadeActive(false), hitbox(nullptr) {
+HotBar::HotBar() : fadeActive(false), hitbox(nullptr), worldView(nullptr) {
     // Set the default position based on the side
     Vector2 startPos = {100.0f, GetScreenHeight() - 150.0f};
     setPosition(startPos);
@@ -17,6 +19,11 @@ HotBar::HotBar() : fadeActive(false), hitbox(nullptr) {
         height
     };
     setRectangleHitBox(hitboxRect);
+}
+
+// Add setter for IWorldView
+void HotBar::setWorldView(IWorldView* worldView) {
+    this->worldView = worldView;
 }
 
 HotBar::~HotBar() = default;
@@ -112,6 +119,38 @@ void HotBar::setFadeHidding(bool hidden) {
 }
 
 void HotBar::update(float dt) {
+    // If we have a world view pointer, get cooldowns directly
+    if (worldView) {
+        std::vector<const Player*> players = worldView->getPlayers();
+        if (!players.empty()) {
+            // Get the appropriate player based on which side we're on
+            int playerIndex = isLeft ? 0 : 1;
+            
+            if (playerIndex < players.size()) {
+                const Player* player = players[playerIndex];
+                
+                // Get cooldowns for this player
+                std::vector<float> cooldowns;
+                cooldowns.push_back(player->getCooldown(Unit::Move::Basic));
+                cooldowns.push_back(player->getCooldown(Unit::Move::Wide));
+                cooldowns.push_back(player->getCooldown(Unit::Move::Offensive));
+                cooldowns.push_back(player->getCooldown(Unit::Move::Defensive));
+                
+                // Set cooldowns on slots
+                setCooldowns(cooldowns);
+            }
+            
+            // Get hitboxes for collision detection
+            std::vector<const CircleHitbox*> circleHitboxes;
+            for (const auto* player : players) {
+                circleHitboxes.push_back(player->getHitbox());
+            }
+            
+            // Check for collision
+            checkCollision(circleHitboxes);
+        }
+    }
+    
     // Update all slots
     for (auto& slot : slots) {
         slot.update(dt);

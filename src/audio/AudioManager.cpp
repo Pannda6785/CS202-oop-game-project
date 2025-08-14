@@ -64,6 +64,8 @@ void AudioManager::init() {
         sounds["CharSelectRibbon"] = charSelectRibbon;
         Sound hitPlayer = LoadSound("../assets/audio/sound_hit_player.wav");
         sounds["HitPlayer"] = hitPlayer;
+        Sound healthBreak = LoadSound("../assets/audio/sound_health_break.wav");
+        sounds["HealthBreak"] = healthBreak;
         initialized = true;
     }
     

@@ -13,6 +13,8 @@
 
 class GameStateManager; // Forward declaration
 
+enum class PauseMenuOption;
+
 class VersusPlayerState : public GameState {
 public:
     VersusPlayerState(GameStateManager& gsm);
@@ -22,6 +24,8 @@ public:
     void enter() override;
     void update(float dt) override;
     void exit() override;
+
+    // void setVisible(bool visible);
     
     // Initialize world with specified characters
     void initializeWorld(const std::string& player1Character, const std::string& player2Character);
@@ -31,7 +35,8 @@ private:
     std::unique_ptr<World> world = nullptr;
     std::vector<std::shared_ptr<KeyboardInputInterpreter>> inputInterpreters;
     ButtonManager buttonManager;
-    
+    PauseMenuOption selectedOption;
+
     std::string player1CharacterName;
     std::string player2CharacterName;
     bool isInitialized = false;

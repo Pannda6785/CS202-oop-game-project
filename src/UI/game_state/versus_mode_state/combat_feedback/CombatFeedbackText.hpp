@@ -7,7 +7,7 @@
 class CombatFeedbackText : public CombatFeedback {
 public:
     CombatFeedbackText();
-    CombatFeedbackText(Vector2 hitPos, Vector2 hitterPos);
+    CombatFeedbackText(Vector2 hitPos, Vector2 hitterPos, std::string text);
     ~CombatFeedbackText() override;
     
     // Text-specific methods
