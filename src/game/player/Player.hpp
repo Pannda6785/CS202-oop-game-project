@@ -25,7 +25,7 @@ public:
     void update(float dt);
     void takeHit();
     void confirmHit();
-    void roundReset();
+    void resetRound();
 
     // World interaction
     const IWorldView* getWorld() const;

@@ -1,4 +1,6 @@
 #include "HealthBar.hpp"
+#include "../../../../../game/IWorldView.hpp"
+#include "../../../../../game/player/Player.hpp"
 #include <iostream>
 
 HealthBar::HealthBar(bool isLeftSide) 
@@ -219,7 +221,52 @@ void HealthBar::checkCollision(std::vector<const CircleHitbox*> circleHitboxes) 
     }
 }
 
+void HealthBar::setWorldView(IWorldView* worldView) {
+    this->worldView = worldView;
+}
+
 void HealthBar::update(float dt) {
+    // If we have a world view pointer, get player data directly
+    if (worldView) {
+        std::vector<const Player*> players = worldView->getPlayers();
+        if (!players.empty()) {
+            // Get the appropriate player based on which side we're on
+            int playerIndex = isLeft ? 0 : 1;
+            
+            if (playerIndex < players.size()) {
+                const Player* player = players[playerIndex];
+                
+                // Get health and stock for this player
+                int playerHealth = player->getHealth();
+                int playerStock = player->getStock();
+                
+                // Update health and stock if they've changed
+                if (playerHealth != health) {
+                    setHealth(playerHealth);
+                }
+                
+                if (playerStock != stock) {
+                    setStock(playerStock);
+                }
+                
+                // Check if player was just hit to activate shader effect
+                // if (player->wasHit()) {
+                //     activateShader(true);
+                //     triggerShake();
+                // }
+            }
+            
+            // Get hitboxes for collision detection
+            std::vector<const CircleHitbox*> circleHitboxes;
+            for (const auto* player : players) {
+                circleHitboxes.push_back(player->getHitbox());
+            }
+            
+            // Check for collision
+            checkCollision(circleHitboxes);
+        }
+    }
+
     // Update all components
     background.update(dt);
     avatar.update(dt);

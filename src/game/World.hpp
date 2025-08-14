@@ -29,6 +29,9 @@ public:
     void addPattern(std::unique_ptr<Pattern> pattern, float time);
     void spawnBullet(std::shared_ptr<Bullet> bullet);
 
+    void resetRound();
+    void setVisible(bool visible);
+
 private:
     std::vector<std::unique_ptr<Player>> players;
     std::vector<std::shared_ptr<Bullet>> bullets;
@@ -51,7 +54,6 @@ private:
 
     void handlePendings(float dt);
     void handleCollisions();
-
 };
 
 #endif // WORLD_HPP

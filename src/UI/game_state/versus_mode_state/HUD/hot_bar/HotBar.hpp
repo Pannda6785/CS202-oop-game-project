@@ -7,6 +7,8 @@
 #include <vector>
 #include <memory>
 
+class IWorldView;
+
 class HotBar {
 public:
     HotBar();
@@ -19,6 +21,7 @@ public:
     void setRectangleHitBox(Rectangle rec);
     void setCooldowns(const std::vector<float>& cooldowns);
     void setSide(bool isLeft);
+    void setWorldView(IWorldView* worldView);
     
     // Slot management
     HotBarSlot* getSlot(int index);
@@ -43,6 +46,8 @@ private:
     
     bool fadeActive = false;
     bool isLeft = true;
+    
+    IWorldView* worldView = nullptr; // Added pointer to IWorldView
     
     void updateSlotPositions();
     Vector2 getSymmetricPos(Vector2 pos);
