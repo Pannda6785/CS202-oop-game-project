@@ -121,6 +121,10 @@ void GameText::setAlphaColor(float alpha) {
     color.a = static_cast<unsigned char>(alpha * 255);
 }
 
+void GameText::setAngle(float angle) {
+    this->angle = angle;
+}
+
 const std::string& GameText::getText() const {
     return text;
 }
@@ -166,14 +170,14 @@ void GameText::render() const {
     if (shaderEnabled && shaderLoaded) {
         BeginShaderMode(shader);
         if (fontLoaded) {
-            DrawTextPro(font, text.c_str(), {(float)x, (float)y}, origin, 0, fontSize, 1, color);
+            DrawTextPro(font, text.c_str(), {(float)x, (float)y}, origin, angle, fontSize, 1, color);
         } else {
             DrawText(text.c_str(), x - origin.x, y - origin.y, fontSize, color);
         }
         EndShaderMode();
     } else {
         if (fontLoaded) {
-            DrawTextPro(font, text.c_str(), {(float)x, (float)y}, origin, 0, fontSize, 1, color);
+            DrawTextPro(font, text.c_str(), {(float)x, (float)y}, origin, angle, fontSize, 1, color);
         } else {
             DrawText(text.c_str(), x - origin.x, y - origin.y, fontSize, color);
         }

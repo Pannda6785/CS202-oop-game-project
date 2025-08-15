@@ -30,9 +30,11 @@ public:
     bool getStartExpand() const;
     float getTileWidth() const;
     float getRatio() const;
+    float getAngle() const;
+    float getSpeed() const;
     Vector2 getStartPositionToDraw() const;
     Vector2 getStartPosition() const;
-    Vector2 getMiddlePostion() const;
+    Vector2 getMiddlePosition() const;
     Vector2 getPositionToDraw(Vector2 pos, float textureHeight, float ratio) const;
 private:
     Vector2 startPosition = {0.0f, 0.0f};

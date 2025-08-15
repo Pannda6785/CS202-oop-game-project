@@ -100,7 +100,7 @@ Vector2 MovingTileGraphicsComponent::getStartPosition() const {
     return positions.empty() ? Vector2({0.0f, 0.0f}) : positions[0];
 }
 
-Vector2 MovingTileGraphicsComponent::getMiddlePostion() const {
+Vector2 MovingTileGraphicsComponent::getMiddlePosition() const {
     Vector2 pos = startPosition;
     float width = getTileWidth() / getRatio();
     float dx = width / 2.0f * cos(angle * (PI / 180.0));
@@ -115,6 +115,14 @@ Vector2 MovingTileGraphicsComponent::getPositionToDraw(Vector2 pos, float textur
     float dy = width / 2.0f * sin(angle * (PI / 180.0)) * (1.0f - ratio);
     Vector2 posToDraw = { pos.x + dx, pos.y - dy};
     return posToDraw;
+}
+
+float MovingTileGraphicsComponent::getAngle() const {
+    return angle;
+}
+
+float MovingTileGraphicsComponent::getSpeed() const {
+    return speed;
 }
 
 void MovingTileGraphicsComponent::update(float dt) {

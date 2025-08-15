@@ -52,6 +52,7 @@ void World::update(float dt) {
     if (rightHealthBar) {
         rightHealthBar->update(dt);
     }
+    ribbonManager.update(dt);
 }
 
 void World::init() {
@@ -71,6 +72,8 @@ void World::init() {
     leftHealthBar->setWorldView(this);
     rightHealthBar = HealthBarFactory::createForCharacter(players[1]->getName(), false);
     rightHealthBar->setWorldView(this);
+    ribbonManager.addReady(40.0f);
+    ribbonManager.addCountdown(40.0f);
 }
 
 const Player* World::getPlayer(int playerId) const {
@@ -122,6 +125,8 @@ void World::resetRound(){
     }
     bullets.clear();
     pendingBullets.clear();
+    // ribbonManager.addReady(3.0f);
+    // ribbonManager.addCountdown(3.0f);
 }
 
 void World::handlePendings(float dt) {
