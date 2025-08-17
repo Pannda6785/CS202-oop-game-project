@@ -54,9 +54,8 @@ void DreadwyrmWideHandler::spawnBullet() {
                 pos,
                 dir,
                 [time](float t) {
-                    if (t > time) {
-                        return SPEED;
-                    }
+                    if (t > time + SPEED_JERK) return SPEED / 2;
+                    if (t > time) return SPEED;
                     return 0.0f;
                 },  
                 1e9

@@ -10,9 +10,10 @@ class DreadwyrmWideHandler : public TapHandler {
     static constexpr float STARTUP_FIRST = 0.250f;
     static constexpr float STARTUP_SECOND = 0.800f;
     static constexpr float RADIUS = 13;
-    static constexpr float SPEED = 550;
+    static constexpr float SPEED = 650;
     static constexpr float SPAWN_DISTANCE = 300;
     static constexpr float ANGLE = 40.0f; // degrees
+    static constexpr float SPEED_JERK = 0.5f; // after this long after moving, speed halves
 
     // move control
     static constexpr float MOVEMENT_MODIFIER_AMOUNT = 0.25f;

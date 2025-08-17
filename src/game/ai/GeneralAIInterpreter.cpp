@@ -39,8 +39,7 @@ void GeneralAIInterpreter::update(float dt) {
     // Movement logic
     Unit::Vec2D newDir;
 
-    auto players = worldView->getPlayers();
-    const Player* self = players.back();
+    const Player* self = worldView->getPlayer(id);
     Unit::Vec2D pos = self->getPosition();
     Unit::Vec2D battleCenter = Unit::Vec2D(Unit::BATTLEFIELD_WIDTH / 2, Unit::BATTLEFIELD_HEIGHT / 2);
     if ((battleCenter - pos).magnitude() > 300) {
@@ -122,9 +121,7 @@ bool GeneralAIInterpreter::isBulletNear() const {
 bool GeneralAIInterpreter::isBulletThreatening() const {
     if (!worldView) return false;
     auto bullets = worldView->getBullets();
-    auto players = worldView->getPlayers();
-    if (players.empty()) return false;
-    const Player* self = players.back();
+    const Player* self = worldView->getPlayer(id);
     Unit::Vec2D selfPos = self->getPosition();
 
     // Create a local circle hitbox around the player
@@ -144,9 +141,7 @@ Unit::Vec2D GeneralAIInterpreter::getAwayFromBullets() const {
     // Move away from the nearest bullet
     if (!worldView) return {0.0f, 0.0f};
     auto bullets = worldView->getBullets();
-    auto players = worldView->getPlayers();
-    if (players.empty()) return {0.0f, 0.0f};
-    const Player* self = players.back(); 
+    const Player* self = worldView->getPlayer(id);
     Unit::Vec2D selfPos = self->getPosition();
 
     float minDistSq = 1e9f;

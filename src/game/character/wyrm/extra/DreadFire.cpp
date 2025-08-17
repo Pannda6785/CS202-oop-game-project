@@ -84,7 +84,7 @@ void DreadFire::explode() {
             pos, // explode at current position
             fragDir,
             [](float t) {
-                return FRAGMENT_SPEED - FRAGMENT_SPEED_DECREASE * t;
+                return std::max(0.0f, FRAGMENT_SPEED - FRAGMENT_SPEED_DECREASE * t);
             },
             FRAGMENT_LIFETIME
         );

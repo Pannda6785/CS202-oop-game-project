@@ -18,9 +18,9 @@ class DreadFire : public Bullet {
     static constexpr int NUM_FRAGMENTS = 5;
     static constexpr float FAN_ANGLE = 100; // degrees
     static constexpr float FRAGMENT_RADIUS = 21.0f;
-    static constexpr float FRAGMENT_SPEED = 1020.0f;
-    static constexpr float FRAGMENT_SPEED_DECREASE = 600.0f; // per second
-    static constexpr float FRAGMENT_LIFETIME = FRAGMENT_SPEED / FRAGMENT_SPEED_DECREASE + 0.1f;
+    static constexpr float FRAGMENT_SPEED = 750.0f;
+    static constexpr float FRAGMENT_SPEED_DECREASE = 550.0f; // per second
+    static constexpr float FRAGMENT_LIFETIME = FRAGMENT_SPEED / FRAGMENT_SPEED_DECREASE + 0.05f;
 
 public:
 

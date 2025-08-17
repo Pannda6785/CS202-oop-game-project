@@ -50,7 +50,7 @@ void DreadwyrmDefensiveHandler::spawnBullet() {
     bullet->removeDamagingHitbox(LIFETIME);
 
 
-    std::array<int, 4> purple = {118, 11, 186, 240};
+    std::array<int, 4> purple = graphics->getSignatureColor(); purple[3] = 240;
     std::array<int, 4> color = purple; color[3] = 170;
     auto chargeGraphics = std::make_unique<ChargeGraphicsComponent>(color, RADIUS, RADIUS, STARTUP - 0.15);
     chargeGraphics->addInner(color, RADIUS / STARTUP, false);
