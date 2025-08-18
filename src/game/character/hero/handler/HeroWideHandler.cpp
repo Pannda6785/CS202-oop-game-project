@@ -5,6 +5,7 @@
 #include "../../../bullet/TextureBulletGraphicsComponent.hpp"
 #include "../../../hitbox/CircleHitbox.hpp"
 #include "../../../../graphics/TextureManager.hpp"
+#include "../../../../audio/AudioManager.hpp"
 
 #include <cmath>
 
@@ -15,6 +16,7 @@ void HeroWideHandler::update(float dt, const InputBufferer* input) {
     timer += dt;
     if (timer - 2 * dt < DELAY && timer >= DELAY) {
         // Shoo to the two sides
+        AudioManager::getInstance().playSound("Attack1");
         for (float sideAngle : {90.0f, -90.0f}) {
             spawnBullet(sideAngle);
         }
@@ -32,6 +34,7 @@ void HeroWideHandler::tap(bool isFocusing) {
     directionSnapshot = (target - pos).normalized();
 
     // Forward and backward
+    AudioManager::getInstance().playSound("Attack1");
     spawnBullet(0.0f);
     spawnBullet(180.0f);
 

@@ -15,7 +15,14 @@ public:
    
     void addHitText(Vector2 hitPos, Vector2 hitterPos, float duration);
     void addHitEffect(Vector2 hitPos, Vector2 hitterPos);
-   
+    void applyHit(Vector2 hitPos, Vector2 hitterPos, float duration);
+
+    void addLastText(Vector2 hitPos, Vector2 hitterPos, float duration);
+    void applyLast(Vector2 hitPos, Vector2 hitterPos, float duration);
+
+    void addBreakText(Vector2 hitPos, Vector2 hitterPos, float duration);
+    void applyBreak(Vector2 hitPos, Vector2 hitterPos, float duration);
+
     void update(float dt);
     
     void clear();

@@ -8,12 +8,14 @@
 #include "../../../bullet/TextureBulletGraphicsComponent.hpp"
 #include "../../../bullet/effect/ChargeGraphicsComponent.hpp"
 #include "../../../../graphics/TextureManager.hpp"
+#include "../../../../audio/AudioManager.hpp"
 
 WyrmDefensiveHandler::WyrmDefensiveHandler(WyrmGraphicsComponent* graphics)
     : TapHandler(Unit::Move::Defensive), graphics(graphics) {}
 
 void WyrmDefensiveHandler::tap(bool isFocusing) {
     graphics->roar(STARTUP - 0.1f, LIFETIME - STARTUP);
+    AudioManager::getInstance().playSound("WyrmCharge");
 
     player->applyInvincibility(INVINCIBILITY_DURATION, true);
 
@@ -62,6 +64,8 @@ void WyrmDefensiveHandler::spawnBullet() {
 
     dynamic_cast<CompositeBulletGraphicsComponent*>(bullet->getGraphics())->addComponent(std::move(chargeGraphics), 0.0f, STARTUP - 0.15f);
     dynamic_cast<CompositeBulletGraphicsComponent*>(bullet->getGraphics())->addComponent(std::move(textureGraphics), STARTUP - 0.1f, LIFETIME + 0.1f);
+
+    bullet->addStartupSound("WyrmBlast");
 
     player->spawnBullet(std::move(bullet));
 }

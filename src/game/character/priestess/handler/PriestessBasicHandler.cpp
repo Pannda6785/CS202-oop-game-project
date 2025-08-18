@@ -9,6 +9,7 @@
 #include "../../../bullet/TextureBulletGraphicsComponent.hpp"
 #include "../../../bullet/effect/DecorateGraphicsComponent.hpp"
 #include "../../../../graphics/TextureManager.hpp"
+#include "../../../../audio/AudioManager.hpp"
 
 PriestessBasicHandler::PriestessBasicHandler(PriestessGraphicsComponent* graphics)
     : TapHandler(Unit::Move::Basic), graphics(graphics) {}
@@ -29,6 +30,7 @@ void PriestessBasicHandler::listen(Unit::Move move) {
 
 void PriestessBasicHandler::tap(bool isFocusing) {
     graphics->useBasic();
+    AudioManager::getInstance().playSound("PriestessBasic1");
 
     spawnBullet(isFocusing);
 
@@ -59,8 +61,6 @@ void PriestessBasicHandler::spawnBullet(bool isFocusing) {
     }
     startupTime += DISTANCE_SCALAR * toTravel;
     float last_t = 0;
-
-    std::cerr << startupTime << std::endl;
 
     // texture
     std::string path = "../assets/sprites/priestess/bullet/";
@@ -135,6 +135,8 @@ void PriestessBasicHandler::spawnBullet(bool isFocusing) {
     // Hitboxes
     bullet->addDamagingHitbox(startupTime, std::make_unique<CircleHitbox>(pos + arrow * toTravel, RADIUS));
     bullet->removeDamagingHitbox(startupTime + ACTIVE_TIME);
+
+    bullet->addStartupSound("PriestessBasic2", 0.15f);
 
     player->spawnBullet(std::move(bullet));
 }

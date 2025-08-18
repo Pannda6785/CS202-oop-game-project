@@ -7,6 +7,7 @@
 #include "../../../bullet/TextureBulletGraphicsComponent.hpp"
 #include "../../../hitbox/CircleHitbox.hpp"
 #include "../../../../graphics/TextureManager.hpp"
+#include "../../../../audio/AudioManager.hpp"
 
 #include <cmath>
 
@@ -15,6 +16,7 @@ WyrmWideHandler::WyrmWideHandler(WyrmGraphicsComponent* graphics)
 
 void WyrmWideHandler::tap(bool isFocusing) {
     graphics->roar(MOVEMENT_LOCK_DURATION * 2 / 3, 0.25f);
+    AudioManager::getInstance().playSound("Attack2");
 
     spawnBullet();
 

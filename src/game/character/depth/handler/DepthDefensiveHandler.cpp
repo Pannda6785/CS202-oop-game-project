@@ -7,6 +7,7 @@
 #include "../../../bullet/effect/ChargeGraphicsComponent.hpp"
 #include "../../../bullet/TextureBulletGraphicsComponent.hpp"
 #include "../../../../graphics/TextureManager.hpp"
+#include "../../../../audio/AudioManager.hpp"
 #include "../../../hitbox/CircleHitbox.hpp"
 
 DepthDefensiveHandler::DepthDefensiveHandler(DepthGraphicsComponent* graphics)
@@ -49,6 +50,8 @@ void DepthDefensiveHandler::onCastStart() {
 
     dynamic_cast<CompositeBulletGraphicsComponent*>(bullet->getGraphics())->addComponent(std::move(chargeGraphics), 0.0f, 1e9);
 
+    bullet->addStartupSound("DepthDefensive2");
+
     player->spawnBullet(std::move(bullet));
 }
 
@@ -59,6 +62,7 @@ void DepthDefensiveHandler::onCastRelease(bool isInterupted) {
     }
     graphics->endCastingDefensive();
     castReleaseTime = castingTime;
+    AudioManager::getInstance().playSound("DepthDefensive1");
 
     float ratio = std::max(MIN_CASTING_TIME, std::min(castingTime, MAX_CASTING_TIME)) / (MAX_CASTING_TIME - MIN_CASTING_TIME);
     float invDuration = INVINCIBILITY_DURATION_MIN + (INVINCIBILITY_DURATION_MAX - INVINCIBILITY_DURATION_MIN) * ratio;

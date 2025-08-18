@@ -5,12 +5,14 @@
 #include "../../../bullet/StraightBullet.hpp"
 #include "../../../bullet/TextureBulletGraphicsComponent.hpp"
 #include "../../../../graphics/TextureManager.hpp"
+#include "../../../../audio/AudioManager.hpp"
 
 LichBasicHandler::LichBasicHandler(LichGraphicsComponent* graphics)
     : TapHandler(Unit::Move::Basic), graphics(graphics) {}
 
 void LichBasicHandler::tap(bool isFocusing) {
     graphics->useBasic();
+    AudioManager::getInstance().playSound("Attack4");
 
     spawnBullets();
 

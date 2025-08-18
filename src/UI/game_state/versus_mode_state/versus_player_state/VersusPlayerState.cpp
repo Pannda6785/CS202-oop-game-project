@@ -2,6 +2,8 @@
 #include "../../GameStateManager.hpp"
 #include "../../../../audio/AudioManager.hpp"
 #include "../../../button/Button.hpp"
+#include "../../gameplay_pause_state/GameplayPauseState.hpp"
+#include "../../char_select_state/CharSelectState.hpp"
 
 #include "../../../../game/character/priestess/Priestess.hpp"
 #include "../../../../game/character/redhood/Redhood.hpp"
@@ -15,11 +17,11 @@
 #include <iostream>
 
 VersusPlayerState::VersusPlayerState(GameStateManager& gsm)
-    : gameStateManager(gsm), world(nullptr) {
+    : gameStateManager(gsm), world(nullptr), selectedOption(PauseMenuOption::RESUME) {
 }
 
 VersusPlayerState::VersusPlayerState(GameStateManager& gsm, const std::string& player1Character, const std::string& player2Character)
-    : gameStateManager(gsm), world(nullptr), player1CharacterName(player1Character), player2CharacterName(player2Character) {
+    : gameStateManager(gsm), world(nullptr), player1CharacterName(player1Character), player2CharacterName(player2Character), selectedOption(PauseMenuOption::RESUME) {
     enter();
 }
 
@@ -61,7 +63,7 @@ void VersusPlayerState::initializeWorld(const std::string& player1Character, con
     // Create characters
     auto player1Char = createCharacter(player1CharacterName);
     auto player2Char = createCharacter(player2CharacterName);
-    
+
     // Create players and add to world
     auto player1 = std::make_unique<Player>(
         0, world.get(), world.get(), std::move(player1Char), player1Input);
@@ -105,12 +107,35 @@ std::unique_ptr<Character> VersusPlayerState::createCharacter(const std::string&
 void VersusPlayerState::setupUI() {
 }
 
+// void VersusPlayerState::setVisible(bool visible) {
+//     world->setVisible(visible);
+// }
+
 VersusPlayerState::~VersusPlayerState() {
 }
 
 void VersusPlayerState::update(float dt) {
     if (world) {
         world->update(dt);
+    }
+    bool paused = false;
+    for(const auto& inputInterpreter : inputInterpreters) {
+        if (inputInterpreter->isInputDown(Unit::Input::Pause)) {
+            paused = true;
+            break;
+        }
+    }
+    if(paused){
+        gameStateManager.pushState(std::make_unique<GameplayPauseState>(gameStateManager, selectedOption));
+    }
+    if(selectedOption != PauseMenuOption::RESUME) {
+        if(selectedOption == PauseMenuOption::CHARACTER_SELECT) {
+            // Handle character select
+            gameStateManager.changeCurrentState(std::make_unique<CharSelectState>(gameStateManager));
+        } else if(selectedOption == PauseMenuOption::MAIN_MENU) {
+            // Handle main menu
+            gameStateManager.popState();
+        }
     }
 }
 

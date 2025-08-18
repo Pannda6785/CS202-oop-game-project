@@ -14,7 +14,7 @@ class Texture;
 class Shader;
 
 class CharacterGraphicsComponent : public GraphicsComponent {
-    static constexpr float CHARACTER_HEIGHT = 110;
+    static constexpr float CHARACTER_HEIGHT = 115;
 
     static constexpr float HITBOX_RADIUS_RATIO = 5;
     static constexpr float MAGIC_CIRCLE_RADIUS = 75;

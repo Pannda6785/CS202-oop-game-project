@@ -37,6 +37,7 @@ public:
     void update(float dt);
     void setEnterHovered(bool enterHovered);
     void setExitHovered(bool exitHovered);
+    void setLayer(int layer);
     void triggerOnClick();
     void triggerHoverEnter();
     

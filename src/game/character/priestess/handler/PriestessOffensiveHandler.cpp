@@ -6,6 +6,7 @@
 #include "../../../bullet/StraightBullet.hpp"
 #include "../../../bullet/TextureBulletGraphicsComponent.hpp"
 #include "../../../../graphics/TextureManager.hpp"
+#include "../../../../audio/AudioManager.hpp"
 #include "../../../hitbox/CircleHitbox.hpp"
 
 PriestessOffensiveHandler::PriestessOffensiveHandler(PriestessGraphicsComponent* graphics)
@@ -31,6 +32,9 @@ void PriestessOffensiveHandler::update(float dt, const InputBufferer* input) {
         ring->setRadius(getRingRadius());
         ring->setCenter(player->getPosition());
     }
+    if (isCasting && castingTime - dt < CUTOFF && castingTime >= CUTOFF) {
+        AudioManager::getInstance().playSound("Attack1");
+    }
 }
 
 void PriestessOffensiveHandler::listen(Unit::Move move) {
@@ -54,6 +58,7 @@ void PriestessOffensiveHandler::onCastRelease(bool isInterupted) {
     if (isInterupted) return;
     
     graphics->spin();
+    AudioManager::getInstance().playSound("Attack5");
     spawnBullet();
 
     float lockDuration = std::max(MIN_ACTION_LOCK, MAX_ACTION_LOCK - castingTime);

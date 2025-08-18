@@ -17,8 +17,8 @@ Player::Player(int playerId, IWorldView* worldView, IBulletSpawner* bulletSpawne
 {
     this->character->registerPlayer(this);
 
-    health = 3;
-    stock = 2;
+    health = HEALTH;
+    stock = STOCK;
     invincibility = {0, 0};
 
     static std::mt19937 gen(std::random_device{}());
@@ -35,11 +35,7 @@ Player::Player(int playerId, IWorldView* worldView, IBulletSpawner* bulletSpawne
 // --- Update methods ---
 void Player::init() {
     character->init();
-    
-    for (auto& lock : locks) lock = 0.0f;
-    for (auto& mod : modifiers) mod = {0.0f, 1.0f};
-    for (auto& cd : cooldown) cd = 0.0f;
-    applyInvincibility(3.0f, true);
+    resetRound();
 }
 
 void Player::update(float dt) {
@@ -69,10 +65,16 @@ void Player::confirmHit() {
     applyInvincibility(1.2f, false);
 }
 
-void Player::roundReset() {
-    health = 3;
+void Player::resetRound() {
+    health = HEALTH;
     for (auto& lock : locks) lock = 0.0f;
     for (auto& mod : modifiers) mod = {0.0f, 1.0f};
+    for (auto& cd : cooldown) cd = 0.0f;
+    applyInvincibility(3.0f, true, true);
+    applyLock(Unit::Lock::BasicLock, 2.9f, true);
+    applyLock(Unit::Lock::WideLock, 2.9f, true);
+    applyLock(Unit::Lock::OffensiveLock, 2.9f, true);
+    applyLock(Unit::Lock::DefensiveLock, 2.9f, true);
 }
 
 // --- World interaction ---

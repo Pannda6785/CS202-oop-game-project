@@ -8,6 +8,7 @@
 #include "../../../bullet/TextureBulletGraphicsComponent.hpp"
 #include "../../../bullet/effect/ChargeGraphicsComponent.hpp"
 #include "../../../../graphics/TextureManager.hpp"
+#include "../../../../audio/AudioManager.hpp"
 
 ButterflyThrall::ButterflyThrall(Player* owner, Unit::Vec2D spawnPos)
     : Bullet(owner->getPlayerId(), std::make_unique<CompositeBulletGraphicsComponent>()), 
@@ -75,6 +76,8 @@ Unit::Vec2D ButterflyThrall::getPosition() const {
 }
 
 void ButterflyThrall::spawnBullets() {
+    AudioManager::getInstance().playSound("Attack5");
+
     Unit::Vec2D target = ownerPlayer->getTargetPosition();
     Unit::Vec2D dir = (target - pos).normalized();
 

@@ -55,8 +55,8 @@ private:
     RippleGraphicsComponent* rippleGraphicsRef;
 
     void recreateBullet();
-    void transform(); // mere job is to change the moveset
-    void detransform(); // change the moveset
+    void transform(); 
+    void detransform(); 
     float getRadius() const;
     float getRatio() const;
 };

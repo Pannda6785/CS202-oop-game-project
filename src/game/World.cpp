@@ -1,11 +1,28 @@
 #include "World.hpp"
 
 #include <algorithm>
+#include <iostream>
+
+#include "../UI/game_state/versus_mode_state/HUD/hot_bar/HotBarFactory.hpp"
+#include "../UI/game_state/versus_mode_state/HUD/health_bar/HealthBarFactory.hpp"
+
+World::World() : devTool(nullptr), combatFeedbackManager(), 
+                leftHotBar(nullptr), rightHotBar(nullptr),
+                leftHealthBar(nullptr), rightHealthBar(nullptr) {
+}
 
 void World::update(float dt) {
     devTool->update(dt);
     dt *= devTool->getTimeScale();
     if (dt < Unit::EPS) return;
+
+    if(freezeTimer > 0.0f) {
+        freezeTimer -= dt;
+        if (freezeTimer <= 0.0f) {
+            freezeTimer = 0.0f;
+        }
+        return;
+    }
     
     for (auto& player : players) {
         player->update(dt);
@@ -18,7 +35,24 @@ void World::update(float dt) {
     }
     handlePendings(dt);
     handleCollisions();
+
+    if(players[0]->getHealth() <= 0 || players[1]->getHealth() <= 0) {
+        resetRound();
+    }
+
     combatFeedbackManager.update(dt);
+    if (leftHotBar) {
+        leftHotBar->update(dt);
+    }
+    if (rightHotBar) {
+        rightHotBar->update(dt);
+    }
+    if (leftHealthBar) {
+        leftHealthBar->update(dt);
+    }
+    if (rightHealthBar) {
+        rightHealthBar->update(dt);
+    }
 }
 
 void World::init() {
@@ -29,6 +63,15 @@ void World::init() {
         pattern->init();
     }
     devTool = std::make_unique<DevTool>(this);
+    leftHotBar = HotBarFactory::createForCharacter(players[0]->getName(), true);
+    leftHotBar->setWorldView(this);
+    rightHotBar = HotBarFactory::createForCharacter(players[1]->getName(), false);
+    rightHotBar->setWorldView(this);
+
+    leftHealthBar = HealthBarFactory::createForCharacter(players[0]->getName(), true);
+    leftHealthBar->setWorldView(this);
+    rightHealthBar = HealthBarFactory::createForCharacter(players[1]->getName(), false);
+    rightHealthBar->setWorldView(this);
 }
 
 const Player* World::getPlayer(int playerId) const {
@@ -72,6 +115,16 @@ void World::addPattern(std::unique_ptr<Pattern> pattern, float time) {
 
 void World::spawnBullet(std::shared_ptr<Bullet> bullet) {
     pendingBullets.push_back(std::move(bullet));
+}
+
+void World::resetRound(){
+    for(auto &player : players){
+        player->resetRound();
+    }
+    for (int i = 0; i < bullets.size(); i++) {
+        bullets[i]->makeDone();
+    }
+    pendingBullets.clear();
 }
 
 void World::handlePendings(float dt) {
@@ -195,11 +248,24 @@ void World::handleCollisions() {
     
     /* send feedback */
    if (!hitPlayers.empty()){
-        combatFeedbackManager.addHitText({hitLocation.x, hitLocation.y}, 
-                                         {hitterLocation.x, hitterLocation.y}, 
-                                          hitDuration);
-        combatFeedbackManager.addHitEffect({hitLocation.x, hitLocation.y}, 
-                                           {hitterLocation.x, hitterLocation.y});
+        bool isLast = players[hitPlayers[0]]->getHealth() == 1;
+        switch(players[hitPlayers[0]]->getHealth()){
+            case(1):
+                combatFeedbackManager.applyLast({hitLocation.x, hitLocation.y}, 
+                                        {hitterLocation.x, hitterLocation.y}, 
+                                        hitDuration);
+                break;
+            case(0):
+                combatFeedbackManager.applyBreak({hitLocation.x, hitLocation.y}, 
+                                        {hitterLocation.x, hitterLocation.y}, 
+                                        hitDuration);
+                break;
+            default:
+                combatFeedbackManager.applyHit({hitLocation.x, hitLocation.y}, 
+                                            {hitterLocation.x, hitterLocation.y}, 
+                                            hitDuration);
+        }
+        freezeTimer = freezeDuration = 0.5f;
    }
 
     /* Remove to-delete bullets */
@@ -208,12 +274,12 @@ void World::handleCollisions() {
             bullets[i]->makeDone();
         }
     }
+
     bullets.erase(
         std::remove_if(
             bullets.begin(),
             bullets.end(),
             [&](const std::shared_ptr<Bullet>& bullet) {
-                size_t i = &bullet - &bullets[0];
                 return bullet->isDone();
             }
         ),

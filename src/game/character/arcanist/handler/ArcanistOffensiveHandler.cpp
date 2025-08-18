@@ -4,11 +4,14 @@
 #include "../../../player/Player.hpp"
 #include "../extra/DeathToll.hpp"
 
+#include "../../../../audio/AudioManager.hpp"
+
 ArcanistOffensiveHandler::ArcanistOffensiveHandler(ArcanistGraphicsComponent* graphics)
     : TapHandler(Unit::Move::Offensive), graphics(graphics) {}
 
 void ArcanistOffensiveHandler::tap(bool /*isFocusing*/) {
     graphics->useOffensive();
+    AudioManager::getInstance().playSound("ArcanistOffensive1");
 
     player->spawnBullet(std::make_shared<DeathToll>(player));
 

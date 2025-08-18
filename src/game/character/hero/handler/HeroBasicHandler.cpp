@@ -6,6 +6,7 @@
 #include "../../../bullet/TextureBulletGraphicsComponent.hpp"
 #include "../../../hitbox/CircleHitbox.hpp"
 #include "../../../../graphics/TextureManager.hpp"
+#include "../../../../audio/AudioManager.hpp"
 
 #include <cmath>
 #include <algorithm>
@@ -33,6 +34,7 @@ void HeroBasicHandler::listen(Unit::Move move) {
 
 void HeroBasicHandler::tick(bool isFocusing) {
     graphics->useBasic(step);
+    AudioManager::getInstance().playSound("Attack6");
 
     spawnBullet(isFocusing);
 
