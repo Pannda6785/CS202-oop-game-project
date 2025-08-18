@@ -47,6 +47,7 @@ void LichWideHandler::tap(bool isFocusing) {
 
 void LichWideHandler::spawnBullet() {
     const float MY_PI = 3.14159265358979323846f;
+  
     Unit::Vec2D center = player->getPosition();
     Unit::Vec2D toTargetDir = player->getTargetPosition() - center;
 

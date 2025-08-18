@@ -18,10 +18,12 @@ void WyrmGraphicsComponent::loadTextures() {
 }
 
 void WyrmGraphicsComponent::transform() {
+    signatureColor = {118, 11, 186, 240};
     _loadTextures("../assets/sprites/wyrm/dreadwyrm/");
 }
 
 void WyrmGraphicsComponent::detransform() {
+    signatureColor = {255, 234, 155, 255}; 
     _loadTextures("../assets/sprites/wyrm/");
 }
 

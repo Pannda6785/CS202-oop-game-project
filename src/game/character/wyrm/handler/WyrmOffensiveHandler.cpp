@@ -148,7 +148,7 @@ void WyrmOffensiveHandler::recreateBullet() {
     chargeGraphics->setVisible(false);
     dynamic_cast<CompositeBulletGraphicsComponent*>(bullet->getGraphics())->addComponent(std::move(chargeGraphics), 0, 1e9, true);
 
-    std::array<int, 4> purple = {118, 11, 186, 240};
+    std::array<int, 4> purple = graphics->getSignatureColor(); purple[3] = 240;
     auto rippleGraphics = std::make_unique<RippleGraphicsComponent>(purple, 2, 0, MAX_RADIUS, 0.3f, 0.4f, 9);
     rippleGraphicsRef = rippleGraphics.get();
     rippleGraphics->setVisible(false);

@@ -175,12 +175,20 @@ void CharacterGraphicsComponent::renderOverlay() const {
     Unit::Vec2D pos = player->getPosition();
     Vector2 center = { pos.x, pos.y };
 
-    // Draw the arrow (overlay), rotate to player->getArrow(), with currentOpacity
+    // Prepare lighter signature color for overlays
+    Color sigColor = { 
+        (unsigned char)(signatureColor[0] + (255 - signatureColor[0]) * 3 / 4),
+        (unsigned char)(signatureColor[1] + (255 - signatureColor[1]) * 3 / 4),
+        (unsigned char)(signatureColor[2] + (255 - signatureColor[2]) * 3 / 4),
+        (unsigned char)signatureColor[3]
+    };
+
+    // Draw the arrow (overlay), rotate to player->getArrow(), with currentOpacity and lighter signature color
     const Texture* arrow = TextureManager::instance().getTexture("../assets/sprites/universal/spr_direction_pointer_0.png");
     const float arrowResize = (2 * ARROW_RADIUS) / ((3.5f / 6.0f) * arrow->width);
     float arrowAngle = atan2f(player->getArrow().y, player->getArrow().x) * 180.0f / PI;
 
-    Color arrowColor = Fade(WHITE, currentOpacity);
+    Color arrowColor = Fade(sigColor, currentOpacity);
     DrawTexturePro(
         *arrow,
         {0, 0, (float)arrow->width, (float)arrow->height},
@@ -190,7 +198,7 @@ void CharacterGraphicsComponent::renderOverlay() const {
         arrowColor
     );
 
-    // Draw the ring (overlay), no rotate, using currentRingRadius
+    // Draw the ring (overlay), no rotate, using currentRingRadius and lighter signature color
     const Texture* ring = TextureManager::instance().getTexture("../assets/sprites/universal/spr_direction_circle_2_0.png");
     const float ringResize = (2 * currentRingRadius) / ((3.5f / 6.0f) * ring->width);
     DrawTexturePro(
@@ -199,7 +207,7 @@ void CharacterGraphicsComponent::renderOverlay() const {
         {center.x, center.y, ring->width * ringResize, ring->height * ringResize},
         {ring->width * ringResize / 2.0f, ring->height * ringResize / 2.0f},
         0.0f,
-        Fade(WHITE, currentOpacity)
+        Fade(sigColor, currentOpacity)
     );
 
     // Draw hitbox (overlay), with currentOpacity
@@ -214,12 +222,6 @@ void CharacterGraphicsComponent::renderOverlay() const {
         DrawCircleV(hitboxCenter, radius, Fade(BLACK, currentOpacity));
 
         // Draw the TRUE hitbox as a solid circle with signature color
-        Color sigColor = { 
-            (unsigned char)signatureColor[0], 
-            (unsigned char)signatureColor[1], 
-            (unsigned char)signatureColor[2], 
-            (unsigned char)signatureColor[3] 
-        };
         DrawCircleV(hitboxCenter, radius * 0.5f, sigColor);
     }
 }
