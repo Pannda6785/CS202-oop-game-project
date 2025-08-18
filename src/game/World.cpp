@@ -12,6 +12,10 @@ World::World() : devTool(nullptr), combatFeedbackManager(),
 }
 
 void World::update(float dt) {
+    devTool->update(dt);
+    dt *= devTool->getTimeScale();
+    if (dt < Unit::EPS) return;
+
     if(freezeTimer > 0.0f) {
         freezeTimer -= dt;
         if (freezeTimer <= 0.0f) {
@@ -19,9 +23,6 @@ void World::update(float dt) {
         }
         return;
     }
-    devTool->update(dt);
-    dt *= devTool->getTimeScale();
-    if (dt < Unit::EPS) return;
     
     for (auto& player : players) {
         player->update(dt);
@@ -120,7 +121,9 @@ void World::resetRound(){
     for(auto &player : players){
         player->resetRound();
     }
-    bullets.clear();
+    for (int i = 0; i < bullets.size(); i++) {
+        bullets[i]->makeDone();
+    }
     pendingBullets.clear();
 }
 

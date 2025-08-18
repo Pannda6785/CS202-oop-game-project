@@ -7,6 +7,7 @@
 #include "../../../bullet/TextureBulletGraphicsComponent.hpp"
 #include "../../../hitbox/CircleHitbox.hpp"
 #include "../../../../graphics/TextureManager.hpp"
+#include "../../../../audio/AudioManager.hpp"
 
 #include <cmath>
 
@@ -29,6 +30,7 @@ void WyrmBasicHandler::listen(Unit::Move move) {
 
 void WyrmBasicHandler::tap(bool isFocusing) {
     graphics->command(0.1f, 0.250f);
+    AudioManager::getInstance().playSound("Attack1");
 
     spawnBullet();
 

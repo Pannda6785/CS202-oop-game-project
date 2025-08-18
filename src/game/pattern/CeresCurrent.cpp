@@ -127,6 +127,7 @@ void CeresCurrent::update(float dt) {
             bullet->addDamagingHitbox(B2_STARTUP, std::make_unique<CircleHitbox>(pos, B2_RADIUS));
             dynamic_cast<TextureBulletGraphicsComponent*>(bullet->getGraphics())->addFadein(0, B2_STARTUP);
             dynamic_cast<TextureBulletGraphicsComponent*>(bullet->getGraphics())->setLayer(Unit::Layer::Underlay);
+            dynamic_cast<TextureBulletGraphicsComponent*>(bullet->getGraphics())->addRotation(-1.0f / 15.0f);
             spawner->spawnBullet(std::move(bullet));
         }
     }

@@ -6,6 +6,7 @@
 #include "../../../bullet/TextureBulletGraphicsComponent.hpp"
 #include "../../../../graphics/TextureManager.hpp"
 #include "../../../hitbox/CircleHitbox.hpp"
+#include "../../../../audio/AudioManager.hpp"
 
 #include <cmath>
 
@@ -14,6 +15,7 @@ DepthWideHandler::DepthWideHandler(DepthGraphicsComponent* graphics)
 
 void DepthWideHandler::tap(bool isFocusing) {
     graphics->useWide();
+    AudioManager::getInstance().playSound("Attack2");
 
     spawnBullet();
 

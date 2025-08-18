@@ -7,6 +7,7 @@
 #include "../../../bullet/TextureBulletGraphicsComponent.hpp"
 #include "../../../hitbox/CircleHitbox.hpp"
 #include "../../../../graphics/TextureManager.hpp"
+#include "../../../../audio/AudioManager.hpp"
 
 #include <cmath>
 #include <algorithm>
@@ -30,6 +31,7 @@ void LichWideHandler::listen(Unit::Move move) {
 
 void LichWideHandler::tap(bool isFocusing) {
     graphics->useWide();
+    AudioManager::getInstance().playSound("Attack5");
 
     spawnBullet();
 

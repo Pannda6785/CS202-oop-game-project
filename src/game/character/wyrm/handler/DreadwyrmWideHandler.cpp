@@ -7,6 +7,7 @@
 #include "../../../bullet/TextureBulletGraphicsComponent.hpp"
 #include "../../../hitbox/CircleHitbox.hpp"
 #include "../../../../graphics/TextureManager.hpp"
+#include "../../../../audio/AudioManager.hpp"
 
 #include <cmath>
 
@@ -15,7 +16,7 @@ DreadwyrmWideHandler::DreadwyrmWideHandler(WyrmGraphicsComponent* graphics)
 
 void DreadwyrmWideHandler::tap(bool isFocusing) {
     graphics->command(STARTUP_FIRST - 0.050f, 0.200f);
-
+    AudioManager::getInstance().playSound("Attack5");
     spawnBullet();
 
     player->applyImplicitMoveLock();

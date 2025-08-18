@@ -9,6 +9,7 @@
 #include "../../../bullet/effect/RippleGraphicsComponent.hpp"
 #include "../../../bullet/effect/DecorateGraphicsComponent.hpp"
 #include "../../../../graphics/TextureManager.hpp"
+#include "../../../../audio/AudioManager.hpp"
 #include "../../../hitbox/CircleHitbox.hpp"
 
 PriestessDefensiveHandler::PriestessDefensiveHandler(PriestessGraphicsComponent* graphics)
@@ -16,6 +17,7 @@ PriestessDefensiveHandler::PriestessDefensiveHandler(PriestessGraphicsComponent*
 
 void PriestessDefensiveHandler::tap(bool isFocusing) {
     graphics->yell(0.8f);
+    AudioManager::getInstance().playSound("PriestessDefensive");
 
     spawnBullet();
 

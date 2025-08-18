@@ -7,6 +7,7 @@
 #include <memory>
 #include <functional>
 #include <vector>
+#include <string>
 #include <optional>
 
 /*
@@ -38,6 +39,8 @@ public:
     void removeInvincibilityHitboxes(float time);
     void removeModifierHitboxes(float time);
     void removeLockHitboxes(float time);
+
+    void addStartupSound(std::string name, float early = 0.0f);
 
     void update(float dt) override;
     bool isDone() const override;
@@ -75,7 +78,12 @@ private:
     std::optional<float> modifierHitboxesClearTime = std::nullopt;
     std::optional<float> lockHitboxesClearTime = std::nullopt;
 
+    bool isStartedUp;
+    std::vector<std::string> startupSounds;
+    float earlyStartupTime;
+
     void resolvePendingHitboxes();
+    void playStartupSound();
 };
 
 #endif // STRAIGHT_BULLET_HPP

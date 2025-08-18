@@ -2,12 +2,14 @@
 #include "../../../player/Player.hpp"
 #include "../LichGraphicsComponent.hpp"
 #include "../extra/ButterflyThrall.hpp"
+#include "../../../../audio/AudioManager.hpp"
 
 LichOffensiveHandler::LichOffensiveHandler(LichGraphicsComponent* graphics)
     : TapHandler(Unit::Move::Offensive), graphics(graphics) {}
 
 void LichOffensiveHandler::tap(bool isFocusing) {
     graphics->useOffensive();
+    AudioManager::getInstance().playSound("LichOffensive");
 
     Unit::Vec2D pos = player->getPosition();
     if (!isFocusing) {

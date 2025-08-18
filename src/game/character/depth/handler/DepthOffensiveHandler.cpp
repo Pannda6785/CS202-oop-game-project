@@ -5,6 +5,7 @@
 #include "../../../bullet/TextureBulletGraphicsComponent.hpp"
 #include "../../../hitbox/CircleHitbox.hpp"
 #include "../../../../graphics/TextureManager.hpp"
+#include "../../../../audio/AudioManager.hpp"
 
 #include <cmath>
 #include <algorithm>
@@ -35,6 +36,7 @@ void DepthOffensiveHandler::listen(Unit::Move move) {
 
 void DepthOffensiveHandler::tick(bool isFocusing) {
     graphics->useOffensive();
+    AudioManager::getInstance().playSound("Attack1");
 
     spawnBullet();
 

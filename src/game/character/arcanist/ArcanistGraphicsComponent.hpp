@@ -8,7 +8,10 @@ public:
     ArcanistGraphicsComponent();
     ~ArcanistGraphicsComponent() override;
 
+    void useBasic();
+    void useWide();
     void useOffensive();
+    void useDefensive();
 
 protected:
     void loadTextures() override;
@@ -18,6 +21,8 @@ protected:
 private:
     float remainingSmugCharge = 0.0f;
     float remainingSmugLoop = 0.0f;
+
+    float remainingWide = 0.0f;
 
 };
 

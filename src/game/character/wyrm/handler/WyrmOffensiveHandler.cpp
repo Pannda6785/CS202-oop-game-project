@@ -14,6 +14,7 @@
 #include "DreadwyrmBasicHandler.hpp"
 #include "DreadwyrmWideHandler.hpp"
 #include "DreadwyrmDefensiveHandler.hpp"
+#include "../../../../audio/AudioManager.hpp"
 
 #include <algorithm>
 
@@ -32,8 +33,6 @@ void WyrmOffensiveHandler::update(float dt, const InputBufferer* input) {
     // check detransform
     if (isActive && timer >= duration) {
         isActive = false;
-        rippleGraphicsRef->reset();
-        graphics->detransform();
         detransform();
     }
 
@@ -65,6 +64,7 @@ void WyrmOffensiveHandler::update(float dt, const InputBufferer* input) {
 void WyrmOffensiveHandler::onCastStart() {
     if (!bulletRef.lock()) recreateBullet();
     graphics->roar(1e9, 0);
+    AudioManager::getInstance().playSound("WyrmChargeTransform");
     isActive = false;
     chargeGraphicsRef->reset();
     chargeGraphicsRef->setVisible(true);
@@ -78,10 +78,6 @@ void WyrmOffensiveHandler::onCastRelease(bool isInterupted) {
     isActive = true;
     timer = 0.0f;
 
-    chargeGraphicsRef->setVisible(false);
-    rippleGraphicsRef->reset();
-    graphics->roar(0.01f, 0.2f);
-    graphics->transform();
     transform();
 
     bulletRef.lock()->addCleansingHitbox(castingTime, std::make_unique<CircleHitbox>(player->getPosition(), getRadius()));
@@ -111,12 +107,20 @@ float WyrmOffensiveHandler::getRatio() const {
 }
 
 void WyrmOffensiveHandler::transform() {
+    chargeGraphicsRef->setVisible(false);
+    rippleGraphicsRef->reset();
+    graphics->roar(0.01f, 0.2f);
+    graphics->transform();
+    AudioManager::getInstance().playSound("WyrmTransform");
     character->setHandler(Unit::Move::Basic, std::make_unique<DreadwyrmBasicHandler>(graphics));
     character->setHandler(Unit::Move::Wide, std::make_unique<DreadwyrmWideHandler>(graphics));
     character->setHandler(Unit::Move::Defensive, std::make_unique<DreadwyrmDefensiveHandler>(graphics));
 }
 
 void WyrmOffensiveHandler::detransform() {
+    rippleGraphicsRef->reset();
+    graphics->detransform();
+    AudioManager::getInstance().playSound("WyrmDetransform");
     character->setHandler(Unit::Move::Basic, std::make_unique<WyrmBasicHandler>(graphics));
     character->setHandler(Unit::Move::Wide, std::make_unique<WyrmWideHandler>(graphics));
     character->setHandler(Unit::Move::Defensive, std::make_unique<WyrmDefensiveHandler>(graphics));

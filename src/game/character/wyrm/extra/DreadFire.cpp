@@ -9,6 +9,7 @@
 #include "../../../bullet/TextureBulletGraphicsComponent.hpp"
 #include "../../../bullet/effect/RippleGraphicsComponent.hpp"
 #include "../../../../graphics/TextureManager.hpp"
+#include "../../../../audio/AudioManager.hpp"
 
 #include <cmath>
 
@@ -59,6 +60,7 @@ void DreadFire::update(float dt) {
 }
 
 void DreadFire::explode() {
+    AudioManager::getInstance().playSound("Attack2");
     constexpr float MY_PI = 3.14159265358979323846f;
 
     // Remove main hitboxes

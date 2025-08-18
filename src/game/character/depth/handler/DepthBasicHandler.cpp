@@ -2,12 +2,14 @@
 #include "../extra/Whirlpool.hpp"
 #include "../../../player/Player.hpp"
 #include "../DepthGraphicsComponent.hpp"
+#include "../../../../audio/AudioManager.hpp"
 
 DepthBasicHandler::DepthBasicHandler(DepthGraphicsComponent* graphics)
     : TapHandler(Unit::Move::Basic), graphics(graphics) {}
 
 void DepthBasicHandler::tap(bool isFocusing) {
     graphics->useBasic();
+    AudioManager::getInstance().playSound("DepthBasic1");
 
     if (auto whirlpoolPtr = whirlpoolRef.lock()) {
         whirlpoolPtr->detonate();

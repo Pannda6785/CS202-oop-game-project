@@ -1,5 +1,6 @@
 #include "StraightBullet.hpp"
 #include "../hitbox/CircleHitbox.hpp"
+#include "../../audio/AudioManager.hpp"
 #include <algorithm>
 
 StraightBullet::StraightBullet(int ownerId, std::unique_ptr<BulletGraphicsComponent> graphics, Unit::Vec2D spawnPos, Unit::Vec2D direction, float speed, float lifetime)
@@ -143,6 +144,12 @@ void StraightBullet::removeLockHitboxes(float time) {
     lockHitboxesClearTime = time;
 }
 
+void StraightBullet::addStartupSound(std::string name, float early) {
+    isStartedUp = false;
+    startupSounds.push_back(name);
+    earlyStartupTime = early;
+}
+
 void StraightBullet::resolvePendingHitboxes() {
     for (auto it = pendingLifeHitbox.begin(); it != pendingLifeHitbox.end();) {
         if (timer >= it->first) {
@@ -154,6 +161,7 @@ void StraightBullet::resolvePendingHitboxes() {
         }
     }
     for (auto it = pendingDamagingHitbox.begin(); it != pendingDamagingHitbox.end();) {
+        if (timer + earlyStartupTime >= it->first && !isStartedUp) playStartupSound();
         if (timer >= it->first) {
             damagingHitbox = std::move(it->second);
             damagingHitbox->resize(getSize());
@@ -163,6 +171,7 @@ void StraightBullet::resolvePendingHitboxes() {
         }
     }
     for (auto it = pendingCleansingHitbox.begin(); it != pendingCleansingHitbox.end();) {
+        if (timer + earlyStartupTime >= it->first && !isStartedUp) playStartupSound();
         if (timer >= it->first) {
             cleansingHitbox = std::move(it->second);
             cleansingHitbox->resize(getSize());
@@ -181,6 +190,7 @@ void StraightBullet::resolvePendingHitboxes() {
         }
     }
     for (auto it = pendingModifierHitboxes.begin(); it != pendingModifierHitboxes.end();) {
+        if (timer + earlyStartupTime >= std::get<0>(*it) && !isStartedUp) playStartupSound();
         if (timer >= std::get<0>(*it)) {
             std::get<1>(*it)->resize(getSize());
             modifierHitboxes.emplace_back(std::move(std::get<1>(*it)), std::get<2>(*it), std::get<3>(*it), std::get<4>(*it), std::get<5>(*it));
@@ -190,6 +200,7 @@ void StraightBullet::resolvePendingHitboxes() {
         }
     }
     for (auto it = pendingLockHitboxes.begin(); it != pendingLockHitboxes.end();) {
+        if (timer + earlyStartupTime >= std::get<0>(*it) && !isStartedUp) playStartupSound();
         if (timer >= std::get<0>(*it)) {
             std::get<1>(*it)->resize(getSize());
             lockHitboxes.emplace_back(std::move(std::get<1>(*it)), std::get<2>(*it), std::get<3>(*it), std::get<4>(*it));
@@ -221,5 +232,12 @@ void StraightBullet::resolvePendingHitboxes() {
     if (lockHitboxesClearTime && timer >= *lockHitboxesClearTime) {
         lockHitboxes.clear();
         lockHitboxesClearTime = std::nullopt;
+    }
+}
+
+void StraightBullet::playStartupSound() {
+    isStartedUp = true;
+    for (const auto& sound : startupSounds) {
+        AudioManager::getInstance().playSound(sound);
     }
 }
