@@ -23,6 +23,8 @@ private:
     void timeUp();
     void clearBullets();
     void log();
+
+    void F11();
 };
 
 #endif // DEV_TOOL_HPP

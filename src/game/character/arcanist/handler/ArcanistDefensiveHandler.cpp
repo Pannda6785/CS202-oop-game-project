@@ -16,7 +16,6 @@ ArcanistDefensiveHandler::ArcanistDefensiveHandler(ArcanistGraphicsComponent* gr
 
 void ArcanistDefensiveHandler::tap(bool isFocusing) {
     graphics->useDefensive();
-    AudioManager::getInstance().playSound("ArcanistDefensive1");
 
     spawnBullet(isFocusing);
 
