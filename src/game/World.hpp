@@ -10,6 +10,7 @@
 #include "../UI/game_state/versus_mode_state/combat_feedback/CombatFeedbackManager.hpp"
 #include "../UI/game_state/versus_mode_state/HUD/hot_bar/HotBar.hpp"
 #include "../UI/game_state/versus_mode_state/HUD/health_bar/HealthBar.hpp"
+#include "../UI/game_state/versus_mode_state/ribbon_effect/MovingTextTileManager.hpp"
 
 #include <memory>
 
@@ -51,6 +52,10 @@ private:
 
     std::unique_ptr<HealthBar> leftHealthBar = nullptr;
     std::unique_ptr<HealthBar> rightHealthBar = nullptr;
+
+    MovingTextTileManager ribbonManager;
+    float resetRoundRibbonTimer = 10.0f;
+    bool ribbonAdded = true;
 
     void handlePendings(float dt);
     void handleCollisions();

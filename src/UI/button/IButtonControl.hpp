@@ -16,6 +16,7 @@ public:
     virtual void setPosition(int x, int y) = 0;
     virtual void setOnClickListener(std::function<void()> callback) = 0;
     virtual void setOnHoverEnterListener(std::function<void()> callback) = 0;
+    virtual void setOnHoverExitListener(std::function<void()> callback) = 0;
 };
 
 #endif // I_BUTTON_CONTROL_HPP

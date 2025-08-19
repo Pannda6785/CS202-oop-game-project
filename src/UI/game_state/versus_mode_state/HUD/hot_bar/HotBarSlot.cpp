@@ -4,6 +4,7 @@
 
 HotBarSlot::HotBarSlot() {
     skillIconSlot.setOriginRatio({0.5f, 0.5f});
+    skillIconSlot.setLayer(5);
     
     cooldownText.setFontSize(40);
     cooldownText.setColor(WHITE);

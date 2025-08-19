@@ -1,4 +1,5 @@
 #include "ButtonManager.hpp"
+#include "../../input/InputInterpreterManager.hpp"
 #include <raylib.h>
 #include <iostream>
 
@@ -69,12 +70,12 @@ void ButtonManager::updateHoveredByKeyboard() {
     int prevHovered = hoveredIndex;
 
     // Navigation: UP/DOWN
-    if (IsKeyPressed(KEY_UP)) {
+    if (InputInterpreterManager::getInstance().isInputPressed(Unit::Input::MoveUp)) {
         int idx = hoveredIndex;
         int next = findNextEnabled(idx, -1);
         if (next != -1) hoveredIndex = next;
     }
-    if (IsKeyPressed(KEY_DOWN)) {
+    if (InputInterpreterManager::getInstance().isInputPressed(Unit::Input::MoveDown)) {
         int idx = hoveredIndex;
         int next = findNextEnabled(idx, 1);
         if (next != -1) hoveredIndex = next;
@@ -84,7 +85,7 @@ void ButtonManager::updateHoveredByKeyboard() {
         buttons[prevHovered]->setExitHovered(true);
     }
     // ENTER triggers the current button
-    if (hoveredIndex != -1 && IsKeyPressed(KEY_ENTER)) {
+    if (hoveredIndex != -1 && InputInterpreterManager::getInstance().isInputPressed(Unit::Input::Confirm)) {
         isTriggerCurrentButton = true;
     }
 }

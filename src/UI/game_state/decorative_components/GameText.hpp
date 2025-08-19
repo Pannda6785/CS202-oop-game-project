@@ -19,6 +19,7 @@ public:
     void setFontSize(int size);
     void setOriginRatio(Vector2 originRatio);
     void setAlphaColor(float alpha);
+    void setAngle(float angle);
     
     // New shader-related methods
     void loadShader(const std::string& fragmentShaderPath);
@@ -48,6 +49,7 @@ private:
     Vector2 originRatio = {0.0f, 0.0f};
     int fontSize = 32;
     Color color = WHITE;
+    float angle = 0.0f;
     
     // New shader-related members
     Shader shader = {0, nullptr};

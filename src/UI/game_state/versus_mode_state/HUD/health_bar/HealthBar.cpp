@@ -56,7 +56,6 @@ void HealthBar::init() {
 
     // Load default avatar (will be overridden by character subclasses)
     float avtScale = 0.9f;
-    avatar.addTexture("../assets/UI_sprites/health_bar/spr_healthbar_faces_7_2.png");
     avatar.setOriginRatio({0.5f, 0.5f});
     avatar.loadShader("../src/UI/game_state/versus_mode_state/HUD/health_bar/flash_red.fs");
     avatar.setScale(avtScale);

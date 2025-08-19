@@ -24,12 +24,18 @@
 #include "UI/game_state/versus_mode_state/combat_feedback/CombatFeedbackManager.hpp"
 
 #include "UI/game_state/decorative_components/Artwork.hpp"
+#include "UI/game_state/decorative_components/MovingText.hpp"
+#include "UI/game_state/decorative_components/MovingTextTile.hpp"
 
 #include "UI/game_state/versus_mode_state/HUD/hot_bar/HotBar.hpp"
 #include "UI/game_state/versus_mode_state/HUD/hot_bar/HotBarSlot.hpp"
 #include "UI/game_state/versus_mode_state/HUD/hot_bar/sun_priestess_hot_bar/SunPriestessHotBar.hpp"
 
 #include "UI/game_state/versus_mode_state/HUD/health_bar/HealthBar.hpp"
+#include "UI/game_state/versus_mode_state/ribbon_effect/MovingTextTileManager.hpp"
+#include "UI/game_state/versus_mode_state/ribbon_effect/MovingTextTileBuilder.hpp"
+
+#include "UI/game_state/keybinding_state/KeybindDisplay.hpp"
 
 int main() {
     const int screenWidth = GraphicsComponentManager::instance().getWindowWidth();
@@ -66,6 +72,15 @@ int main() {
     Vector2 endPoint = { -1, -1 };
     bool measuring = false;
 
+    // Background background;
+    // background.setBackgroundRect({0, 0, GetScreenWidth(), GetScreenHeight()});
+    // background.setBackgroundColor(GRAY);
+
+    // KeybindDisplay testKeybindDisplay;
+    // testKeybindDisplay.setPosition(100, 100);
+    // testKeybindDisplay.setKey(KEY_A);
+    // testKeybindDisplay.setLayer(100);
+
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
         float dt = GetFrameTime();
@@ -100,7 +115,6 @@ int main() {
         }
 
         gameStateManager.processPendingStateChanges();
-
         gameStateManager.update(dt); // Update game state manager
 
         if(!tool) CustomCursor::getInstance().update(dt); // Update custom cursor

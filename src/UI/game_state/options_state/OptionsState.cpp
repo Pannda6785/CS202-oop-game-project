@@ -2,6 +2,7 @@
 #include "../GameStateManager.hpp"
 #include "./sound_options/SoundOptions.hpp"
 #include "../../../audio/AudioManager.hpp"
+#include "../keybinding_state/KeybindingState.hpp"
 
 OptionsState::OptionsState(GameStateManager &gameStateManager, BehindDots &behindDots) 
 : gameStateManager(gameStateManager), behindDots(behindDots){
@@ -136,7 +137,9 @@ void OptionsState::enter(){
     );
     inputButton->setOnClickListener([this]() {
         AudioManager::getInstance().playSound("ClickButton");
-        std::cout << "Input Options" << std::endl;
+        // std::cout << "Input Options" << std::endl;
+        setVisible(false);
+        gameStateManager.pushState(std::make_unique<KeybindingState>(gameStateManager, behindDots));
     });
     inputButton->setOnHoverEnterListener([this]() {
         std::cout << "Hovered over Input Options button!" << std::endl;

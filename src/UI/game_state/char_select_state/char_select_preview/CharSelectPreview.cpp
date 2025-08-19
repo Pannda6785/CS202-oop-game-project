@@ -166,21 +166,16 @@ void CharSelectPreview::update(float dt) {
     for(int i = 0; i < 3; i++){
         if(mainPortrait.finishedFadeIn()) {
             backgroundTiles[i].setStartExpand(true);
-            // if(debugFlag && !out){
-            //     out = true;
-            //     std::cout << "HAHAHAHAHAHAHAHAHAHAHAHAHAHAHAH" << std::endl;
-            // }
         }
         backgroundTiles[i].update(dt);
         if(backgroundTiles[i].getStartExpand()) {
             float ratioRect = 0.6f;
             Vector2 size = {1000.0f, backgroundTiles[i].getTileWidth() * ratioRect};
-            Vector2 pos = backgroundTiles[i].getMiddlePostion();
+            Vector2 pos = backgroundTiles[i].getMiddlePosition();
             movingTileBackground[i].setBackgroundRect({pos.x, pos.y, size.x, size.y});
             movingTileBackground[i].setOriginMiddle();
             if(debugFlag && !out){
                 out = true;
-                std::cout << "HAHAHAHAHAHAHAHAHAHAHAHAHAHAHAH" << std::endl;
             }
         } 
     }

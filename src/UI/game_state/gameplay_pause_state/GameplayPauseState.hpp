@@ -3,7 +3,9 @@
 
 #include "../GameState.hpp"
 #include "../../button/ButtonManager.hpp"
-#include "../state_heading/StateHeading.hpp"
+#include "../decorative_components/Background.hpp"
+#include "../decorative_components/MovingTextTile.hpp"
+#include "../versus_mode_state/ribbon_effect/MovingTextTileManager.hpp"
 
 class GameStateManager;
 
@@ -26,9 +28,12 @@ public:
 private:
     GameStateManager& gameStateManager;
     ButtonManager buttonManager;
-    StateHeading heading;
+    Background background;
     bool visible = true;
     PauseMenuOption &selectedOption;
+    MovingTextTileManager ribbonManager;
+    PauseMenuOption choosingOption;
+    bool confirm = false;
 };
 
 #endif // GAMEPLAY_PAUSE_STATE_HPP
