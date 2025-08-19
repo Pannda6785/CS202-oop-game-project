@@ -97,6 +97,12 @@ void MovingTextTile::setLayer(int layer) {
     movingText.setLayer(layer + 2);
 }
 
+void MovingTextTile::setVisible(bool visible) {
+    movingTile.setVisible(visible);
+    background.setVisible(visible);
+    movingText.setVisible(visible);
+}
+
 bool MovingTextTile::isExpanded() const {
     return movingTile.getStartExpand() && movingTile.getRatio() >= 0.9f;
 }

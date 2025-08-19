@@ -43,6 +43,7 @@ public:
     
     // Common settings
     void setLayer(int layer);
+    void setVisible(bool visible);
     void init();
     
     // Status getters

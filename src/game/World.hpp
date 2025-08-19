@@ -54,6 +54,8 @@ private:
     std::unique_ptr<HealthBar> rightHealthBar = nullptr;
 
     MovingTextTileManager ribbonManager;
+    float resetRoundRibbonTimer = 10.0f;
+    bool ribbonAdded = true;
 
     void handlePendings(float dt);
     void handleCollisions();

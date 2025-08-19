@@ -26,6 +26,9 @@ void MovingTileGraphicsComponent::init() {
     positions.push_back(startPosition);
     int numTiles = initialNumTiles;
     int tileHeight = textures[0]->height * scale;
+    if(expandingTime > 0.0f){
+        tileHeight *= expandingTimer / expandingTime;
+    }
     float deltaX = sin(angle * (PI / 180.0)) * tileHeight;
     float deltaY = cos(angle * (PI / 180.0)) * tileHeight;
     
@@ -78,10 +81,15 @@ bool MovingTileGraphicsComponent::getStartExpand() const {
     return startExpand;
 }
 
+bool MovingTileGraphicsComponent::doneExpand() const {
+    return expandingTimer >= expandingTime;
+}
+
 void MovingTileGraphicsComponent::setStartExpand(bool startExpand) {
     this->startExpand = startExpand;
 }
 
+// Rendered tile's width
 float MovingTileGraphicsComponent::getTileWidth() const {
     if (textures.empty() || textures[0] == nullptr || textures[0]->id == 0) return 0.0f;
     float ratio = expandingTime > 0.0f ? expandingTimer / expandingTime : 1.0f;

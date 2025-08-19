@@ -19,6 +19,7 @@ public:
     
     // Core functions
     void update(float dt);
+    void setVisible(bool visible);
     
     // Utility functions
     void clear();                        // Remove all tiles

@@ -33,6 +33,9 @@
 
 #include "UI/game_state/versus_mode_state/HUD/health_bar/HealthBar.hpp"
 #include "UI/game_state/versus_mode_state/ribbon_effect/MovingTextTileManager.hpp"
+#include "UI/game_state/versus_mode_state/ribbon_effect/MovingTextTileBuilder.hpp"
+
+#include "UI/game_state/keybinding_state/KeybindDisplay.hpp"
 
 int main() {
     const int screenWidth = 1440;
@@ -69,50 +72,14 @@ int main() {
     Vector2 endPoint = { -1, -1 };
     bool measuring = false;
 
-    // // // Create a moving text tile for character name
-    // MovingTextTile characterNameTile;
-
-    // // Set up the tile part
-    // characterNameTile.setTileTexture("../assets/UI_sprites/charselect_ribbon_mid.png");
-    // characterNameTile.setTileStartPosition({0, 600});
-    // characterNameTile.setTileAngle(110.0f);
-    // characterNameTile.setTileSpeed(75.0f);
-    // characterNameTile.setTileScale(0.75f);
-    // characterNameTile.setTileInitialNum(15);
-    // characterNameTile.setTileRestrictArea({-50.0f, -50.0f, GetScreenWidth() + 100.0f, GetScreenHeight() + 100.0f});
-
-    // // Set up the background part
-    // characterNameTile.setBackgroundColor(WHITE);
-    // characterNameTile.setBackgroundWidthRatio(0.8f);  // Make background a bit wider than the tile
-
-    // // Set up the text part
-    // characterNameTile.setText("PAUSE");
-    // characterNameTile.setTextFont("../assets/fonts/ferrum.otf");
-    // characterNameTile.setTextFontSize(120);
-    // characterNameTile.setTextColor(BLACK);
-    // characterNameTile.setTextSpacing(200.0f);
-
-    // // Initialize the composite component
-    // characterNameTile.setLayer(100);  // Set base layer
-    // // characterNameTile.setTileExpandingTime(2.0f);
-    // // characterNameTile.setTileStartExpand(true);
-    // characterNameTile.init();
-
     // Background background;
-    // background.setBackgroundColor(WHITE);
-    // background.setBackgroundRect({0, 700, GetScreenWidth(), GetScreenHeight()});
-    // background.setLayer(50);
-    // GameText gameText;
-    // gameText.loadFont("../assets/fonts/ferrum2.otf");
-    // gameText.setText("PAUSE");
-    // gameText.setPosition(0, (700 + GetScreenHeight()) / 2);
-    // gameText.setColor(BLACK);
-    // gameText.setOriginRatio({0.0f, 0.435f});
-    // gameText.setFontSize(245);
-    // gameText.setLayer(100);
+    // background.setBackgroundRect({0, 0, GetScreenWidth(), GetScreenHeight()});
+    // background.setBackgroundColor(GRAY);
 
-    // MovingTextTileManager ribbonManager;
-    // ribbonManager.addPause();
+    // KeybindDisplay testKeybindDisplay;
+    // testKeybindDisplay.setPosition(100, 100);
+    // testKeybindDisplay.setKey(KEY_A);
+    // testKeybindDisplay.setLayer(100);
 
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
@@ -148,12 +115,7 @@ int main() {
         }
 
         gameStateManager.processPendingStateChanges();
-
         gameStateManager.update(dt); // Update game state manager
-
-        // characterNameTile.update(dt);
-
-        // ribbonManager.update(dt);
 
         if(!tool) CustomCursor::getInstance().update(dt); // Update custom cursor
 

@@ -35,8 +35,23 @@ void World::update(float dt) {
     handlePendings(dt);
     handleCollisions();
 
-    if(players[0]->getHealth() <= 0 || players[1]->getHealth() <= 0) {
-        resetRound();
+    for(int i = 0; i < 2; i++){
+        if(players[i]->getHealth() <= 0){
+            // if(players[i]->getStock() > 0){
+                if(players[i]->getLock(Unit::Lock::MovementLock) <= 0.0f){
+                    resetRound();
+                }
+            // }
+        }
+    }
+
+    if(resetRoundRibbonTimer < 2.0f) resetRoundRibbonTimer += dt;
+    else{
+        if(!ribbonAdded){
+            ribbonManager.addReady(5.0f);
+            ribbonManager.addCountdown(5.0f);
+            ribbonAdded = true;
+        }
     }
 
     combatFeedbackManager.update(dt);
@@ -72,8 +87,8 @@ void World::init() {
     leftHealthBar->setWorldView(this);
     rightHealthBar = HealthBarFactory::createForCharacter(players[1]->getName(), false);
     rightHealthBar->setWorldView(this);
-    ribbonManager.addReady(40.0f);
-    ribbonManager.addCountdown(40.0f);
+    ribbonManager.addReady(3.0f);
+    ribbonManager.addCountdown(3.0f);
 }
 
 const Player* World::getPlayer(int playerId) const {
@@ -125,8 +140,8 @@ void World::resetRound(){
     }
     bullets.clear();
     pendingBullets.clear();
-    // ribbonManager.addReady(3.0f);
-    // ribbonManager.addCountdown(3.0f);
+    resetRoundRibbonTimer = 0.0f;
+    ribbonAdded = false;
 }
 
 void World::handlePendings(float dt) {
@@ -267,7 +282,7 @@ void World::handleCollisions() {
                                             {hitterLocation.x, hitterLocation.y}, 
                                             hitDuration);
         }
-        freezeTimer = freezeDuration = 0.5f;
+        freezeTimer = 0.5f;
    }
 
     /* Remove to-delete bullets */

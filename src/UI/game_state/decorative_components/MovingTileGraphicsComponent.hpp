@@ -28,6 +28,7 @@ public:
     void init();
 
     bool getStartExpand() const;
+    bool doneExpand() const;
     float getTileWidth() const;
     float getRatio() const;
     float getAngle() const;
@@ -40,7 +41,7 @@ private:
     Vector2 startPosition = {0.0f, 0.0f};
     float speed = 0.0f;
     float angle = 0.0f;
-    float scale = 1.0f;
+    float scale = 1.0f; // Texture scale
     std::vector<Vector2> positions;
     std::vector<const Texture2D*> textures;
     bool upward = true;

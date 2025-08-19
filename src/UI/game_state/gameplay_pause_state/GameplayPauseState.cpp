@@ -3,6 +3,7 @@
 #include "../main_menu_state/MainMenuState.hpp"
 #include "../char_select_state/CharSelectState.hpp"
 #include "../../../audio/AudioManager.hpp"
+#include "../confirm_state/ConfirmState.hpp"
 #include <iostream>
 
 GameplayPauseState::GameplayPauseState(GameStateManager &gameStateManager, PauseMenuOption &selectedOption) 
@@ -63,8 +64,11 @@ void GameplayPauseState::enter() {
     charSelectButton->setLayer(100);
     charSelectButton->setOnClickListener([this]() {
         AudioManager::getInstance().playSound("ClickButton");
-        selectedOption = PauseMenuOption::CHARACTER_SELECT;
-        gameStateManager.popState();
+        // selectedOption = PauseMenuOption::CHARACTER_SELECT;
+        // gameStateManager.popState();
+        setVisible(false);
+        choosingOption = PauseMenuOption::CHARACTER_SELECT;
+        gameStateManager.pushState(std::make_unique<ConfirmState>(gameStateManager, confirm, "are you sure?"));
     });
     charSelectButton->setOnHoverEnterListener([this]() {
         AudioManager::getInstance().playSound("MenuCursor");
@@ -87,8 +91,11 @@ void GameplayPauseState::enter() {
     mainMenuButton->setLayer(100);
     mainMenuButton->setOnClickListener([this]() {
         AudioManager::getInstance().playSound("ClickButton");
-        selectedOption = PauseMenuOption::MAIN_MENU;
-        gameStateManager.popState();
+        // selectedOption = PauseMenuOption::MAIN_MENU;
+        // gameStateManager.popState();
+        setVisible(false);
+        choosingOption = PauseMenuOption::MAIN_MENU;
+        gameStateManager.pushState(std::make_unique<ConfirmState>(gameStateManager, confirm, "Are you sure?"));
     });
     mainMenuButton->setOnHoverEnterListener([this]() {
         AudioManager::getInstance().playSound("MenuCursor");
@@ -99,8 +106,6 @@ void GameplayPauseState::enter() {
     background.setBackgroundRect({0, 0, GetScreenWidth(), GetScreenHeight()});
 
     ribbonManager.addPause();
-    // ribbonManager.addCountdown(3.0f);
-    // ribbonManager.addReady(5.0f);
 }
 
 void GameplayPauseState::update(float dt) {
@@ -109,6 +114,20 @@ void GameplayPauseState::update(float dt) {
     }
     buttonManager.update(dt);
     ribbonManager.update(dt);
+    if(confirm){
+        switch(choosingOption){
+            case PauseMenuOption::CHARACTER_SELECT:
+                selectedOption = PauseMenuOption::CHARACTER_SELECT;
+                gameStateManager.popState();
+                break;
+            case PauseMenuOption::MAIN_MENU:
+                selectedOption = PauseMenuOption::MAIN_MENU;
+                gameStateManager.popState();
+                break;
+            default:
+                break;
+        }
+    }
 }
 
 void GameplayPauseState::exit() {
@@ -119,4 +138,5 @@ void GameplayPauseState::exit() {
 void GameplayPauseState::setVisible(bool visible) {
     this->visible = visible;
     buttonManager.setVisible(visible);
+    ribbonManager.setVisible(visible);
 }

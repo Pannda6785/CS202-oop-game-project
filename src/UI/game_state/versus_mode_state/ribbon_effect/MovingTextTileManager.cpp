@@ -93,6 +93,14 @@ void MovingTextTileManager::update(float dt) {
     }
 }
 
+void MovingTextTileManager::setVisible(bool visible) {
+    for (auto& pair : movingTextTileList) {
+        if (pair.second) {
+            pair.second->setVisible(visible);
+        }
+    }
+}
+
 void MovingTextTileManager::clear() {
     movingTextTileList.clear();
     pauseTileActive = false;
@@ -125,7 +133,9 @@ void MovingTextTileManager::createReadyTile(float displayTime) {
         .withTileSpeed(75.0f)
         .withTileAngle(93.0f)
         .withTileScale(0.75f)
-        .withTileInitialNum(30)
+        .withTileInitialNum(20)
+        // .withTileExpandingTime(0.3f)
+        // .withTileStartExpand(true)
         .withTileRestrictArea({-padding, -padding, GetScreenWidth() + padding * 2.0f, GetScreenHeight() + padding * 2.0f})
         
         .withBackgroundColor(WHITE) // Blue background
@@ -151,14 +161,16 @@ void MovingTextTileManager::createCountdownTile(float displayTime) {
     if (countdownNumber < 1) countdownNumber = 1;
     if (countdownNumber > 3) countdownNumber = 3;   
     
-    float padding = 300.0f;
+    float padding = 350.0f;
     auto countdownTile = MovingTextTileBuilder()
         .withTileTexture("../assets/UI_sprites/charselect_ribbon_mid.png")
         .withTileStartPosition({0, 600})
         .withTileSpeed(75.0f)
         .withTileAngle(85.0f)
         .withTileScale(0.75f)
-        .withTileInitialNum(30)
+        .withTileInitialNum(20)
+        // .withTileExpandingTime(0.3f)
+        // .withTileStartExpand(true)
         .withTileRestrictArea({-padding, -padding, GetScreenWidth() + padding * 2.0f, GetScreenHeight() + padding * 2.0f})
         
         .withBackgroundColor(WHITE)
@@ -186,8 +198,8 @@ void MovingTextTileManager::createPauseTile() {
         .withTileSpeed(75.0f)
         .withTileAngle(93.0f)
         .withTileScale(0.75f)
-        .withTileInitialNum(30)
-        // .withTileExpandingTime(0.8f)
+        .withTileInitialNum(20)
+        // .withTileExpandingTime(0.5f)
         // .withTileStartExpand(true)
         .withTileRestrictArea({-padding, -padding, GetScreenWidth() + padding * 2.0f, GetScreenHeight() + padding * 2.0f})
 

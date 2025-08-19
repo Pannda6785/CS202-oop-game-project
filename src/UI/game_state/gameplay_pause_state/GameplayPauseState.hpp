@@ -32,6 +32,8 @@ private:
     bool visible = true;
     PauseMenuOption &selectedOption;
     MovingTextTileManager ribbonManager;
+    PauseMenuOption choosingOption;
+    bool confirm = false;
 };
 
 #endif // GAMEPLAY_PAUSE_STATE_HPP

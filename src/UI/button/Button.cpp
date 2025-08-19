@@ -38,6 +38,8 @@ void Button::setPosition(int newX, int newY) {
 }
 void Button::setOnClickListener(std::function<void()> callback) { onClick = callback; }
 void Button::setOnHoverEnterListener(std::function<void()> callback) { onHoverEnter = callback; }
+void Button::setOnHoverExitListener(std::function<void()> callback) { onHoverExit = callback; }
+// void Button::setOnHoverExitListener(std::function<void()> callback) {}
 
 // --- IButtonView methods ---
 bool Button::isIdle() const { return idleState; }
@@ -80,32 +82,11 @@ void Button::update(float dt) {
     }
 
     if(exitHovered){
+        if (onHoverExit) onHoverExit();
         hoveredState = false;
         idleState = true;
         exitHovered = false; // Reset after triggering
     }
-
-    // int mouseX = GetMouseX();
-    // int mouseY = GetMouseY();
-    // bool mouseOver = contains(mouseX, mouseY);
-
-    // if (mouseOver) {
-    //     if (!hoveredState && onHoverEnter) {
-    //         onHoverEnter();
-    //     }
-    //     hoveredState = true;
-    //     idleState = false;
-    //     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-    //         pressedState = true;
-    //         triggerOnClick();
-    //     } else if (!IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
-    //         pressedState = false;
-    //     }
-    // } else {
-    //     hoveredState = false;
-    //     pressedState = false;
-    //     idleState = true;
-    // }
     graphic->update(dt);
 }
 

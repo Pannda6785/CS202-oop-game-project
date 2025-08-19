@@ -21,6 +21,7 @@ public:
     void setPosition(int x, int y) override;
     void setOnClickListener(std::function<void()> callback) override;
     void setOnHoverEnterListener(std::function<void()> callback) override;
+    void setOnHoverExitListener(std::function<void()> callback) override;
     void setHoverSound(Sound* sfx);
 
     bool isIdle() const override;
@@ -54,8 +55,9 @@ private:
     bool disabledState = false;
     bool enterHovered = false;
     bool exitHovered = false;
-    std::function<void()> onClick;
-    std::function<void()> onHoverEnter;
+    std::function<void()> onClick = []() {};
+    std::function<void()> onHoverEnter = []() {};
+    std::function<void()> onHoverExit = []() {};
 
     std::unique_ptr<ButtonGraphicsComponent> graphic;
 
