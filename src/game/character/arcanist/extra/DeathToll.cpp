@@ -7,6 +7,7 @@
 
 #include "../../../hitbox/CircleHitbox.hpp"
 #include "../../../../graphics/TextureManager.hpp"
+#include "../../../../audio/AudioManager.hpp"
 
 DeathToll::DeathToll(const Player* player)
     : Bullet(player->getPlayerId(), std::make_unique<CompositeBulletGraphicsComponent>()),
@@ -34,8 +35,9 @@ DeathToll::DeathToll(const Player* player)
 void DeathToll::update(float dt) {
     time += dt;
 
-    if (time + 0.5f > STARTUP && !warned) {
+    if (time + 0.33f > STARTUP && !warned) {
         warned = true;
+        AudioManager::getInstance().playSound("ArcanistOffensive2");
         std::array<int, 4> red = {255, 112, 62, 220};
         auto ripple = std::make_unique<RippleGraphicsComponent>(red, 2, RADIUS * getSize() * 0.7f, RADIUS * getSize() * 1.2f, 0.7f, 0.5f, 11);
         dynamic_cast<CompositeBulletGraphicsComponent*>(graphics.get())->addComponent(std::move(ripple));

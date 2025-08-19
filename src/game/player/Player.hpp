@@ -15,6 +15,8 @@ class Bullet;
 
 class Player {
     static constexpr float HITBOX_RADIUS = 1.5f;
+    static constexpr float STOCK = 2;
+    static constexpr float HEALTH = 4;
 
 public:
     Player(int playerId, IWorldView* worldView, IBulletSpawner* bulletSpawner,

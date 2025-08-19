@@ -38,8 +38,8 @@
 #include "UI/game_state/keybinding_state/KeybindDisplay.hpp"
 
 int main() {
-    const int screenWidth = 1440;
-    const int screenHeight = 900;
+    const int screenWidth = GraphicsComponentManager::instance().getWindowWidth();
+    const int screenHeight = GraphicsComponentManager::instance().getWindowHeight();
 
     InitWindow(screenWidth, screenHeight, "Maiden and CS202");
     InitAudioDevice();

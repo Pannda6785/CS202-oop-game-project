@@ -43,6 +43,8 @@ private:
     float timeDetonated;
     Unit::Vec2D deflectedSource;
 
+    bool soundPlayed = false;
+
 };
 
 #endif // WHIRLPOOL_HPP

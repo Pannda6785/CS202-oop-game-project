@@ -6,6 +6,7 @@
 #include "../../../bullet/StraightBullet.hpp"
 #include "../../../bullet/TextureBulletGraphicsComponent.hpp"
 #include "../../../../graphics/TextureManager.hpp"
+#include "../../../../audio/AudioManager.hpp"
 #include "../../../hitbox/CircleHitbox.hpp"
 
 PriestessWideHandler::PriestessWideHandler(PriestessGraphicsComponent* graphics)
@@ -38,6 +39,7 @@ void PriestessWideHandler::onCastRelease(bool isInterupted) {
     if (isInterupted) return;
 
     graphics->yell();
+    AudioManager::getInstance().playSound("Attack5");
     spawnBullet();
 
     player->applyModifier(Unit::Modifier::MovementModifier, 0.01, 1, true);

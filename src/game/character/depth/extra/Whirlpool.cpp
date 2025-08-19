@@ -8,6 +8,7 @@
 #include "../../../bullet/effect/AuraGraphicsComponent.hpp"
 #include "../../../bullet/effect/RippleGraphicsComponent.hpp"
 #include "../../../../graphics/TextureManager.hpp"
+#include "../../../../audio/AudioManager.hpp"
 
 Whirlpool::Whirlpool(const Player* player)
     : Bullet(player->getPlayerId(), std::make_unique<CompositeBulletGraphicsComponent>()), 
@@ -59,6 +60,10 @@ void Whirlpool::update(float dt) {
             float scale = lastRadius / BASE_RADIUS;
             resize(scale * initialSize / getSize());
         } else if (detonationElapsed < EXPLODE_DELAY + EXPLODE_DURATION) { // Expands radius to double over EXPLODE_DURATION
+            if (!soundPlayed) {
+                AudioManager::getInstance().playSound("DepthBasic2");
+                soundPlayed = true;
+            }
             float lastRadius = BASE_RADIUS + RADIUS_INCREASE * (timeDetonated - STARTUP);
             float expandRatio = (detonationElapsed - EXPLODE_DELAY) / EXPLODE_DURATION;
             float expandedRadius = lastRadius * (1.0f + expandRatio);

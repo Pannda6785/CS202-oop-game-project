@@ -66,6 +66,68 @@ void AudioManager::init() {
         sounds["HitPlayer"] = hitPlayer;
         Sound healthBreak = LoadSound("../assets/audio/sound_health_break.wav");
         sounds["HealthBreak"] = healthBreak;
+
+        for (int i = 0; i <= 6; i++) {
+            std::string path = "../assets/audio/attack/sound_generic_attack_" + std::to_string(i) + ".wav";
+            std::string name = "Attack" + std::to_string(i);
+            Sound attack = LoadSound(path.c_str());
+            sounds[name] = attack;
+        }
+
+        Sound heroCharge = LoadSound("../assets/audio/attack/sound_fencer_stun_1.wav");
+        Sound heroStun = LoadSound("../assets/audio/attack/sound_fencer_stun_2.wav");
+        Sound heroRoll = LoadSound("../assets/audio/attack/sound_fencer_dodge_1.wav");
+        sounds["HeroCharge"] = heroCharge;
+        sounds["HeroStun"] = heroStun;
+        sounds["HeroRoll"] = heroRoll;
+
+        Sound wyrmShoot = LoadSound("../assets/audio/attack/sound_flower_bf_2.wav");
+        Sound wyrmCharge = LoadSound("../assets/audio/attack/sound_dragon_maj_1.wav");
+        Sound wyrmBlast = LoadSound("../assets/audio/attack/sound_dragon_laser_2.wav");
+        Sound wyrmChargeTransform = LoadSound("../assets/audio/attack/sound_dragon_laser_1.wav");
+        Sound wyrmTransform = LoadSound("../assets/audio/attack/sound_magnus_start.wav");
+        Sound wyrmDetransform = LoadSound("../assets/audio/attack/sound_paralyze.wav");
+        sounds["WyrmShoot"] = wyrmShoot;
+        sounds["WyrmCharge"] = wyrmCharge;
+        sounds["WyrmBlast"] = wyrmBlast;
+        sounds["WyrmChargeTransform"] = wyrmChargeTransform;
+        sounds["WyrmTransform"] = wyrmTransform;
+        sounds["WyrmDetransform"] = wyrmDetransform;
+
+        Sound priestessBasic1 = LoadSound("../assets/audio/attack/sound_flower_rose_1.wav");
+        Sound priestessBasic2 = LoadSound("../assets/audio/attack/sound_fencer_stun_2.wav");
+        Sound priestessDefensive = LoadSound("../assets/audio/attack/sound_flower_rose_2.wav");
+        sounds["PriestessBasic1"] = priestessBasic1;
+        sounds["PriestessBasic2"] = priestessBasic2;
+        sounds["PriestessDefensive"] = priestessDefensive;
+
+        Sound lichOffensive = LoadSound("../assets/audio/attack/sound_flower_bf_1.wav");
+        Sound lichDefensive1 = LoadSound("../assets/audio/attack/sound_flower_rose_1.wav");
+        Sound lichDefensive2 = LoadSound("../assets/audio/attack/sound_flower_rose_2.wav");
+        sounds["LichOffensive"] = lichOffensive;
+        sounds["LichDefensive1"] = lichDefensive1;
+        sounds["LichDefensive2"] = lichDefensive2;
+
+        Sound depthBasic1 = LoadSound("../assets/audio/attack/sound_flower_rose_1.wav");
+        Sound depthBasic2 = LoadSound("../assets/audio/attack/sound_flower_rose_2.wav");
+        Sound depthDefensive1 = LoadSound("../assets/audio/attack/sound_flower_rose_1.wav");
+        Sound depthDefensive2 = LoadSound("../assets/audio/attack/sound_hydra_head.wav");
+        sounds["DepthBasic1"] = depthBasic1;
+        sounds["DepthBasic2"] = depthBasic2;
+        sounds["DepthDefensive1"] = depthDefensive1;
+        sounds["DepthDefensive2"] = depthDefensive2;
+
+        Sound arcanistOffensive1 = LoadSound("../assets/audio/attack/sound_generic_attack_3.wav");
+        Sound arcanistOffensive2 = LoadSound("../assets/audio/attack/sound_flower_rose_2.wav");
+        Sound arcanistClockWind = LoadSound("../assets/audio/attack/sound_clock_wind.wav");
+        Sound arcanistClockStop = LoadSound("../assets/audio/attack/sound_clock_stop.wav");
+        Sound arcanistClockTick = LoadSound("../assets/audio/attack/sound_clock_tick.wav");
+        sounds["ArcanistOffensive1"] = arcanistOffensive1;
+        sounds["ArcanistOffensive2"] = arcanistOffensive2;
+        sounds["ArcanistClockWind"] = arcanistClockWind;
+        sounds["ArcanistClockStop"] = arcanistClockStop;
+        sounds["ArcanistClockTick"] = arcanistClockTick;
+
         initialized = true;
     }
     
@@ -96,7 +158,7 @@ void AudioManager::playSound(const std::string& soundName) {
     if (it != sounds.end()) {
         PlaySound(it->second);
     } else {
-        std::cerr << "Sound not found: " << soundName << std::endl;
+        std::cerr << "Warning: Sound not found: " << soundName << std::endl;
     }
 }
 

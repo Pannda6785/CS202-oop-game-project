@@ -4,6 +4,7 @@
 #include "../WyrmGraphicsComponent.hpp"
 
 #include "../extra/DreadFire.hpp"
+#include "../../../../audio/AudioManager.hpp"
 
 #include <cmath>
 
@@ -12,6 +13,7 @@ DreadwyrmBasicHandler::DreadwyrmBasicHandler(WyrmGraphicsComponent* graphics)
 
 void DreadwyrmBasicHandler::tap(bool isFocusing) {
     graphics->blast(0.050f, 0.250f);
+    AudioManager::getInstance().playSound("WyrmShoot");
 
     player->spawnBullet(std::make_shared<DreadFire>(
         player,

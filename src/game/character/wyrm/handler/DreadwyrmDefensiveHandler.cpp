@@ -8,12 +8,14 @@
 #include "../../../bullet/TextureBulletGraphicsComponent.hpp"
 #include "../../../bullet/effect/ChargeGraphicsComponent.hpp"
 #include "../../../../graphics/TextureManager.hpp"
+#include "../../../../audio/AudioManager.hpp"
 
 DreadwyrmDefensiveHandler::DreadwyrmDefensiveHandler(WyrmGraphicsComponent* graphics)
     : TapHandler(Unit::Move::Defensive), graphics(graphics) {}
 
 void DreadwyrmDefensiveHandler::tap(bool isFocusing) {
     graphics->roar(STARTUP - 0.1f, LIFETIME - STARTUP);
+    AudioManager::getInstance().playSound("WyrmCharge");
 
     player->applyInvincibility(INVINCIBILITY_DURATION, true);
 
@@ -50,7 +52,7 @@ void DreadwyrmDefensiveHandler::spawnBullet() {
     bullet->removeDamagingHitbox(LIFETIME);
 
 
-    std::array<int, 4> purple = {118, 11, 186, 240};
+    std::array<int, 4> purple = graphics->getSignatureColor(); purple[3] = 240;
     std::array<int, 4> color = purple; color[3] = 170;
     auto chargeGraphics = std::make_unique<ChargeGraphicsComponent>(color, RADIUS, RADIUS, STARTUP - 0.15);
     chargeGraphics->addInner(color, RADIUS / STARTUP, false);
@@ -64,6 +66,8 @@ void DreadwyrmDefensiveHandler::spawnBullet() {
 
     dynamic_cast<CompositeBulletGraphicsComponent*>(bullet->getGraphics())->addComponent(std::move(chargeGraphics), 0.0f, STARTUP - 0.15f);
     dynamic_cast<CompositeBulletGraphicsComponent*>(bullet->getGraphics())->addComponent(std::move(textureGraphics), STARTUP - 0.1f, LIFETIME + 0.1f);
+
+    bullet->addStartupSound("WyrmBlast");
 
     player->spawnBullet(std::move(bullet));
 }

@@ -8,12 +8,14 @@
 #include "../../../bullet/effect/RippleGraphicsComponent.hpp"
 #include "../../../bullet/effect/ChargeGraphicsComponent.hpp"
 #include "../extra/StunGraphicsComponent.hpp"
+#include "../../../../audio/AudioManager.hpp"
 
 HeroDefensiveHandler::HeroDefensiveHandler(HeroGraphicsComponent* graphics)
     : TapHandler(Unit::Move::Defensive), graphics(graphics) {}
 
 void HeroDefensiveHandler::tap(bool isFocusing) {
     graphics->stun();
+    AudioManager::getInstance().playSound("HeroCharge");
 
     player->applyInvincibility(INVINCIBILITY_DURATION, false);
     spawnBullet();
@@ -60,6 +62,7 @@ void HeroDefensiveHandler::spawnBullet() {
     dynamic_cast<CompositeBulletGraphicsComponent*>(bullet->getGraphics())->addComponent(std::move(chargeGraphics), 0.0f, STARTUP - 0.03f);
     dynamic_cast<CompositeBulletGraphicsComponent*>(bullet->getGraphics())->addComponent(std::move(rippleGraphics), STARTUP, LIFETIME);
     dynamic_cast<CompositeBulletGraphicsComponent*>(bullet->getGraphics())->addComponent(std::make_unique<StunGraphicsComponent>(color, player->getWorld()), STARTUP - 0.03, LIFETIME);
+    bullet->addStartupSound("HeroStun");
 
     player->spawnBullet(std::move(bullet));
 }

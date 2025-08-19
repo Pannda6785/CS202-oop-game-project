@@ -8,6 +8,7 @@
 #include "../../../bullet/effect/ChargeGraphicsComponent.hpp"
 #include "../../../bullet/effect/RippleGraphicsComponent.hpp"
 #include "../../../../graphics/TextureManager.hpp"
+#include "../../../../audio/AudioManager.hpp"
 #include "../../../hitbox/CircleHitbox.hpp"
 
 LichDefensiveHandler::LichDefensiveHandler(LichGraphicsComponent* graphics)
@@ -68,7 +69,8 @@ void LichDefensiveHandler::onCastRelease(bool isInterrupted) {
         return;
     }
     graphics->endCastingDefensive(STARTUP * 3 / 5.0f);
-    
+    AudioManager::getInstance().playSound("LichDefensive1");
+
     player->applyInvincibility(INVINCIBILITY, false);
     player->applyModifier(Unit::Modifier::MovementModifier, MOVEMENT_MODIFIER_DURATION_RELEASE, MOVEMENT_MODIFIER_VALUE_RELEASE);
     player->applyCooldown(Unit::Move::Defensive, COOLDOWN);
@@ -108,6 +110,9 @@ void LichDefensiveHandler::onCastRelease(bool isInterrupted) {
         bullet->addCleansingHitbox(castReleaseTime + STARTUP, std::make_unique<CircleHitbox>(bullet->getPosition(), getRadius() * CLEANSE_RATIO));
         bullet->removeCleansingHitbox(castReleaseTime + STARTUP + 0.1f);
         bullet->removeDamagingHitbox(castReleaseTime + STARTUP + DURATION);
+        
+        bullet->addStartupSound("LichDefensive2", STARTUP / 3.0f);
+
         pastBullets.emplace_back(DURATION + STARTUP / 3.0f, bulletRef);
         bulletRef.reset();
     }

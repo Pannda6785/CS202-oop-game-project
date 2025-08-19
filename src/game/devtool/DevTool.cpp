@@ -22,6 +22,7 @@ void DevTool::update(float dt) {
     if (IsKeyPressed(KEY_F5)) timeUp();
     if (IsKeyPressed(KEY_F6)) clearBullets();
     if (IsKeyPressed(KEY_F7)) log();
+    if (IsKeyPressed(KEY_F11)) F11();
 }
 
 float DevTool::getTimeScale() const {
@@ -87,4 +88,9 @@ void DevTool::log() {
         std::cout << "Player: " << name << ", Health: " << health << ", Stock: " << stock
                   << ", Position: " << pos << "\n";
     }
+}
+
+#include "../../graphics/GraphicsComponentManager.hpp"
+void DevTool::F11() {
+    GraphicsComponentManager::instance().toggleFullscreen();
 }

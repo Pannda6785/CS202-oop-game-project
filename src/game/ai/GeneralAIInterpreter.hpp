@@ -15,7 +15,7 @@ class GeneralAIInterpreter : public InputInterpreter {
     static constexpr float REVERSE_DIR_TIME = 0.1f;
 
 public:
-    GeneralAIInterpreter(const IWorldView* worldView) : worldView(worldView) {}
+    GeneralAIInterpreter(const IWorldView* worldView, int id) : worldView(worldView), id(id) {}
 
     void update(float dt) override;
     Unit::Vec2D getMovement() const override;
@@ -26,6 +26,7 @@ public:
 
 private:
     const IWorldView* worldView;
+    int id;
 
     struct Action {
         Unit::Input input;

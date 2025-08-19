@@ -27,15 +27,34 @@ void ArcanistGraphicsComponent::loadTextures() {
     animations["walk"] = Animation(loadAnim(character_path + "movement/walk", 2), 8, true);
     animations["back"] = Animation(loadAnim(character_path + "movement/back", 2), 8, true);
 
-    
     animations["stagger"] = Animation(loadAnim(character_path + "hit/stagger", 2), 6, true);
     animations["wake"] = Animation(loadAnim(character_path + "hit/wake", 6), 6, false);
+    
+    animations["basic"] = Animation(loadAnim(character_path + "moveset/spin", 4), 8, false);
+    animations["wide"] = Animation(loadAnim(character_path + "moveset/spin", 4, 1), 8, true);
 
     animations["smug_start"] = Animation(loadAnim(character_path + "moveset/smug", 1), 1, true);
     animations["smug_loop"] = Animation(loadAnim(character_path + "moveset/smug", 2, 1), 8, true);
 }
 
+void ArcanistGraphicsComponent::useBasic() {
+    playAnim("basic", true);
+}
+
+void ArcanistGraphicsComponent::useWide() {
+    if (currentAnimName != "wide") {
+        playAnim("wide", true);
+    }
+    remainingWide = animations["wide"].frames.size() / animations["wide"].fps;
+}
+
 void ArcanistGraphicsComponent::useOffensive() {
+    playAnim("smug_start", true);
+    remainingSmugCharge = 0.1f;
+    remainingSmugLoop = 0.4f;
+}
+
+void ArcanistGraphicsComponent::useDefensive() {
     playAnim("smug_start", true);
     remainingSmugCharge = 0.1f;
     remainingSmugLoop = 0.4f;
@@ -60,6 +79,15 @@ bool ArcanistGraphicsComponent::characterSpecificUpdate(float dt) {
     };
 
     if (work("smug_start", "smug_loop", remainingSmugCharge, remainingSmugLoop)) return true;
+    if (currentAnimName == "basic" && !animFinished()) {
+        playAnim("basic");
+        return true;
+    }
+    if (currentAnimName == "wide" && remainingWide > Unit::EPS) {
+        remainingWide -= dt;
+        playAnim("wide");
+        return true;
+    }
 
     return false;
 }
