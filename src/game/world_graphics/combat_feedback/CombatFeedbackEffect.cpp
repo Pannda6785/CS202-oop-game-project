@@ -21,7 +21,7 @@ CombatFeedbackEffect::CombatFeedbackEffect(Vector2 hitPos, Vector2 hitterPos)
     artwork.setPosition(static_cast<int>(hitPos.x), static_cast<int>(hitPos.y));
     artwork.setOriginRatio(hitEffectOriginRatio);
     setDuration(period * static_cast<float>(texturePaths.size()));
-
+    artwork.addTag("world_object");
     if(hitPos.x > hitterPos.x){
         artwork.setFlipVertical(true);
     }

@@ -22,7 +22,7 @@ HotBar::HotBar() : fadeActive(false), hitbox(nullptr), worldView(nullptr) {
 }
 
 // Add setter for IWorldView
-void HotBar::setWorldView(IWorldView* worldView) {
+void HotBar::setWorldView(const IWorldView* worldView) {
     this->worldView = worldView;
 }
 

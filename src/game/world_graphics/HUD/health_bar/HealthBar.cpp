@@ -220,7 +220,7 @@ void HealthBar::checkCollision(std::vector<const CircleHitbox*> circleHitboxes) 
     }
 }
 
-void HealthBar::setWorldView(IWorldView* worldView) {
+void HealthBar::setWorldView(const IWorldView* worldView) {
     this->worldView = worldView;
 }
 

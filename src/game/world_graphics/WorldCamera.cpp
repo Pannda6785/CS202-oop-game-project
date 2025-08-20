@@ -11,7 +11,7 @@ WorldCamera::WorldCamera(const IWorldView* world)
     : world(world)
 {
     camera = new Camera2D();
-    camera->zoom = 1.0f;
+    camera->zoom = GraphicsComponentManager::NATIVE_HEIGHT / Unit::BATTLEFIELD_HEIGHT;
     camera->rotation = 0.0f;
     camera->offset = {
         GraphicsComponentManager::NATIVE_WIDTH  / 2.0f,
@@ -37,9 +37,14 @@ WorldCamera::~WorldCamera() {
 void WorldCamera::update(float dt) {
     followPlayers(dt);
     clampToBattlefield();
+    applyShake();
 
     // refresh tagged camera each frame
     GraphicsComponentManager::instance().addTaggedCamera(*camera, "world_object");
+}
+
+void WorldCamera::shake() {
+    shakeTimer = SHAKE_DURATION;
 }
 
 void WorldCamera::followPlayers(float dt) {
@@ -68,8 +73,8 @@ void WorldCamera::followPlayers(float dt) {
 }
 
 void WorldCamera::clampToBattlefield() {
-    float halfW = GraphicsComponentManager::NATIVE_WIDTH  / 2.0f;
-    float halfH = GraphicsComponentManager::NATIVE_HEIGHT / 2.0f;
+    float halfW = (GraphicsComponentManager::NATIVE_WIDTH  / camera->zoom) / 2.0f;
+    float halfH = (GraphicsComponentManager::NATIVE_HEIGHT / camera->zoom) / 2.0f;
 
     float minX = halfW;
     float maxX = Unit::BATTLEFIELD_WIDTH  - halfW;
@@ -78,4 +83,13 @@ void WorldCamera::clampToBattlefield() {
 
     camera->target.x = std::clamp(camera->target.x, minX, maxX);
     camera->target.y = std::clamp(camera->target.y, minY, maxY);
+}
+
+void WorldCamera::applyShake() {
+    if (shakeTimer > 0.0f) {
+        shakeTimer -= GetFrameTime();
+        float intensity = (shakeTimer / SHAKE_DURATION) * 18.0f; // 30px max offset
+        camera->target.x += (GetRandomValue(-100, 100) / 100.0f) * intensity;
+        camera->target.y += (GetRandomValue(-100, 100) / 100.0f) * intensity;
+    }
 }

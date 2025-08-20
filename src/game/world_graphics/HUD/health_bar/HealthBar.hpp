@@ -21,7 +21,7 @@ public:
     void setSide(bool isLeft);
     void setPosition(Vector2 position);
     void setRectangleHitBox(Rectangle rec);
-    void setWorldView(IWorldView* worldView);
+    void setWorldView(const IWorldView* worldView);
     
     // State management
     void setHealth(int health);
@@ -59,7 +59,7 @@ protected:
     Rectangle hitboxRect = Rectangle{0.0f, 0.0f, 200.0f, 100.0f};
     std::unique_ptr<RectangleHitbox> hitbox = nullptr;
 
-    IWorldView* worldView = nullptr;
+    const IWorldView* worldView = nullptr;
 
     // Layout
     float scale = 1.0f;

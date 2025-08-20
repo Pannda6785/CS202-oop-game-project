@@ -46,8 +46,6 @@ private:
     bool isFullscreen;
 
     std::unordered_map<std::string, Camera2D> taggedCameras;
-
-    Camera2D combineCameras(const Camera2D& a, const Camera2D& b) const;
 };
 
 #endif // GRAPHICS_COMPONENTS_MANAGER_HPP

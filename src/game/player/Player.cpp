@@ -21,10 +21,8 @@ Player::Player(int playerId, IWorldView* worldView, IBulletSpawner* bulletSpawne
     stock = STOCK;
     invincibility = {0, 0};
 
-    static std::mt19937 gen(std::random_device{}());
-    std::uniform_real_distribution<float> distX(0, Unit::BATTLEFIELD_WIDTH);
-    std::uniform_real_distribution<float> distY(0, Unit::BATTLEFIELD_HEIGHT);
-    setPosition({distX(gen), distY(gen)});
+    float offset = playerId == 0 ? -400 : +400;
+    setPosition({Unit::BATTLEFIELD_WIDTH / 2 + offset, Unit::BATTLEFIELD_HEIGHT / 2});
     
     arrow = {0.0f, 1.0f};
     movement = {0.0f, 0.0f};
@@ -133,8 +131,8 @@ Unit::Vec2D Player::getTargetPosition() const {
 
 void Player::setPosition(const Unit::Vec2D& newPos) {
     pos = newPos;
-    pos.x = std::clamp(pos.x, 0.0f, Unit::BATTLEFIELD_WIDTH);
-    pos.y = std::clamp(pos.y, 0.0f, Unit::BATTLEFIELD_HEIGHT);
+    pos.x = std::clamp(pos.x, Unit::BOUNDARY_PADDING, Unit::BATTLEFIELD_WIDTH - Unit::BOUNDARY_PADDING);
+    pos.y = std::clamp(pos.y, Unit::BOUNDARY_PADDING, Unit::BATTLEFIELD_HEIGHT - Unit::BOUNDARY_PADDING);
 }
 
 // --- Status data ---

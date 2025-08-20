@@ -6,11 +6,11 @@
 #include <string>
 
 namespace Unit {
-
     const float EPS = 1e-6;
 
-    const float BATTLEFIELD_WIDTH = 3440.0f;
-    const float BATTLEFIELD_HEIGHT = 900.0f;
+    const float BATTLEFIELD_WIDTH = 2800.0f;
+    const float BATTLEFIELD_HEIGHT = 1000.0f;
+    const float BOUNDARY_PADDING = 35.0f;
 
     struct Vec2D {
         float x = 0.0f;

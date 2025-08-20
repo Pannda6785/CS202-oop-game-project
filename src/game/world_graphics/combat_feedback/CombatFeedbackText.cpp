@@ -14,6 +14,7 @@ CombatFeedbackText::CombatFeedbackText(Vector2 hitPos, Vector2 hitterPos, std::s
     hAlign = hitPos.x <= hitterPos.x ? HorizontalAlignment::RIGHT : HorizontalAlignment::LEFT;
     vAlign = hitPos.y <= hitterPos.y ? VerticalAlignment::DOWN : VerticalAlignment::UP;
     updatePosition();
+    gameText.addTag("world_object");
 }
 
 CombatFeedbackText::~CombatFeedbackText() {
