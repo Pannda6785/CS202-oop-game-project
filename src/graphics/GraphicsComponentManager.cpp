@@ -45,13 +45,13 @@ void GraphicsComponentManager::render() const {
 }
 
 void GraphicsComponentManager::renderIf(const std::function<bool(const GraphicsComponent&)>& predicate) const {
+    BeginMode2D(resolutionCamera);
     for (const auto* component : components) {
         if (component->isVisible() && predicate(*component)) {
             bool handled = false;
             for (const auto& [tag, camera] : taggedCameras) {
                 if (component->hasTag(tag)) {
-                    Camera2D combined = combineCameras(resolutionCamera, camera);
-                    BeginMode2D(combined);
+                    BeginMode2D(camera);
                     component->render();
                     EndMode2D();
                     handled = true;
@@ -59,12 +59,11 @@ void GraphicsComponentManager::renderIf(const std::function<bool(const GraphicsC
                 }
             }
             if (!handled) {
-                BeginMode2D(resolutionCamera);
                 component->render();
-                EndMode2D();
             }
         }
     }
+    EndMode2D();
 }
 
 void GraphicsComponentManager::setResolution(int width, int height) {
@@ -108,13 +107,4 @@ void GraphicsComponentManager::addTaggedCamera(const Camera2D& camera, const std
 
 void GraphicsComponentManager::removeTaggedCamera(const std::string& tag) {
     taggedCameras.erase(tag);
-}
-
-Camera2D GraphicsComponentManager::combineCameras(const Camera2D& a, const Camera2D& b) const {
-    Camera2D out = {0};
-    out.target = { a.target.x + b.target.x, a.target.y + b.target.y };
-    out.offset = { a.offset.x + b.offset.x, a.offset.y + b.offset.y };
-    out.rotation = a.rotation + b.rotation;
-    out.zoom = a.zoom * b.zoom;
-    return out;
 }

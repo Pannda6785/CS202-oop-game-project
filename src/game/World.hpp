@@ -7,15 +7,22 @@
 #include "bullet/Bullet.hpp"
 #include "pattern/Pattern.hpp"
 #include "devtool/DevTool.hpp"
-#include "../UI/game_state/versus_mode_state/combat_feedback/CombatFeedbackManager.hpp"
-#include "../UI/game_state/versus_mode_state/HUD/hot_bar/HotBar.hpp"
-#include "../UI/game_state/versus_mode_state/HUD/health_bar/HealthBar.hpp"
+
+#include "world_graphics/combat_feedback/CombatFeedbackManager.hpp"
+#include "world_graphics/HUD/HUD.hpp"
 #include "../UI/game_state/versus_mode_state/ribbon_effect/MovingTextTileManager.hpp"
+#include "world_graphics/WorldCamera.hpp"
+#include "world_graphics/WorldBackground.hpp"
 
 #include <memory>
 
 class World : public IWorldView, public IBulletSpawner {
+    static constexpr float FREEZE_DURATION = 0.5f;
+    static constexpr float RESET_ROUND_DELAY = 0.75f;
+    static constexpr float END_GAME_DELAY = 1.1f;
+
     friend class DevTool;
+
 public:
     World();
 
@@ -30,35 +37,30 @@ public:
     void addPattern(std::unique_ptr<Pattern> pattern, float time);
     void spawnBullet(std::shared_ptr<Bullet> bullet);
 
-    void resetRound();
-    void setVisible(bool visible);
-
 private:
     std::vector<std::unique_ptr<Player>> players;
     std::vector<std::shared_ptr<Bullet>> bullets;
     std::vector<std::unique_ptr<Pattern>> patterns;
     std::unique_ptr<DevTool> devTool;
+    std::unique_ptr<WorldCamera> camera;
 
     std::vector<std::shared_ptr<Bullet>> pendingBullets;
     std::vector<std::pair<std::unique_ptr<Pattern>, float>> pendingPatterns;
 
-    CombatFeedbackManager combatFeedbackManager;
+    std::unique_ptr<WorldBackground> background;
+    std::unique_ptr<HUD> hud;
+    std::unique_ptr<CombatFeedbackManager> combatFeedbackManager;
+    std::unique_ptr<MovingTextTileManager> ribbonManager;
 
-    float freezeDuration = 0.5f;
     float freezeTimer = 0.0f;
-
-    std::unique_ptr<HotBar> leftHotBar = nullptr;
-    std::unique_ptr<HotBar> rightHotBar = nullptr;
-
-    std::unique_ptr<HealthBar> leftHealthBar = nullptr;
-    std::unique_ptr<HealthBar> rightHealthBar = nullptr;
-
-    MovingTextTileManager ribbonManager;
-    float resetRoundRibbonTimer = 10.0f;
-    bool ribbonAdded = true;
+    float resetRoundTimer = 1e9;
+    float endGameTimer = 1e9;
 
     void handlePendings(float dt);
     void handleCollisions();
+    void registerHit(const std::vector<int>& hitPlayers);
+    void endGame();
+    void resetRound();
 };
 
 #endif // WORLD_HPP

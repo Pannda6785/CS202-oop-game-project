@@ -1,6 +1,6 @@
 #include "HealthBar.hpp"
-#include "../../../../../game/IWorldView.hpp"
-#include "../../../../../game/player/Player.hpp"
+#include "../../../IWorldView.hpp"
+#include "../../../player/Player.hpp"
 #include <iostream>
 
 HealthBar::HealthBar(bool isLeftSide) 
@@ -220,7 +220,7 @@ void HealthBar::checkCollision(std::vector<const CircleHitbox*> circleHitboxes) 
     }
 }
 
-void HealthBar::setWorldView(IWorldView* worldView) {
+void HealthBar::setWorldView(const IWorldView* worldView) {
     this->worldView = worldView;
 }
 

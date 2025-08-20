@@ -2,7 +2,7 @@
 #define COMBAT_FEEDBACK_TEXT_HPP
 
 #include "CombatFeedback.hpp"
-#include "../../../game_state/decorative_components/GameText.hpp"
+#include "../../../UI/game_state/decorative_components/GameText.hpp"
 
 class CombatFeedbackText : public CombatFeedback {
 public:

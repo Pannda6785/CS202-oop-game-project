@@ -3,72 +3,40 @@
 #include <algorithm>
 #include <iostream>
 
-#include "../UI/game_state/versus_mode_state/HUD/hot_bar/HotBarFactory.hpp"
-#include "../UI/game_state/versus_mode_state/HUD/health_bar/HealthBarFactory.hpp"
+#include "world_graphics/HUD/hot_bar/HotBarFactory.hpp"
+#include "world_graphics/HUD/health_bar/HealthBarFactory.hpp"
 
-World::World() : devTool(nullptr), combatFeedbackManager(), 
-                leftHotBar(nullptr), rightHotBar(nullptr),
-                leftHealthBar(nullptr), rightHealthBar(nullptr) {
-}
+World::World() : devTool(nullptr) {}
 
 void World::update(float dt) {
     devTool->update(dt);
     dt *= devTool->getTimeScale();
     if (dt < Unit::EPS) return;
-
-    if(freezeTimer > 0.0f) {
-        freezeTimer -= dt;
-        if (freezeTimer <= 0.0f) {
-            freezeTimer = 0.0f;
-        }
-        return;
-    }
     
-    for (auto& player : players) {
-        player->update(dt);
-    }
-    for (auto& pattern : patterns) {
-        pattern->update(dt);
-    }
-    for (auto& bullet : bullets) {
-        bullet->update(dt);
-    }
+    camera->update(dt);
+    hud->update(dt);
+    if ((freezeTimer -= dt) > 0.0f) return;
+    
+    for (auto& player : players) player->update(dt);
+    for (auto& pattern : patterns) pattern->update(dt);
+    for (auto& bullet : bullets) bullet->update(dt);
+    
     handlePendings(dt);
     handleCollisions();
-
-    for(int i = 0; i < 2; i++){
-        if(players[i]->getHealth() <= 0){
-            // if(players[i]->getStock() > 0){
-                if(players[i]->getLock(Unit::Lock::MovementLock) <= 0.0f){
-                    resetRound();
-                }
-            // }
-        }
+    
+    if ((resetRoundTimer -= dt) < 0.0f) {
+        resetRound();
+        resetRoundTimer = 1e9;
     }
-
-    if(resetRoundRibbonTimer < 2.0f) resetRoundRibbonTimer += dt;
-    else{
-        if(!ribbonAdded){
-            ribbonManager.addReady(5.0f);
-            ribbonManager.addCountdown(5.0f);
-            ribbonAdded = true;
-        }
+    
+    if ((endGameTimer -= dt) < 0.0f) {
+        endGame();
+        endGameTimer = 1e9;
     }
-
-    combatFeedbackManager.update(dt);
-    if (leftHotBar) {
-        leftHotBar->update(dt);
-    }
-    if (rightHotBar) {
-        rightHotBar->update(dt);
-    }
-    if (leftHealthBar) {
-        leftHealthBar->update(dt);
-    }
-    if (rightHealthBar) {
-        rightHealthBar->update(dt);
-    }
-    ribbonManager.update(dt);
+    
+    ribbonManager->update(dt);
+    combatFeedbackManager->update(dt);
+    background->update(dt);
 }
 
 void World::init() {
@@ -79,17 +47,13 @@ void World::init() {
         pattern->init();
     }
     devTool = std::make_unique<DevTool>(this);
-    leftHotBar = HotBarFactory::createForCharacter(players[0]->getName(), true);
-    leftHotBar->setWorldView(this);
-    rightHotBar = HotBarFactory::createForCharacter(players[1]->getName(), false);
-    rightHotBar->setWorldView(this);
+    camera = std::make_unique<WorldCamera>(this);
 
-    leftHealthBar = HealthBarFactory::createForCharacter(players[0]->getName(), true);
-    leftHealthBar->setWorldView(this);
-    rightHealthBar = HealthBarFactory::createForCharacter(players[1]->getName(), false);
-    rightHealthBar->setWorldView(this);
-    ribbonManager.addReady(3.0f);
-    ribbonManager.addCountdown(3.0f);
+    background = std::make_unique<WorldBackground>();
+    hud = std::make_unique<HUD>(this);
+    combatFeedbackManager = std::make_unique<CombatFeedbackManager>();
+    ribbonManager = std::make_unique<MovingTextTileManager>();
+    resetRoundTimer = 1.5f;
 }
 
 const Player* World::getPlayer(int playerId) const {
@@ -133,18 +97,6 @@ void World::addPattern(std::unique_ptr<Pattern> pattern, float time) {
 
 void World::spawnBullet(std::shared_ptr<Bullet> bullet) {
     pendingBullets.push_back(std::move(bullet));
-}
-
-void World::resetRound(){
-    for(auto &player : players){
-        player->resetRound();
-    }
-    for (int i = 0; i < bullets.size(); i++) {
-        bullets[i]->makeDone();
-    }
-    pendingBullets.clear();
-    resetRoundRibbonTimer = 0.0f;
-    ribbonAdded = false;
 }
 
 void World::handlePendings(float dt) {
@@ -240,53 +192,7 @@ void World::handleCollisions() {
             }
         }
     }
-
-    /* Apply damage to player */
-    Unit::Vec2D hitLocation;
-    float hitDuration = 1.0f;
-    for (int hitPlayer : hitPlayers) {
-        for (auto& player : players) {
-            if (player->getPlayerId() == hitPlayer) {
-                player->takeHit();
-                hitLocation = player->getPosition();
-                hitDuration = player->getLock(Unit::Lock::MovementLock);
-                break;
-            }
-        }
-    }
-
-    /* Confirm hit to non-hit player */
-    Unit::Vec2D hitterLocation = { Unit::BATTLEFIELD_WIDTH / 2, Unit::BATTLEFIELD_WIDTH / 2 };
-    if (!hitPlayers.empty()) {
-        for (auto& player : players) {
-            if (std::find(hitPlayers.begin(), hitPlayers.end(), player->getPlayerId()) == hitPlayers.end()) {
-                player->confirmHit();
-                hitterLocation = player->getPosition();
-            }
-        }
-    }
-    
-    /* send feedback */
-   if (!hitPlayers.empty()){
-        bool isLast = players[hitPlayers[0]]->getHealth() == 1;
-        switch(players[hitPlayers[0]]->getHealth()){
-            case(1):
-                combatFeedbackManager.applyLast({hitLocation.x, hitLocation.y}, 
-                                        {hitterLocation.x, hitterLocation.y}, 
-                                        hitDuration);
-                break;
-            case(0):
-                combatFeedbackManager.applyBreak({hitLocation.x, hitLocation.y}, 
-                                        {hitterLocation.x, hitterLocation.y}, 
-                                        hitDuration);
-                break;
-            default:
-                combatFeedbackManager.applyHit({hitLocation.x, hitLocation.y}, 
-                                            {hitterLocation.x, hitterLocation.y}, 
-                                            hitDuration);
-        }
-        freezeTimer = 0.5f;
-   }
+    if (!hitPlayers.empty()) registerHit(hitPlayers);
 
     /* Remove to-delete bullets */
     for (size_t i = 0; i < bullets.size(); ++i) {
@@ -305,5 +211,62 @@ void World::handleCollisions() {
         ),
         bullets.end()
     );
+}
 
+void World::registerHit(const std::vector<int>& hitPlayers) {
+    if (hitPlayers.empty()) return;
+
+    camera->shake();
+
+    /* Confirm hit to non-hit player */
+    Unit::Vec2D hitterLocation = { Unit::BATTLEFIELD_WIDTH / 2, Unit::BATTLEFIELD_WIDTH / 2 };
+    for (auto& player : players) {
+        if (std::find(hitPlayers.begin(), hitPlayers.end(), player->getPlayerId()) == hitPlayers.end()) {
+            player->confirmHit();
+            hitterLocation = player->getPosition();
+        }
+    }
+    
+    /* Apply damage to player */
+    for (int hitPlayer : hitPlayers) {
+        for (auto& player : players) {
+            if (player->getPlayerId() == hitPlayer) {
+                player->takeHit();
+                combatFeedbackManager->applyHit(player->getPosition(), hitterLocation, player->getHealth());
+                if (player->getHealth() <= 0) {
+                    if (player->getStock() == 0) {
+                        endGameTimer = END_GAME_DELAY;
+                    } else {
+                        resetRoundTimer = RESET_ROUND_DELAY;
+                    }
+                }
+                break;
+            }
+        }
+    }
+
+    freezeTimer = FREEZE_DURATION;
+}
+
+void World::resetRound() {
+    for(auto &player : players){
+        player->resetRound();
+    }
+    for (int i = 0; i < bullets.size(); i++) {
+        bullets[i]->makeDone();
+    }
+    pendingBullets.clear();
+
+    ribbonManager->addReady(3.0f);
+    ribbonManager->addCountdown(3.0f);
+}
+
+void World::endGame() {
+    std::cout << "Yo yo yo! Game ended in a victory for Player(s?): ";
+    for (const auto& player : players) {
+        if (player->getStock() > 0) {
+            std::cout << "Player " << player->getPlayerId() << " ";
+        }
+    }
+    std::cout << std::endl;
 }

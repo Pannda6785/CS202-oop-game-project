@@ -9,11 +9,11 @@
 
 class GraphicsComponent;
 
-class GraphicsComponentManager {
+class GraphicsComponentManager {    
+public:
     static constexpr float NATIVE_WIDTH = 1440;
     static constexpr float NATIVE_HEIGHT = 900;
 
-public:
     static GraphicsComponentManager& instance();
 
     void registerComponent(const GraphicsComponent* component);
@@ -46,8 +46,6 @@ private:
     bool isFullscreen;
 
     std::unordered_map<std::string, Camera2D> taggedCameras;
-
-    Camera2D combineCameras(const Camera2D& a, const Camera2D& b) const;
 };
 
 #endif // GRAPHICS_COMPONENTS_MANAGER_HPP
