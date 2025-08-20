@@ -7,10 +7,12 @@
 #include "bullet/Bullet.hpp"
 #include "pattern/Pattern.hpp"
 #include "devtool/DevTool.hpp"
-#include "../UI/game_state/versus_mode_state/combat_feedback/CombatFeedbackManager.hpp"
-#include "../UI/game_state/versus_mode_state/HUD/hot_bar/HotBar.hpp"
-#include "../UI/game_state/versus_mode_state/HUD/health_bar/HealthBar.hpp"
+
+#include "world_graphics/combat_feedback/CombatFeedbackManager.hpp"
+#include "world_graphics/HUD/hot_bar/HotBar.hpp"
+#include "world_graphics/HUD/health_bar/HealthBar.hpp"
 #include "../UI/game_state/versus_mode_state/ribbon_effect/MovingTextTileManager.hpp"
+#include "world_graphics/WorldCamera.hpp"
 
 #include <memory>
 
@@ -38,6 +40,7 @@ private:
     std::vector<std::shared_ptr<Bullet>> bullets;
     std::vector<std::unique_ptr<Pattern>> patterns;
     std::unique_ptr<DevTool> devTool;
+    std::unique_ptr<WorldCamera> camera;
 
     std::vector<std::shared_ptr<Bullet>> pendingBullets;
     std::vector<std::pair<std::unique_ptr<Pattern>, float>> pendingPatterns;

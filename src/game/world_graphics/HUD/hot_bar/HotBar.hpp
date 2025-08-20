@@ -2,8 +2,8 @@
 #define HOT_BAR_HPP
 
 #include "HotBarSlot.hpp"
-#include "../../../../../game/hitbox/RectangleHitbox.hpp"
-#include "../../../../../game/hitbox/CircleHitbox.hpp"
+#include "../../../hitbox/RectangleHitbox.hpp"
+#include "../../../hitbox/CircleHitbox.hpp"
 #include <vector>
 #include <memory>
 

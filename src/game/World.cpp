@@ -3,8 +3,8 @@
 #include <algorithm>
 #include <iostream>
 
-#include "../UI/game_state/versus_mode_state/HUD/hot_bar/HotBarFactory.hpp"
-#include "../UI/game_state/versus_mode_state/HUD/health_bar/HealthBarFactory.hpp"
+#include "world_graphics/HUD/hot_bar/HotBarFactory.hpp"
+#include "world_graphics/HUD/health_bar/HealthBarFactory.hpp"
 
 World::World() : devTool(nullptr), combatFeedbackManager(), 
                 leftHotBar(nullptr), rightHotBar(nullptr),
@@ -15,6 +15,8 @@ void World::update(float dt) {
     devTool->update(dt);
     dt *= devTool->getTimeScale();
     if (dt < Unit::EPS) return;
+
+    camera->update(dt);
 
     if(freezeTimer > 0.0f) {
         freezeTimer -= dt;
@@ -79,6 +81,8 @@ void World::init() {
         pattern->init();
     }
     devTool = std::make_unique<DevTool>(this);
+    camera = std::make_unique<WorldCamera>(this);
+
     leftHotBar = HotBarFactory::createForCharacter(players[0]->getName(), true);
     leftHotBar->setWorldView(this);
     rightHotBar = HotBarFactory::createForCharacter(players[1]->getName(), false);

@@ -9,11 +9,11 @@
 
 class GraphicsComponent;
 
-class GraphicsComponentManager {
+class GraphicsComponentManager {    
+public:
     static constexpr float NATIVE_WIDTH = 1440;
     static constexpr float NATIVE_HEIGHT = 900;
 
-public:
     static GraphicsComponentManager& instance();
 
     void registerComponent(const GraphicsComponent* component);

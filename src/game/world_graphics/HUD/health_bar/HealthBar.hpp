@@ -1,10 +1,10 @@
 #ifndef HEALTH_BAR_HPP
 #define HEALTH_BAR_HPP
 
-#include "../../../decorative_components/Artwork.hpp"
-#include "../../../decorative_components/GameText.hpp"
-#include "../../../../../game/hitbox/RectangleHitbox.hpp"
-#include "../../../../../game/hitbox/CircleHitbox.hpp"
+#include "../../../../UI/game_state/decorative_components/Artwork.hpp"
+#include "../../../../UI/game_state/decorative_components/GameText.hpp"
+#include "../../../hitbox/RectangleHitbox.hpp"
+#include "../../../hitbox/CircleHitbox.hpp"
 #include <raylib.h>
 #include <vector>
 #include <memory>
