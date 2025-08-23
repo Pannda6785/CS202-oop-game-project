@@ -57,7 +57,7 @@ void CeresCurrent::update(float dt) {
             );
             bullet->addDamagingHitbox(PLAYPEN_STARTUP, std::make_unique<CircleHitbox>(pos, moonRadius));
             dynamic_cast<TextureBulletGraphicsComponent*>(bullet->getGraphics())->addFadein(0, PLAYPEN_STARTUP);
-            dynamic_cast<TextureBulletGraphicsComponent*>(bullet->getGraphics())->addTint({255, 255, 255, 128});
+            dynamic_cast<TextureBulletGraphicsComponent*>(bullet->getGraphics())->addTint({255, 255, 255, 200});
             dynamic_cast<TextureBulletGraphicsComponent*>(bullet->getGraphics())->setLayer(Unit::Layer::Underlay);
             dynamic_cast<TextureBulletGraphicsComponent*>(bullet->getGraphics())->addRotation(-1.0f / 15.0f);
             dynamic_cast<TextureBulletGraphicsComponent*>(bullet->getGraphics())->addFadeout(DURATION, DURATION + 5);

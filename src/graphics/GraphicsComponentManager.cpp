@@ -19,25 +19,22 @@ GraphicsComponentManager::GraphicsComponentManager() {
 
 GraphicsComponentManager::~GraphicsComponentManager() = default;
 
+bool GraphicsComponentManager::CompareComponent::operator()(const GraphicsComponent* a, const GraphicsComponent* b) const {
+    if (a->getLayer() != b->getLayer()) return a->getLayer() < b->getLayer();
+    if (a->getTags()  != b->getTags())  return a->getTags()  < b->getTags();
+    return a < b;
+}
+
 void GraphicsComponentManager::registerComponent(const GraphicsComponent* component) {
     if (!component) return;
-
-    if (std::find(components.begin(), components.end(), component) != components.end())
-        return;
-
-    auto it = std::find_if(components.begin(), components.end(),
-        [component](const GraphicsComponent* existing) {
-            return component->getLayer() < existing->getLayer();
-        });
-
+    auto it = std::lower_bound(components.begin(), components.end(), component, CompareComponent{});
     components.insert(it, component);
 }
 
 void GraphicsComponentManager::unregisterComponent(const GraphicsComponent* component) {
-    auto it = std::find(components.begin(), components.end(), component);
-    if (it != components.end()) {
-        components.erase(it);
-    }
+    if (!component) return;
+    auto it = std::lower_bound(components.begin(), components.end(), component, CompareComponent{});
+    if (it != components.end()) components.erase(it);
 }
 
 void GraphicsComponentManager::render() const {
@@ -45,25 +42,39 @@ void GraphicsComponentManager::render() const {
 }
 
 void GraphicsComponentManager::renderIf(const std::function<bool(const GraphicsComponent&)>& predicate) const {
+    // Render all components first with resolutionCamera as the "base"
     BeginMode2D(resolutionCamera);
+    const Camera2D* currentCamera = nullptr;
     for (const auto* component : components) {
-        if (component->isVisible() && predicate(*component)) {
-            bool handled = false;
-            for (const auto& [tag, camera] : taggedCameras) {
-                if (component->hasTag(tag)) {
-                    BeginMode2D(camera);
-                    component->render();
-                    EndMode2D();
-                    handled = true;
-                    break;
-                }
-            }
-            if (!handled) {
-                component->render();
+        if (!component->isVisible() || !predicate(*component)) {
+            continue;
+        }
+        // Find which camera this component should use
+        const Camera2D* targetCamera = nullptr;
+        for (const auto& [tag, camera] : taggedCameras) {
+            if (component->hasTag(tag)) {
+                targetCamera = &camera;
+                break;
             }
         }
+        // Switch camera batch if needed
+        if (targetCamera != currentCamera) {
+            if (currentCamera != nullptr) {
+                EndMode2D(); // close previous batch
+            }
+            if (targetCamera != nullptr) {
+                BeginMode2D(*targetCamera);
+            }
+            currentCamera = targetCamera;
+        }
+        // Draw component inside current camera batch
+        component->render();
     }
-    EndMode2D();
+    // Close last camera batch if we opened one
+    if (currentCamera != nullptr) {
+        EndMode2D();
+    }
+    EndMode2D(); // close resolutionCamera
 }
 
 void GraphicsComponentManager::setResolution(int width, int height) {

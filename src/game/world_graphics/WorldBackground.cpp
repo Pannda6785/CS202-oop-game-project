@@ -10,7 +10,7 @@ WorldBackground::WorldBackground(int dotCount) {
     std::mt19937 gen(rd());
     std::uniform_real_distribution<float> xDist(0.0f, static_cast<float>(Unit::BATTLEFIELD_WIDTH));
     std::uniform_real_distribution<float> yDist(0.0f, static_cast<float>(Unit::BATTLEFIELD_HEIGHT));
-    std::uniform_real_distribution<float> speedDist(18.0f, 45.0f);   // slow upward drift
+    std::uniform_real_distribution<float> speedDist(30.0f, 70.0f);   // slow upward drift
     std::uniform_real_distribution<float> radiusDist(1.5f, 3.5f);
 
     for (int i = 0; i < dotCount; i++) {
