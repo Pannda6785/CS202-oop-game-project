@@ -56,6 +56,10 @@ void World::init() {
     resetRoundTimer = 1.5f;
 }
 
+bool World::isGameEnded() const {
+    return gameEnded;
+}
+
 const Player* World::getPlayer(int playerId) const {
     for (const auto& player : players) {
         if (player->getPlayerId() == playerId) {
@@ -91,12 +95,16 @@ void World::addPlayer(std::unique_ptr<Player> player) {
     players.push_back(std::move(player));
 }
 
+void World::spawnBullet(std::shared_ptr<Bullet> bullet) {
+    pendingBullets.push_back(std::move(bullet));
+}
+
 void World::addPattern(std::unique_ptr<Pattern> pattern, float time) {
     pendingPatterns.emplace_back(std::move(pattern), time);
 }
 
-void World::spawnBullet(std::shared_ptr<Bullet> bullet) {
-    pendingBullets.push_back(std::move(bullet));
+void World::addChallenge(std::unique_ptr<Challenge> challenge, float time) {
+    pendingChallenges.emplace_back(std::move(challenge), time);
 }
 
 void World::handlePendings(float dt) {
@@ -106,8 +114,18 @@ void World::handlePendings(float dt) {
     }
     for (auto it = pendingPatterns.begin(); it != pendingPatterns.end();) {
         if (it->second <= 0.0f) {
+            it->first->init();
             patterns.push_back(std::move(it->first));
             it = pendingPatterns.erase(it);
+        } else {
+            it->second -= dt; // Decrease the time by a small value
+            ++it;
+        }
+    }
+    for (auto it = pendingChallenges.begin(); it != pendingChallenges.end();) {
+        if (it->second <= 0.0f) {
+            it->first->apply(this);
+            it = pendingChallenges.erase(it);
         } else {
             it->second -= dt; // Decrease the time by a small value
             ++it;
@@ -262,6 +280,7 @@ void World::resetRound() {
 }
 
 void World::endGame() {
+    gameEnded = true;
     std::cout << "Yo yo yo! Game ended in a victory for Player(s?): ";
     for (const auto& player : players) {
         if (player->getStock() > 0) {

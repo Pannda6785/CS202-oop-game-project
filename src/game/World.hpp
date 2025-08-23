@@ -6,6 +6,7 @@
 #include "player/Player.hpp"
 #include "bullet/Bullet.hpp"
 #include "pattern/Pattern.hpp"
+#include "challenge/Challenge.hpp"
 #include "devtool/DevTool.hpp"
 
 #include "world_graphics/combat_feedback/CombatFeedbackManager.hpp"
@@ -22,20 +23,23 @@ class World : public IWorldView, public IBulletSpawner {
     static constexpr float END_GAME_DELAY = 1.1f;
 
     friend class DevTool;
+    friend class Challenge;
 
 public:
     World();
 
     void update(float dt);
     void init();
+    bool isGameEnded() const;
     
     const Player* getPlayer(int playerId) const override;
     std::vector<const Player*> getPlayers() const override;
     std::vector<const Bullet*> getBullets() const override;
 
     void addPlayer(std::unique_ptr<Player> player);
-    void addPattern(std::unique_ptr<Pattern> pattern, float time);
     void spawnBullet(std::shared_ptr<Bullet> bullet);
+    void addPattern(std::unique_ptr<Pattern> pattern, float time = 0.0f);
+    void addChallenge(std::unique_ptr<Challenge> challenge, float time = 0.0f);
 
 private:
     std::vector<std::unique_ptr<Player>> players;
@@ -46,6 +50,7 @@ private:
 
     std::vector<std::shared_ptr<Bullet>> pendingBullets;
     std::vector<std::pair<std::unique_ptr<Pattern>, float>> pendingPatterns;
+    std::vector<std::pair<std::unique_ptr<Challenge>, float>> pendingChallenges;
 
     std::unique_ptr<WorldBackground> background;
     std::unique_ptr<HUD> hud;
@@ -55,6 +60,7 @@ private:
     float freezeTimer = 0.0f;
     float resetRoundTimer = 1e9;
     float endGameTimer = 1e9;
+    bool gameEnded = false;
 
     void handlePendings(float dt);
     void handleCollisions();
