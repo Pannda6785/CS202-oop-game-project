@@ -5,7 +5,7 @@
 CombatFeedbackFlash::CombatFeedbackFlash(float duration)
     : duration(duration), timer(duration)
 {
-    setLayer(Unit::Layer::Overlay);       
+    setLayer(Unit::Layer::Foreground);       
     setVisible(true);
     addTag("screen_flash");
 }

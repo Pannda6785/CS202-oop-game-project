@@ -24,7 +24,8 @@ private:
     void clearBullets();
     void log();
 
-    void F11();
+    void checkFullscreen();
+    void checkChallenge();
 };
 
 #endif // DEV_TOOL_HPP

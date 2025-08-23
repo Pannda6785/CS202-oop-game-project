@@ -15,7 +15,7 @@ CombatFeedbackEffect::CombatFeedbackEffect(Vector2 hitPos, Vector2 hitterPos)
         artwork.addTexture(path);
     }
     float period = 0.15f;
-    artwork.setLayer(100);
+    artwork.setLayer(Unit::Layer::Foreground);
     artwork.setScale(0.8f);
     artwork.setPeriod(period);
     artwork.setPosition(static_cast<int>(hitPos.x), static_cast<int>(hitPos.y));

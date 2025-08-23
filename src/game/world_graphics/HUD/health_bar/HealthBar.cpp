@@ -52,6 +52,7 @@ void HealthBar::init() {
     background.setScale(0.8f);
     background.setOriginRatio({0.5, 0.5f});
     background.setPosition(backgroundPos.x, backgroundPos.y);
+    background.setLayer(Unit::Layer::HUD);
     std::cout << "background pos " << backgroundPos.x << ' ' << backgroundPos.y << std::endl;
 
     // Load default avatar (will be overridden by character subclasses)
@@ -60,6 +61,7 @@ void HealthBar::init() {
     avatar.loadShader("../src/UI/game_state/versus_mode_state/HUD/health_bar/flash_red.fs");
     avatar.setScale(avtScale);
     avatar.setPosition(avatarPos.x, avatarPos.y);
+    avatar.setLayer(Unit::Layer::HUD);
 
     // Load heart
     for(int i = 0; i < 2; ++i) {
@@ -69,6 +71,7 @@ void HealthBar::init() {
         heart[i].loadShader("../src/UI/game_state/versus_mode_state/HUD/health_bar/flash_red.fs");
         heart[i].enableShader(shaderEnabled);
         heart[i].setPosition(heartPos.x, heartPos.y);
+        heart[i].setLayer(Unit::Layer::HUD);
     }
     heart[1].setScale(scale * 0.7f * 0.7f);
     heart[1].setColor(signatureColor);
@@ -80,6 +83,7 @@ void HealthBar::init() {
     healthText.loadShader("../src/UI/game_state/versus_mode_state/HUD/health_bar/flash_red.fs");
     healthText.enableShader(shaderEnabled);
     healthText.setPosition(healthTextPos.x, healthTextPos.y);
+    healthText.setLayer(Unit::Layer::HUD);
 
     // Setup stock icons
     int numStock = 4; // Default 4 stocks
@@ -92,11 +96,13 @@ void HealthBar::init() {
         stockIcons[i][0].addTexture(stockTexture);
         stockIcons[i][0].setOriginRatio({0.5f, 0.5f});
         stockIcons[i][0].setScale(scale * 0.7f);
+        stockIcons[i][0].setLayer(Unit::Layer::HUD);
 
         stockIcons[i][1].addTexture(stockTexture);
         stockIcons[i][1].setOriginRatio({0.5f, 0.5f});
         stockIcons[i][1].setColor(signatureColor);
         stockIcons[i][1].setScale(scale * 0.5f);
+        stockIcons[i][1].setLayer(Unit::Layer::HUD);
 
         stockIcons[i][0].setPosition(stockPos.x + i * stockPosOffset.x, stockPos.y + i * stockPosOffset.y);
         stockIcons[i][1].setPosition(stockPos.x + i * stockPosOffset.x, stockPos.y + i * stockPosOffset.y);

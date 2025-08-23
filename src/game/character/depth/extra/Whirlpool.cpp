@@ -13,7 +13,7 @@
 Whirlpool::Whirlpool(const Player* player)
     : Bullet(player->getPlayerId(), std::make_unique<CompositeBulletGraphicsComponent>()), 
     player(player), pos(player->getPosition()), dir(player->getArrow()), 
-    timer(0.0f), isStartedUp(false), isDetonating(false), timeDetonated(0.0f), initialSize(getSize())
+    timer(0.0f), isStartedUp(false), isDetonating(false), timeDetonated(0.0f)
 {
     auto texture = TextureManager::instance().getTexture("../assets/sprites/depth/bullet/hydra_bullets_0_p1_0002.png");
     const float visibleRatio = 4.7f / 6.0f;
@@ -36,6 +36,11 @@ Whirlpool::Whirlpool(const Player* player)
 }
 
 void Whirlpool::update(float dt) {
+    if (!gotInitialSize) {
+        initialSize = getSize();
+        gotInitialSize = true;
+    }
+    
     timer += dt;
     graphics->update(dt);
 

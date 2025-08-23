@@ -24,6 +24,49 @@ void CeresCurrent::update(float dt) {
     timer += dt;
     if (timer > DURATION) return;
 
+    // --- PLAYPEN ---
+    // Spawn 2 stationary moons that cover all except the middle safe zone
+    if (!playpenSet) {
+        // Only spawn once at the start
+        playpenSet = true;
+        float battlefieldWidth = Unit::BATTLEFIELD_WIDTH;
+        float battlefieldHeight = Unit::BATTLEFIELD_HEIGHT;
+        float safeZoneWidth = PLAYPEN_WIDTH;
+        float moonRadius = (battlefieldWidth - safeZoneWidth) / 2.0f;
+        moonRadius *= 1.1f;
+        float moonY = battlefieldHeight / 2.0f;
+        float leftMoonX = 0;
+        float rightMoonX = battlefieldWidth;
+
+        const Texture* texture = TextureManager::instance().getTexture("../assets/sprites/arcanist/bullet/caster_bullets_1_p1_0000.png");
+        constexpr float visibleRatio = 4.5f / 6.0f;
+        float resize = (moonRadius * 2.0f) / (texture->width * visibleRatio);
+
+        for (int i = 0; i < 2; ++i) {
+            float x = (i == 0) ? leftMoonX : rightMoonX;
+            Unit::Vec2D pos = { x, moonY };
+            Unit::Vec2D dir = { 0.0f, 0.0f }; // Stationary
+
+            auto bullet = std::make_shared<StraightBullet>(
+                OWNER_ID,
+                std::make_unique<TextureBulletGraphicsComponent>(texture, resize),
+                pos,
+                dir,
+                0.0f,
+                DURATION + 5
+            );
+            bullet->addDamagingHitbox(PLAYPEN_STARTUP, std::make_unique<CircleHitbox>(pos, moonRadius));
+            dynamic_cast<TextureBulletGraphicsComponent*>(bullet->getGraphics())->addFadein(0, PLAYPEN_STARTUP);
+            dynamic_cast<TextureBulletGraphicsComponent*>(bullet->getGraphics())->addTint({255, 255, 255, 128});
+            dynamic_cast<TextureBulletGraphicsComponent*>(bullet->getGraphics())->setLayer(Unit::Layer::Underlay);
+            dynamic_cast<TextureBulletGraphicsComponent*>(bullet->getGraphics())->addRotation(-1.0f / 15.0f);
+            dynamic_cast<TextureBulletGraphicsComponent*>(bullet->getGraphics())->addFadeout(DURATION, DURATION + 5);
+            bullet->removeDamagingHitbox(DURATION);
+
+            spawner->spawnBullet(std::move(bullet));
+        }
+    }
+
     // --- B1: Random bullets, upper half right->left, lower half left->right ---
     if (timer >= B1_START_TIME) {
         float t = timer - B1_START_TIME;
@@ -99,8 +142,9 @@ void CeresCurrent::update(float dt) {
         if (t - dt < waveTime && t >= waveTime) {
             // Two fixed positions, away from boundary by RADIUS * 0.8
             float margin = B2_RADIUS * 0.8f;
-            float leftX = margin;
-            float rightX = Unit::BATTLEFIELD_WIDTH - margin;
+            float pad = (Unit::BATTLEFIELD_WIDTH - PLAYPEN_WIDTH) / 2.0f;
+            float leftX = pad + margin;
+            float rightX = Unit::BATTLEFIELD_WIDTH - pad - margin;
             float x = (waveIdx % 2 == 0) ? leftX : rightX;
             float y = -B2_RADIUS;
 
@@ -108,7 +152,7 @@ void CeresCurrent::update(float dt) {
             Unit::Vec2D dir = { 0.0f, 1.0f };
 
             const Texture* texture = TextureManager::instance().getTexture("../assets/sprites/arcanist/bullet/caster_bullets_1_p1_0000.png");
-            constexpr float visibleRatio = 4.35f / 6.0f;
+            constexpr float visibleRatio = 4.5f / 6.0f;
             float resize = (B2_RADIUS * 2.0f) / (texture->width * visibleRatio);
 
             auto bullet = std::make_shared<StraightBullet>(

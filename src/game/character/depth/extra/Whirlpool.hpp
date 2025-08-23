@@ -38,6 +38,7 @@ private:
 
     float timer = 0;
     float initialSize = 1.0f; // when started up
+    bool gotInitialSize = false;
     bool isStartedUp = false;
     bool isDetonating = false;
     float timeDetonated;

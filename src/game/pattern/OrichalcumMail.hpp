@@ -3,9 +3,14 @@
 
 #include "Pattern.hpp"
 
+/*
+    B1: slow downward systematic rain
+    B2: occasional expanding walls
+*/
+
 class OrichalcumMail : public Pattern {
     static constexpr int OWNER_ID = 2; // used for all bullets in of 3rd party pattern 
-    static constexpr float DURATION = 35;
+    static constexpr float DURATION = 30;
     
     static constexpr float B1_START_TIME = 2;
     static constexpr float B1_SPEED = 140;
