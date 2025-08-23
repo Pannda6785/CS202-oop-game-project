@@ -1,41 +1,14 @@
 #include "raylib.h"
 
-#include "Unit.hpp"
-
 #include "graphics/GraphicsComponentManager.hpp"
-
-#include "UI/button/ButtonManager.hpp"
-
-#include <memory>
-#include <vector>
-
-#include <iostream>
-
 #include "UI/game_state/GameStateManager.hpp"
-
 #include "audio/AudioManager.hpp"
 #include "UI/custom_cursor/CustomCursor.hpp"
 
-#include "UI/game_state/versus_mode_state/combat_feedback/CombatFeedback.hpp"
-
+#include <memory>
+#include <vector>
 #include <algorithm>
 #include <iostream>
-
-#include "UI/game_state/versus_mode_state/combat_feedback/CombatFeedbackManager.hpp"
-
-#include "UI/game_state/decorative_components/Artwork.hpp"
-#include "UI/game_state/decorative_components/MovingText.hpp"
-#include "UI/game_state/decorative_components/MovingTextTile.hpp"
-
-#include "UI/game_state/versus_mode_state/HUD/hot_bar/HotBar.hpp"
-#include "UI/game_state/versus_mode_state/HUD/hot_bar/HotBarSlot.hpp"
-#include "UI/game_state/versus_mode_state/HUD/hot_bar/sun_priestess_hot_bar/SunPriestessHotBar.hpp"
-
-#include "UI/game_state/versus_mode_state/HUD/health_bar/HealthBar.hpp"
-#include "UI/game_state/versus_mode_state/ribbon_effect/MovingTextTileManager.hpp"
-#include "UI/game_state/versus_mode_state/ribbon_effect/MovingTextTileBuilder.hpp"
-
-#include "UI/game_state/keybinding_state/KeybindDisplay.hpp"
 
 int main() {
     const int screenWidth = GraphicsComponentManager::instance().getWindowWidth();

@@ -8,6 +8,7 @@
 #include <algorithm>
 
 CharacterGraphicsComponent::CharacterGraphicsComponent() {
+    addTag("world_object");
     setVisible(false);
     setLayer(Unit::Layer::Character);
     Shader loadedShader = LoadShader(0, "../src/game/character/white_silhouette.fs");

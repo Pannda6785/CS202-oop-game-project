@@ -1,8 +1,8 @@
 #include "HotBar.hpp"
-#include "../../../../../game/player/Player.hpp"
+#include "../../../player/Player.hpp"
+#include "../../../IWorldView.hpp"
 #include <iostream>
 #include <algorithm>
-#include "../../../../../game/IWorldView.hpp"
 
 HotBar::HotBar() : fadeActive(false), hitbox(nullptr), worldView(nullptr) {
     // Set the default position based on the side
@@ -22,7 +22,7 @@ HotBar::HotBar() : fadeActive(false), hitbox(nullptr), worldView(nullptr) {
 }
 
 // Add setter for IWorldView
-void HotBar::setWorldView(IWorldView* worldView) {
+void HotBar::setWorldView(const IWorldView* worldView) {
     this->worldView = worldView;
 }
 

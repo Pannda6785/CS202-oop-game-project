@@ -6,6 +6,7 @@
 #include <raylib.h>
 
 BulletGraphicsComponent::BulletGraphicsComponent() {
+    addTag("world_object");
     setLayer(Unit::Layer::Bullet);
 }
 

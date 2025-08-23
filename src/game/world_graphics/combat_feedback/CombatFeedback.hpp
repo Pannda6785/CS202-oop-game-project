@@ -3,6 +3,7 @@
 
 #include <raylib.h>
 #include <string>
+#include "../../../Unit.hpp"
 
 enum class HorizontalAlignment {
     LEFT,

@@ -22,7 +22,8 @@ void DevTool::update(float dt) {
     if (IsKeyPressed(KEY_F5)) timeUp();
     if (IsKeyPressed(KEY_F6)) clearBullets();
     if (IsKeyPressed(KEY_F7)) log();
-    if (IsKeyPressed(KEY_F11)) F11();
+    checkFullscreen();
+    checkChallenge();
 }
 
 float DevTool::getTimeScale() const {
@@ -91,6 +92,21 @@ void DevTool::log() {
 }
 
 #include "../../graphics/GraphicsComponentManager.hpp"
-void DevTool::F11() {
-    GraphicsComponentManager::instance().toggleFullscreen();
+void DevTool::checkFullscreen() {
+    if (IsKeyPressed(KEY_F11)) GraphicsComponentManager::instance().toggleFullscreen();
+}
+
+#include "../challenge/BomblessMaiden.hpp"
+#include "../challenge/TimeskipMaiden.hpp"
+#include "../challenge/GiantMaiden.hpp"
+#include "../challenge/IronMaiden.hpp"
+#include "../challenge/StoneHeartPulsation.hpp"
+#include "../challenge/StoneStaticGreen.hpp"
+void DevTool::checkChallenge() {
+    if (IsKeyPressed(KEY_KP_4)) world->addChallenge(std::make_unique<BomblessMaiden>());
+    if (IsKeyPressed(KEY_KP_7)) world->addChallenge(std::make_unique<TimeskipMaiden>());
+    if (IsKeyPressed(KEY_KP_5)) world->addChallenge(std::make_unique<GiantMaiden>());
+    if (IsKeyPressed(KEY_KP_8)) world->addChallenge(std::make_unique<IronMaiden>());
+    if (IsKeyPressed(KEY_KP_6)) world->addChallenge(std::make_unique<StoneHeartPulsation>());
+    if (IsKeyPressed(KEY_KP_9)) world->addChallenge(std::make_unique<StoneStaticGreen>());
 }

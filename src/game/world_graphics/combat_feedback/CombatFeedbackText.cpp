@@ -5,7 +5,7 @@ CombatFeedbackText::CombatFeedbackText() = default;
 CombatFeedbackText::CombatFeedbackText(Vector2 hitPos, Vector2 hitterPos, std::string text)
     : CombatFeedback(hitPos, hitterPos) {
     // Set default properties
-    gameText.setLayer(100);
+    gameText.setLayer(Unit::Layer::UI);
     gameText.loadFont("../assets/fonts/ferrum.otf");
     gameText.setText(text);
     gameText.setFontSize(140);
@@ -14,6 +14,7 @@ CombatFeedbackText::CombatFeedbackText(Vector2 hitPos, Vector2 hitterPos, std::s
     hAlign = hitPos.x <= hitterPos.x ? HorizontalAlignment::RIGHT : HorizontalAlignment::LEFT;
     vAlign = hitPos.y <= hitterPos.y ? VerticalAlignment::DOWN : VerticalAlignment::UP;
     updatePosition();
+    gameText.addTag("world_object");
 }
 
 CombatFeedbackText::~CombatFeedbackText() {

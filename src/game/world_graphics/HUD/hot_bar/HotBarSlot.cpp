@@ -1,15 +1,17 @@
 #include "HotBarSlot.hpp"
 #include <iostream>
 #include <cmath>
+#include "../../../../Unit.hpp"
 
 HotBarSlot::HotBarSlot() {
     skillIconSlot.setOriginRatio({0.5f, 0.5f});
-    skillIconSlot.setLayer(5);
-    
+    skillIconSlot.setLayer(Unit::Layer::HUD);
+
     cooldownText.setFontSize(40);
     cooldownText.setColor(WHITE);
     cooldownText.loadFont("../assets/fonts/18thCentury.ttf");
     cooldownText.setOriginRatio({0.5f, 0.5f});
+    cooldownText.setLayer(Unit::Layer::HUD);
 }
 
 HotBarSlot::~HotBarSlot() {

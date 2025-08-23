@@ -11,20 +11,18 @@
 #include <random>
 
 Player::Player(int playerId, IWorldView* worldView, IBulletSpawner* bulletSpawner,
-            std::unique_ptr<Character> character, const InputInterpreter* inputInterpreter) 
+            std::unique_ptr<Character> character, const InputInterpreter* inputInterpreter,
+            int init_stock, int init_health) 
         : playerId(playerId), world(worldView), bulletSpawner(bulletSpawner), 
-          character(std::move(character)), input(std::make_unique<InputBufferer>(inputInterpreter)) 
+          character(std::move(character)), input(std::make_unique<InputBufferer>(inputInterpreter)),
+          stock(init_stock), init_health(init_health), health(init_health) 
 {
     this->character->registerPlayer(this);
 
-    health = HEALTH;
-    stock = STOCK;
     invincibility = {0, 0};
 
-    static std::mt19937 gen(std::random_device{}());
-    std::uniform_real_distribution<float> distX(0, Unit::BATTLEFIELD_WIDTH);
-    std::uniform_real_distribution<float> distY(0, Unit::BATTLEFIELD_HEIGHT);
-    setPosition({distX(gen), distY(gen)});
+    float offset = playerId == 0 ? -400 : +400;
+    setPosition({Unit::BATTLEFIELD_WIDTH / 2 + offset, Unit::BATTLEFIELD_HEIGHT / 2});
     
     arrow = {0.0f, 1.0f};
     movement = {0.0f, 0.0f};
@@ -51,7 +49,7 @@ void Player::takeHit() {
     health = std::max(health - 1, 0);
     if (health == 0 && stock > 0) stock--;
 
-    applyInvincibility(3.0f, true);
+    applyInvincibility(std::max(0.8f, 3.0f * modifiers[static_cast<int>(Unit::Modifier::StaggerModifier)].second), true);
     applyModifier(Unit::Modifier::MovementModifier, 2.0f * modifiers[static_cast<int>(Unit::Modifier::StaggerModifier)].second, 0.5f);
     applyLock(Unit::Lock::MovementLock, 1.5f * modifiers[static_cast<int>(Unit::Modifier::StaggerModifier)].second);
     applyLock(Unit::Lock::BasicLock, 1.6f * modifiers[static_cast<int>(Unit::Modifier::StaggerModifier)].second);
@@ -66,10 +64,10 @@ void Player::confirmHit() {
 }
 
 void Player::resetRound() {
-    health = HEALTH;
-    for (auto& lock : locks) lock = 0.0f;
-    for (auto& mod : modifiers) mod = {0.0f, 1.0f};
-    for (auto& cd : cooldown) cd = 0.0f;
+    health = init_health;
+    for (auto& lock : locks) if (lock < 1000) lock = 0.0f;
+    for (auto& mod : modifiers) if (mod.first < 1000) mod = {0.0f, 1.0f};
+    for (auto& cd : cooldown) if (cd < 1000) cd = 0.0f;
     applyInvincibility(3.0f, true, true);
     applyLock(Unit::Lock::BasicLock, 2.9f, true);
     applyLock(Unit::Lock::WideLock, 2.9f, true);
@@ -133,8 +131,8 @@ Unit::Vec2D Player::getTargetPosition() const {
 
 void Player::setPosition(const Unit::Vec2D& newPos) {
     pos = newPos;
-    pos.x = std::clamp(pos.x, 0.0f, Unit::BATTLEFIELD_WIDTH);
-    pos.y = std::clamp(pos.y, 0.0f, Unit::BATTLEFIELD_HEIGHT);
+    pos.x = std::clamp(pos.x, Unit::BOUNDARY_PADDING, Unit::BATTLEFIELD_WIDTH - Unit::BOUNDARY_PADDING);
+    pos.y = std::clamp(pos.y, Unit::BOUNDARY_PADDING, Unit::BATTLEFIELD_HEIGHT - Unit::BOUNDARY_PADDING);
 }
 
 // --- Status data ---
@@ -175,7 +173,6 @@ void Player::applyModifier(Unit::Modifier mod, float duration, float value, bool
 }
 
 void Player::applyLock(Unit::Lock lock, float duration, bool force) {
-    duration *= modifiers[static_cast<int>(Unit::Modifier::CooldownModifier)].second;
     if (force) {
         locks[static_cast<int>(lock)] = duration;
     } else {

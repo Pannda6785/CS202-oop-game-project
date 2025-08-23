@@ -15,13 +15,13 @@ CombatFeedbackEffect::CombatFeedbackEffect(Vector2 hitPos, Vector2 hitterPos)
         artwork.addTexture(path);
     }
     float period = 0.15f;
-    artwork.setLayer(100);
+    artwork.setLayer(Unit::Layer::Foreground);
     artwork.setScale(0.8f);
     artwork.setPeriod(period);
     artwork.setPosition(static_cast<int>(hitPos.x), static_cast<int>(hitPos.y));
     artwork.setOriginRatio(hitEffectOriginRatio);
     setDuration(period * static_cast<float>(texturePaths.size()));
-
+    artwork.addTag("world_object");
     if(hitPos.x > hitterPos.x){
         artwork.setFlipVertical(true);
     }

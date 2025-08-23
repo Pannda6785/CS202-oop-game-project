@@ -17,10 +17,11 @@ class Player {
     static constexpr float HITBOX_RADIUS = 1.5f;
     static constexpr float STOCK = 2;
     static constexpr float HEALTH = 4;
+    int init_health;
 
 public:
     Player(int playerId, IWorldView* worldView, IBulletSpawner* bulletSpawner,
-            std::unique_ptr<Character> character, const InputInterpreter* inputInterpreter);
+            std::unique_ptr<Character> character, const InputInterpreter* inputInterpreter, int init_stock = STOCK, int init_health = HEALTH);
 
     // Update methods
     void init();

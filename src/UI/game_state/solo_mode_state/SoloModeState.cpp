@@ -16,6 +16,8 @@
 #include "../../../game/pattern/DemoPattern.hpp"
 #include "../../../game/pattern/OrichalcumMail.hpp"
 #include "../../../game/pattern/CeresCurrent.hpp"
+#include "../../../game/pattern/HeartPulsation.hpp"
+#include "../../../game/pattern/StaticGreen.hpp"
 
 #include "../../../input/KeyboardInputInterpreter.hpp"
 #include "../../../game/ai/GeneralAIInterpreter.hpp"
@@ -36,27 +38,24 @@ void SoloModeState::enter() {
  
     world = std::make_unique<World>();
 
-    /* VS Computer */ {
-        // inputInterpreters = { std::make_shared<KeyboardInputInterpreter>(), std::make_shared<GeneralAIInterpreter>(world.get(), 1) };
-        // std::unique_ptr<Player> player1 = std::make_unique<Player>(0, world.get(), world.get(), std::make_unique<Hero>(), inputInterpreters[0]);
-        // std::unique_ptr<Player> player2 = std::make_unique<Player>(1, world.get(), world.get(), std::make_unique<Hero>(), inputInterpreters[1]);
+    /* Single Player */ {
+        inputInterpreters = { std::make_shared<KeyboardInputInterpreter>() };
 
-        // world->addPlayer(std::move(player1));
-        // world->addPlayer(std::move(player2));
+        std::unique_ptr<Player> player1 = std::make_unique<Player>(0, world.get(), world.get(), std::make_unique<Hero>(), inputInterpreters[0], 1, 5);
+        player1->applyLock(Unit::Lock::BasicLock, 1e9, true);
+        player1->applyLock(Unit::Lock::WideLock, 1e9, true);
+
+        world->addPlayer(std::move(player1));
+
+        world->addPattern(std::make_unique<OrichalcumMail>(world.get()), 0);
+        world->addPattern(std::make_unique<CeresCurrent>(world.get()), 35);
+        for (int i = 0; i < 8; i++) {
+            world->addPattern(std::make_unique<HeartPulsation>(world.get()), 65 + i * (6.0f / 8.0f));
+        }
+        for (int i = 0; i < 2; i++) {
+            world->addPattern(std::make_unique<StaticGreen>(world.get(), world.get()), 65 + i * 5);
+        }
     }
-    
-    // /* Single Player */ {
-    //     inputInterpreters = { std::make_shared<KeyboardInputInterpreter>() };
-
-    //     std::unique_ptr<Player> player1 = std::make_unique<Player>(0, world.get(), world.get(), std::make_unique<Hero>(), inputInterpreters[0]);
-    //     player1->applyLock(Unit::Lock::BasicLock, 1e9, true);
-    //     player1->applyLock(Unit::Lock::WideLock, 1e9, true);
-
-    //     world->addPlayer(std::move(player1));
-
-    //     world->addPattern(std::make_unique<OrichalcumMail>(world.get()), 0);
-    //     world->addPattern(std::make_unique<CeresCurrent>(world.get()), 40);
-    // }
 
    world->init();
     
@@ -81,7 +80,7 @@ void SoloModeState::enter() {
         std::cout << "Hovered over Back button!" << std::endl;
         AudioManager::getInstance().playSound("tick");
     });
-    buttonManager.addButton(std::move(backButton));
+    // buttonManager.addButton(std::move(backButton));
 }
 
 void SoloModeState::update(float dt) {
