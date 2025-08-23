@@ -9,8 +9,10 @@
 #include "../GameState.hpp"
 #include "../decorative_components/Artwork.hpp"
 #include "../decorative_components/MovingTileGraphicsComponent.hpp"
-#include "../../../input/KeyboardInputInterpreter.hpp"
+#include "../../../input/InputInterpreter.hpp"
 #include "./char_select_preview/CharSelectPreviewManager.hpp"
+#include "../../../game/WorldBuilder.hpp"
+
 
 class GameStateManager;
 
@@ -22,6 +24,7 @@ public:
     void enter() override;
     void update(float dt) override;
     void exit() override;
+
 private:
     GameStateManager& gameStateManager;
     MovingTileGraphicsComponent movingTileEffect[2];
@@ -40,12 +43,19 @@ private:
             "Depth's Secret",
             "Stormbeast"
         };
+
+    std::vector<const InputInterpreter*> interpreters;
     CharSelector charSelectorLeft;
     CharSelector charSelectorRight;
 
     CharSelectPreviewManager charSelectPreviewManagerLeft;
     CharSelectPreviewManager charSelectPreviewManagerRight;
 
+    WorldBuilder worldBuilder;
+
+    std::string getCurrentSelectionName(std::string currentSelection);
+
+    void registerInputInterpreter();
     void startGame();
 };
 

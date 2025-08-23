@@ -45,15 +45,6 @@ int main() {
     Vector2 endPoint = { -1, -1 };
     bool measuring = false;
 
-    // Background background;
-    // background.setBackgroundRect({0, 0, GetScreenWidth(), GetScreenHeight()});
-    // background.setBackgroundColor(GRAY);
-
-    // KeybindDisplay testKeybindDisplay;
-    // testKeybindDisplay.setPosition(100, 100);
-    // testKeybindDisplay.setKey(KEY_A);
-    // testKeybindDisplay.setLayer(100);
-
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
         float dt = GetFrameTime();

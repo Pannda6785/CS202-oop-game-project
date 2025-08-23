@@ -6,7 +6,7 @@
 
 class KeyboardInputInterpreter : public InputInterpreter {
 public:
-    KeyboardInputInterpreter();
+    KeyboardInputInterpreter(int playerIndex = 0);
 
     Unit::Vec2D getMovement() const override;
     bool isInputPressed(Unit::Input input) const override;
@@ -15,8 +15,11 @@ public:
     bool isInputUp(Unit::Input input) const override;
 
     void setKeyMapping(Unit::Input input, int raylibKey);
+    int getKeyMapping(Unit::Input input) const;
+    void resetDefaultMapping();
 private:
     std::array<int, Unit::NUM_INPUTS> keyMapping;
+    std::array<int, Unit::NUM_INPUTS> defaultKeyMapping;
 };
 
 #endif // KEYBOARD_INPUT_INTERPRETER_HPP

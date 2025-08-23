@@ -20,10 +20,19 @@ VersusPlayerState::VersusPlayerState(GameStateManager& gsm)
     : gameStateManager(gsm), world(nullptr), selectedOption(PauseMenuOption::RESUME) {
 }
 
+VersusPlayerState::VersusPlayerState(GameStateManager& gsm, std::unique_ptr<World> world, std::vector<const InputInterpreter*> interpreters)
+    : gameStateManager(gsm), world(std::move(world)), interpreters(interpreters), selectedOption(PauseMenuOption::RESUME) {
+}
+
+VersusPlayerState::VersusPlayerState(GameStateManager& gsm, std::unique_ptr<World> world)
+    : gameStateManager(gsm), world(std::move(world)), selectedOption(PauseMenuOption::RESUME) {
+}
+
 VersusPlayerState::VersusPlayerState(GameStateManager& gsm, const std::string& player1Character, const std::string& player2Character)
     : gameStateManager(gsm), world(nullptr), player1CharacterName(player1Character), player2CharacterName(player2Character), selectedOption(PauseMenuOption::RESUME) {
     enter();
 }
+
 
 void VersusPlayerState::enter() {
     if (!isInitialized && !player1CharacterName.empty() && !player2CharacterName.empty()) {
@@ -32,52 +41,52 @@ void VersusPlayerState::enter() {
 }
 
 void VersusPlayerState::initializeWorld(const std::string& player1Character, const std::string& player2Character) {
-    // Store character names
-    player1CharacterName = player1Character;
-    player2CharacterName = player2Character;
+    // // Store character names
+    // player1CharacterName = player1Character;
+    // player2CharacterName = player2Character;
     
-    // Clear existing resources
-    world.reset();
-    inputInterpreters.clear();
+    // // Clear existing resources
+    // world.reset();
+    // inputInterpreters.clear();
     
-    // Create new world
-    world = std::make_unique<World>();
+    // // Create new world
+    // world = std::make_unique<World>();
     
-    // Create input interpreters for both players
-    auto player1Input = std::make_shared<KeyboardInputInterpreter>(); // Player 1 controls
-    auto player2Input = std::make_shared<KeyboardInputInterpreter>(); // Player 2 controls
+    // // Create input interpreters for both players
+    // auto player1Input = std::make_shared<KeyboardInputInterpreter>(); // Player 1 controls
+    // auto player2Input = std::make_shared<KeyboardInputInterpreter>(); // Player 2 controls
 
-    inputInterpreters.push_back(player1Input);
-    inputInterpreters.push_back(player2Input);
+    // inputInterpreters.push_back(player1Input);
+    // inputInterpreters.push_back(player2Input);
 
-    inputInterpreters[1]->setKeyMapping(Unit::Input::MoveUp, KEY_W);
-    inputInterpreters[1]->setKeyMapping(Unit::Input::MoveDown, KEY_S);
-    inputInterpreters[1]->setKeyMapping(Unit::Input::MoveLeft, KEY_A);
-    inputInterpreters[1]->setKeyMapping(Unit::Input::MoveRight, KEY_D);
+    // inputInterpreters[1]->setKeyMapping(Unit::Input::MoveUp, KEY_W);
+    // inputInterpreters[1]->setKeyMapping(Unit::Input::MoveDown, KEY_S);
+    // inputInterpreters[1]->setKeyMapping(Unit::Input::MoveLeft, KEY_A);
+    // inputInterpreters[1]->setKeyMapping(Unit::Input::MoveRight, KEY_D);
 
-    inputInterpreters[1]->setKeyMapping(Unit::Input::Basic, KEY_ONE);
-    inputInterpreters[1]->setKeyMapping(Unit::Input::Wide, KEY_TWO); 
-    inputInterpreters[1]->setKeyMapping(Unit::Input::Offensive, KEY_THREE);
-    inputInterpreters[1]->setKeyMapping(Unit::Input::Defensive, KEY_FOUR);
+    // inputInterpreters[1]->setKeyMapping(Unit::Input::Basic, KEY_ONE);
+    // inputInterpreters[1]->setKeyMapping(Unit::Input::Wide, KEY_TWO); 
+    // inputInterpreters[1]->setKeyMapping(Unit::Input::Offensive, KEY_THREE);
+    // inputInterpreters[1]->setKeyMapping(Unit::Input::Defensive, KEY_FOUR);
     
-    // Create characters
-    auto player1Char = createCharacter(player1CharacterName);
-    auto player2Char = createCharacter(player2CharacterName);
+    // // Create characters
+    // auto player1Char = createCharacter(player1CharacterName);
+    // auto player2Char = createCharacter(player2CharacterName);
 
-    // Create players and add to world
-    auto player1 = std::make_unique<Player>(
-        0, world.get(), world.get(), std::move(player1Char), player1Input);
+    // // Create players and add to world
+    // auto player1 = std::make_unique<Player>(
+    //     0, world.get(), world.get(), std::move(player1Char), player1Input);
     
-    auto player2 = std::make_unique<Player>(
-        1, world.get(), world.get(), std::move(player2Char), player2Input);
+    // auto player2 = std::make_unique<Player>(
+    //     1, world.get(), world.get(), std::move(player2Char), player2Input);
     
-    // Add players to world
-    world->addPlayer(std::move(player1));
-    world->addPlayer(std::move(player2));
+    // // Add players to world
+    // world->addPlayer(std::move(player1));
+    // world->addPlayer(std::move(player2));
     
-    // Initialize world
-    world->init();
-    isInitialized = true;
+    // // Initialize world
+    // world->init();
+    // isInitialized = true;
 }
 
 std::unique_ptr<Character> VersusPlayerState::createCharacter(const std::string& characterName) {
@@ -107,10 +116,6 @@ std::unique_ptr<Character> VersusPlayerState::createCharacter(const std::string&
 void VersusPlayerState::setupUI() {
 }
 
-// void VersusPlayerState::setVisible(bool visible) {
-//     world->setVisible(visible);
-// }
-
 VersusPlayerState::~VersusPlayerState() {
 }
 
@@ -119,8 +124,8 @@ void VersusPlayerState::update(float dt) {
         world->update(dt);
     }
     bool paused = false;
-    for(const auto& inputInterpreter : inputInterpreters) {
-        if (inputInterpreter->isInputDown(Unit::Input::Pause)) {
+    for(const auto& interpreter : interpreters) {
+        if (interpreter->isInputDown(Unit::Input::Pause)) {
             paused = true;
             break;
         }
@@ -140,8 +145,4 @@ void VersusPlayerState::update(float dt) {
 }
 
 void VersusPlayerState::exit() {
-    // Clean up resources
-    world.reset();
-    inputInterpreters.clear();
-    isInitialized = false;
 }

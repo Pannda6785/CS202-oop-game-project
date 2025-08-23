@@ -32,19 +32,16 @@ void KeybindingState::enter() {
         {(GetScreenWidth() - dividerLineLength) / 2, dividerLineY, dividerLineLength, dividerLineThickness}
     );
     
-    // Player selection instruction text
-    // Would be displayed between heading and buttons
-    
     // Calculate positions for the player buttons
     int buttonWidth = 400;
     int buttonHeight = 100;
-    int buttonSpacing = 80;
-    int buttonY = GetScreenHeight() / 2 - 50; // Centered vertically
+    int buttonSpacing = 30;
+    int buttonY = GetScreenHeight() / 2 - 250; // Centered vertically
     
     // Player 1 button
     std::unique_ptr<Button> player1Button = std::make_unique<Button>(
-        GetScreenWidth() / 2 - buttonWidth - buttonSpacing / 2, 
-        buttonY, 
+        GetScreenWidth() / 2 - buttonWidth / 2, 
+        buttonY += buttonHeight + buttonSpacing, 
         buttonWidth, 
         buttonHeight, 
         "PLAYER 1", 
@@ -52,7 +49,7 @@ void KeybindingState::enter() {
         0, 
         0, // Center aligned
         "../assets/fonts/18thCentury.ttf",
-        true // use outline
+        false
     );
     player1Button->setOnClickListener([this]() {
         AudioManager::getInstance().playSound("ClickButton");
@@ -68,8 +65,8 @@ void KeybindingState::enter() {
     
     // Player 2 button
     std::unique_ptr<Button> player2Button = std::make_unique<Button>(
-        GetScreenWidth() / 2 + buttonSpacing / 2, 
-        buttonY, 
+        GetScreenWidth() / 2 - buttonWidth / 2,
+        buttonY += buttonHeight + buttonSpacing, 
         buttonWidth, 
         buttonHeight, 
         "PLAYER 2", 
@@ -77,7 +74,7 @@ void KeybindingState::enter() {
         0, 
         0, // Center aligned
         "../assets/fonts/18thCentury.ttf",
-        true // use outline
+        false
     );
     player2Button->setOnClickListener([this]() {
         AudioManager::getInstance().playSound("ClickButton");
@@ -93,16 +90,16 @@ void KeybindingState::enter() {
     
     // Return button
     std::unique_ptr<Button> returnButton = std::make_unique<Button>(
-        GetScreenWidth() / 2 - 150, 
-        buttonY + buttonHeight + 80, 
-        300, 
-        70, 
+        GetScreenWidth() / 2 - buttonWidth / 2,
+        buttonY += buttonHeight + buttonSpacing, 
+        buttonWidth, 
+        buttonHeight, 
         "RETURN", 
-        40, 
+        50, 
         0, 
         0, // Center aligned
         "../assets/fonts/18thCentury.ttf",
-        true
+        false
     );
     returnButton->setOnClickListener([this]() {
         AudioManager::getInstance().playSound("ClickButton");
