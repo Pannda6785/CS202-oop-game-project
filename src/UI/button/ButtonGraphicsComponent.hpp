@@ -10,14 +10,12 @@ class IButtonView;
 
 class ButtonGraphicsComponent : public GraphicsComponent {
 public:
-    // ButtonGraphicsComponent needs a pointer to the logic/view interface
     ButtonGraphicsComponent(const IButtonView* buttonView);
     ~ButtonGraphicsComponent() override;
 
     void update(float dt);
     void render() const override;
 
-    // Optionally, allow changing colors/textures
     void init(int _fontSize, int _offset, int side);
     void setBackgroundColor(Color color);
     void setHoverColor(Color color);
@@ -31,7 +29,6 @@ public:
 private:
     const IButtonView* buttonView;
 
-    // Simple color scheme for demonstration
     Color backgroundColor = LIGHTGRAY;
     Color hoverColor = GRAY;
     Color pressedColor = DARKGRAY;

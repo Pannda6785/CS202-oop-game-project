@@ -2,7 +2,6 @@
 #include "../../../../audio/AudioManager.hpp"
 
 CharSelector::CharSelector() : graphic(*this), currentSelection(0), changeSelection(false) {}
-// CharSelector::~CharSelector() = default;
 
 CharSelector::~CharSelector(){
     unloadTextures();
@@ -20,24 +19,13 @@ void CharSelector::setOptions(const std::vector<std::string>& options) {
     characterOptions = options;
 }
 
-void CharSelector::setKeyUp(int raylibKey) {
-    inputInterpreter.setKeyMapping(Unit::Input::MoveUp, raylibKey);
-}
-
-void CharSelector::setKeyDown(int raylibKey) {
-    inputInterpreter.setKeyMapping(Unit::Input::MoveDown, raylibKey);
-}
-
-void CharSelector::setKeyConfirm(int raylibKey) {
-    inputInterpreter.setKeyMapping(Unit::Input::Confirm, raylibKey);
-}
-
 void CharSelector::setSide(bool isLeft) {
     isLeftSide = isLeft;
-    inputInterpreter.setKeyMapping(Unit::Input::MoveUp, isLeft ? KEY_UP : KEY_W);
-    inputInterpreter.setKeyMapping(Unit::Input::MoveDown, isLeft ? KEY_DOWN : KEY_S);
-    inputInterpreter.setKeyMapping(Unit::Input::Confirm, isLeft ? KEY_ENTER : KEY_J);
     graphic.setOriginRotate(!isLeft, !isLeft);
+}
+
+void CharSelector::setInputInterpreter(const InputInterpreter* interpreter) {
+    this->interpreter = interpreter;
 }
 
 void CharSelector::setPosition(Vector2 position) {
@@ -64,22 +52,25 @@ bool CharSelector::getChangeSelection() const {
     return changeSelection;
 }
 
+const InputInterpreter* CharSelector::getInputInterpreter() const {
+    return interpreter;
+}
+
 bool CharSelector::isLocked() const {
     return lockSelect;
 }
 
 void CharSelector::update(float dt) {
-    inputInterpreter.update(dt);
     bool change = false;
-    if (inputInterpreter.isInputPressed(Unit::Input::MoveUp) && !lockSelect) {
+    if (interpreter && interpreter->isInputPressed(Unit::Input::MoveUp) && !lockSelect) {
         currentSelection = std::max(0, currentSelection - 1);
         change = true;
     }
-    if (inputInterpreter.isInputPressed(Unit::Input::MoveDown) && !lockSelect) {
+    if (interpreter && interpreter->isInputPressed(Unit::Input::MoveDown) && !lockSelect) {
         currentSelection = std::min(static_cast<int>(characterOptions.size()) - 1, currentSelection + 1);
         change = true;
     }
-    if (inputInterpreter.isInputPressed(Unit::Input::Confirm) && !lockSelect) {
+    if (interpreter && interpreter->isInputPressed(Unit::Input::Confirm) && !lockSelect) {
         lockSelect = true;
         AudioManager::getInstance().playSound("ConfirmSelectChar");
     }

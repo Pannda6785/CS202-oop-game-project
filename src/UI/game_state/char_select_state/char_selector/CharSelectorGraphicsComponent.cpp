@@ -9,7 +9,6 @@ CharSelectorGraphicsComponent::CharSelectorGraphicsComponent(CharSelector& charS
     }
 
 void CharSelectorGraphicsComponent::loadTexture(const std::string& texturePath) {
-    // selectionCursorTexture = LoadTexture(texturePath.c_str());
     selectionCursorTexture = TextureManager::instance().getTexture(texturePath);
 }
 

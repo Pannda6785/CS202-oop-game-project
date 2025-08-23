@@ -2,6 +2,7 @@
 #include "../GameStateManager.hpp"
 #include "../../../audio/AudioManager.hpp"
 #include "../../../input/InputInterpreterManager.hpp"
+#include "../../../input/KeyboardInputInterpreter.hpp"
 
 KeybindingConfigState::KeybindingConfigState(GameStateManager& gsm, BehindDots &behindDots, int indexPlayer)
     : gameStateManager(gsm), behindDots(behindDots), playerIndex(indexPlayer) {
@@ -32,10 +33,10 @@ void KeybindingConfigState::enter() {
     int buttonWidth = 700;
     int buttonHeight = 50;
     int buttonSpacing = 10;
-    int buttonY = -30; // Centered vertically
+    int buttonY = -30;
     for(int i = 0; i < static_cast<int>(Unit::Input::InputCount); i++){
         Vector2 position = {GetScreenWidth() / 2 - buttonWidth / 2, buttonY += (buttonHeight + buttonSpacing)};
-        keybindDisplays.push_back(std::make_unique<KeybindDisplay>(InputInterpreterManager::getInstance().getKeyMapping(playerIndex, static_cast<Unit::Input>(i))));
+        keybindDisplays.push_back(std::make_unique<KeybindDisplay>(static_cast<KeyboardInputInterpreter*>(InputInterpreterManager::getInstance().getInterpreter(playerIndex))->getKeyMapping(static_cast<Unit::Input>(i))));
         keybindDisplays.back()->setPosition(position.x + buttonWidth - 100, position.y + buttonHeight / 2);
         keybindDisplays.back()->setLayer(20);
         auto button = std::make_unique<Button>(
@@ -90,7 +91,6 @@ void KeybindingConfigState::enter() {
 
 void KeybindingConfigState::update(float dt) {
     if (isWaitingForKeyPressed) {
-        // Check for key presses
         for (int key = KEY_SPACE; key <= KEY_KB_MENU; key++) {
             if (IsKeyPressed(key)) {
                 isWaitingForKeyPressed = false;
@@ -109,20 +109,18 @@ int KeybindingConfigState::waitForKeyPress() {
 
 void KeybindingConfigState::setInputKeyForAction(int actionIndex, int raylibKey) {
     if (actionIndex >= 0 && actionIndex < keybindActions.size()) {
-        InputInterpreterManager::getInstance().setKeyMapping(playerIndex, static_cast<Unit::Input>(actionIndex), raylibKey);
+        static_cast<KeyboardInputInterpreter*>(InputInterpreterManager::getInstance().getInterpreter(playerIndex))->setKeyMapping(static_cast<Unit::Input>(actionIndex), raylibKey);
     }
     updateDisplay();
 }
 
 void KeybindingConfigState::updateDisplay() {
-    // Update the display of keybindings
     for (size_t i = 0; i < keybindDisplays.size(); i++) {
-        keybindDisplays[i]->setKey(InputInterpreterManager::getInstance().getKeyMapping(playerIndex, static_cast<Unit::Input>(i)));
+        keybindDisplays[i]->setKey(static_cast<KeyboardInputInterpreter*>(InputInterpreterManager::getInstance().getInterpreter(playerIndex))->getKeyMapping(static_cast<Unit::Input>(i)));
     }
 }
 
 void KeybindingConfigState::exit() {
-    // Clean up keybinding configuration UI elements
 }
 
 void KeybindingConfigState::setVisible(bool visible) {

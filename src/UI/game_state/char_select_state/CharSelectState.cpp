@@ -1,6 +1,8 @@
 #include "CharSelectState.hpp"
 #include "../GameStateManager.hpp"
 #include "../versus_mode_state/versus_player_state/VersusPlayerState.hpp"
+#include "../../../input/InputInterpreterManager.hpp"
+#include <algorithm>
 #include <iostream>
 
 CharSelectState::CharSelectState(GameStateManager& gsm)
@@ -70,70 +72,73 @@ void CharSelectState::update(float dt) {
         movingTileEffect[i].update(dt);
     }
 
+    registerInputInterpreter();
+
     charSelectorLeft.update(dt);
     charSelectorRight.update(dt);
 
     if(charSelectorLeft.getChangeSelection()){
         std::string characterName = selectOptions[charSelectorLeft.getCurrentSelection()];
-        
-        if(characterName == "Sun Priestess" || 
-           characterName == "Silent Redhood" ||
-           characterName == "Royal Arcanist" ||
-           characterName == "Hero of Frost" ||
-           characterName == "Dreadwyrm Heir" ||
-           characterName == "Lich of Flowers" ||
-           characterName == "Depth's Secret" ||
-           characterName == "Stormbeast" || 
-           characterName == "Random Select") {
-            
-            charSelectPreviewManagerLeft.setPreview(characterName, true);
-        } else {
-            charSelectPreviewManagerLeft.setPreview("Sun Priestess", true);
-        }
+        charSelectPreviewManagerLeft.setPreview(characterName, true);
     }
 
     if(charSelectorRight.getChangeSelection()){
         std::string characterName = selectOptions[charSelectorRight.getCurrentSelection()];
-        
-        if(characterName == "Sun Priestess" || 
-           characterName == "Silent Redhood" ||
-           characterName == "Royal Arcanist" ||
-           characterName == "Hero of Frost" ||
-           characterName == "Dreadwyrm Heir" ||
-           characterName == "Lich of Flowers" ||
-           characterName == "Depth's Secret" ||
-           characterName == "Stormbeast" || 
-           characterName == "Random Select") {
-            
-            charSelectPreviewManagerRight.setPreview(characterName, false);
-        } else {
-            charSelectPreviewManagerRight.setPreview("Sun Priestess", false);
-        }
+        charSelectPreviewManagerRight.setPreview(characterName, false);
     }
 
     charSelectPreviewManagerLeft.update(dt);
     charSelectPreviewManagerRight.update(dt);
+
+    if(charSelectorLeft.isLocked()){
+        worldBuilder.setPlayer(0, getCurrentSelectionName(selectOptions[charSelectorLeft.getCurrentSelection()]), charSelectorLeft.getInputInterpreter());
+    }
+
+    if(charSelectorRight.isLocked()){
+        worldBuilder.setPlayer(1, getCurrentSelectionName(selectOptions[charSelectorRight.getCurrentSelection()]), charSelectorRight.getInputInterpreter());
+    }
 
     if(charSelectorLeft.isLocked() && charSelectorRight.isLocked()) {
         startGame();
     }
 }
 
-void CharSelectState::startGame(){
-    std::string player1Character = selectOptions[charSelectorLeft.getCurrentSelection()];
-    if(player1Character == "Random Select") {
-        int randomIndex = GetRandomValue(0, selectOptions.size() - 2); // Exclude "Random Select"
-        if(randomIndex >= charSelectorLeft.getCurrentSelection()) randomIndex++;
-        player1Character = selectOptions[randomIndex];
+void CharSelectState::registerInputInterpreter(){
+    if(interpreters.size() >= 2) return;
+    for(const auto& interpreter : InputInterpreterManager::getInstance().getInterpreters()) {
+        bool isPressed = false;
+        for(int i = 0; i < static_cast<int>(Unit::Input::InputCount) && !isPressed; i++) {
+            isPressed |= interpreter->isInputPressed(static_cast<Unit::Input>(i));
+        }
+        if(isPressed){
+            bool alreadyExists = false;
+            for(int i = 0; i < interpreters.size(); i++) {
+                if(interpreters[i] == interpreter) {
+                    alreadyExists = true;
+                    break;
+                }
+            }
+            if(!alreadyExists) {
+                interpreters.push_back(interpreter);
+                if(interpreters.size() == 1) charSelectorLeft.setInputInterpreter(interpreter);
+                else charSelectorRight.setInputInterpreter(interpreter);
+                return;
+            }
+        }
     }
-    std::string player2Character = selectOptions[charSelectorRight.getCurrentSelection()];
-    if(player2Character == "Random Select") {
-        int randomIndex = GetRandomValue(0, selectOptions.size() - 2); // Exclude "Random Select"
-        if(randomIndex >= charSelectorRight.getCurrentSelection()) randomIndex++;
-        player2Character = selectOptions[randomIndex];
-    }
+}
 
-    gameStateManager.changeCurrentState(std::make_unique<VersusPlayerState>(gameStateManager, player1Character, player2Character));
+std::string CharSelectState::getCurrentSelectionName(std::string currentSelection) {
+    if(currentSelection == "Random Select"){
+        int randomIndex = GetRandomValue(0, selectOptions.size() - 2); // Exclude "Random Select"
+        if(randomIndex >= std::find(selectOptions.begin(), selectOptions.end(), currentSelection) - selectOptions.begin()) randomIndex++;
+        return selectOptions[randomIndex];
+    }
+    return currentSelection;
+}
+
+void CharSelectState::startGame(){
+    gameStateManager.changeCurrentState(std::make_unique<VersusPlayerState>(gameStateManager, worldBuilder.getWorld(), interpreters));
 }
 
 void CharSelectState::exit() {

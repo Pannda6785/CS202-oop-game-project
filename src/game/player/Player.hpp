@@ -20,7 +20,7 @@ class Player {
 
 public:
     Player(int playerId, IWorldView* worldView, IBulletSpawner* bulletSpawner,
-            std::unique_ptr<Character> character, std::shared_ptr<InputInterpreter> inputInterpreter);
+            std::unique_ptr<Character> character, const InputInterpreter* inputInterpreter);
 
     // Update methods
     void init();

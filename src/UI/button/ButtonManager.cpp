@@ -24,16 +24,13 @@ void ButtonManager::update(float dt) {
         }
     }
 
-    // 2. Mouse hover: update hoveredIndex if mouse is over any button
     updateHoveredByMouse();
 
-    // 3. Keyboard navigation
     updateHoveredByKeyboard();
 
-    // 4. Trigger the current button if ENTER is pressed
     if (hoveredIndex != -1 && isTriggerCurrentButton) {
         triggerCurrentButton();
-        isTriggerCurrentButton = false; // Reset trigger state
+        isTriggerCurrentButton = false;
     }
 }
 
@@ -53,29 +50,32 @@ void ButtonManager::updateHoveredByMouse() {
     }
     if(found){
         if (hoveredIndex != prevHovered) {
-            // If hoveredIndex changed, update states
             if (prevHovered != -1 && prevHovered < (int)buttons.size()) {
                 buttons[prevHovered]->setExitHovered(true);
             }
             buttons[hoveredIndex]->setEnterHovered(true);
         }
     }
-
-    // If mouse leaves all buttons, hoveredIndex is preserved (do nothing)
 }
 
 void ButtonManager::updateHoveredByKeyboard() {
     if (buttons.empty()) return;
 
     int prevHovered = hoveredIndex;
-
-    // Navigation: UP/DOWN
-    if (InputInterpreterManager::getInstance().isInputPressed(Unit::Input::MoveUp)) {
+    bool isMoveUp = false;
+    bool isMoveDown = false;
+    bool isConfirm = false;
+    for(const auto &interpreter : InputInterpreterManager::getInstance().getInterpreters()){
+        isMoveUp |= interpreter->isInputPressed(Unit::Input::MoveUp);
+        isMoveDown |= interpreter->isInputPressed(Unit::Input::MoveDown);
+        isConfirm |= interpreter->isInputPressed(Unit::Input::Confirm);
+    }
+    if (isMoveUp) {
         int idx = hoveredIndex;
         int next = findNextEnabled(idx, -1);
         if (next != -1) hoveredIndex = next;
     }
-    if (InputInterpreterManager::getInstance().isInputPressed(Unit::Input::MoveDown)) {
+    if (isMoveDown) {
         int idx = hoveredIndex;
         int next = findNextEnabled(idx, 1);
         if (next != -1) hoveredIndex = next;
@@ -84,8 +84,7 @@ void ButtonManager::updateHoveredByKeyboard() {
         buttons[hoveredIndex]->setEnterHovered(true);
         buttons[prevHovered]->setExitHovered(true);
     }
-    // ENTER triggers the current button
-    if (hoveredIndex != -1 && InputInterpreterManager::getInstance().isInputPressed(Unit::Input::Confirm)) {
+    if (hoveredIndex != -1 && isConfirm) {
         isTriggerCurrentButton = true;
     }
 }

@@ -3,7 +3,6 @@
 
 #include "../../GameState.hpp"
 #include "../../../../input/InputInterpreter.hpp"
-#include "../../../../input/KeyboardInputInterpreter.hpp"
 #include "../../../../game/World.hpp"
 #include "../../../../game/player/Player.hpp"
 #include "../../../button/ButtonManager.hpp"
@@ -18,14 +17,14 @@ enum class PauseMenuOption;
 class VersusPlayerState : public GameState {
 public:
     VersusPlayerState(GameStateManager& gsm);
+    VersusPlayerState(GameStateManager& gsm, std::unique_ptr<World> world);
+    VersusPlayerState(GameStateManager& gsm, std::unique_ptr<World> world, std::vector<const InputInterpreter*> interpreters);
     VersusPlayerState(GameStateManager& gsm, const std::string& player1Character, const std::string& player2Character);
     ~VersusPlayerState() override;
 
     void enter() override;
     void update(float dt) override;
     void exit() override;
-
-    // void setVisible(bool visible);
     
     // Initialize world with specified characters
     void initializeWorld(const std::string& player1Character, const std::string& player2Character);
@@ -33,7 +32,7 @@ public:
 private:
     GameStateManager& gameStateManager;
     std::unique_ptr<World> world = nullptr;
-    std::vector<std::shared_ptr<KeyboardInputInterpreter>> inputInterpreters;
+    std::vector<const InputInterpreter*> interpreters;
     ButtonManager buttonManager;
     PauseMenuOption selectedOption;
 

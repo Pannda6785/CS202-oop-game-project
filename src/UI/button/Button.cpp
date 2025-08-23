@@ -21,7 +21,6 @@ Button::~Button(){
     }
 }
 
-// --- IButtonControl methods ---
 void Button::enable() { disabledState = false; }
 void Button::disable() { disabledState = true; }
 void Button::setToState(std::string state) {
@@ -39,9 +38,6 @@ void Button::setPosition(int newX, int newY) {
 void Button::setOnClickListener(std::function<void()> callback) { onClick = callback; }
 void Button::setOnHoverEnterListener(std::function<void()> callback) { onHoverEnter = callback; }
 void Button::setOnHoverExitListener(std::function<void()> callback) { onHoverExit = callback; }
-// void Button::setOnHoverExitListener(std::function<void()> callback) {}
-
-// --- IButtonView methods ---
 bool Button::isIdle() const { return idleState; }
 bool Button::isHovered() const { return hoveredState; }
 bool Button::isPressed() const { return pressedState; }
@@ -65,7 +61,6 @@ void Button::setLayer(int layer) {
     graphic->setLayer(layer);
 }
 
-// --- Logic update ---
 void Button::update(float dt) {
     if (disabledState) {
         idleState = true;
@@ -78,14 +73,14 @@ void Button::update(float dt) {
         if (onHoverEnter) onHoverEnter();
         idleState = false;
         hoveredState = true;
-        enterHovered = false; // Reset after triggering
+        enterHovered = false;
     }
 
     if(exitHovered){
         if (onHoverExit) onHoverExit();
         hoveredState = false;
         idleState = true;
-        exitHovered = false; // Reset after triggering
+        exitHovered = false;
     }
     graphic->update(dt);
 }

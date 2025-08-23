@@ -4,7 +4,6 @@
 #include <iostream>
 
 ButtonGraphicsComponent::ButtonGraphicsComponent(const IButtonView* buttonView) : buttonView(buttonView) {
-    // font = LoadFontEx("../assets/fonts/Redressed.ttf", 256, 0, 0);
     isLoaded = true;
     effectRectHeight = 0.0f;
     period = 0.3f;
@@ -33,7 +32,6 @@ void ButtonGraphicsComponent::init(int _fontSize, int _offset, int _side){
 }
 
 void ButtonGraphicsComponent::update(float dt){
-    // Determine color based on state
     Color currentColor = backgroundColor;
     if (buttonView->isEnabled()) {
         if (buttonView->isPressed()) {
@@ -64,19 +62,16 @@ void ButtonGraphicsComponent::render() const {
         effectRectHeight * 2.0f
     };
     DrawRectangleRec(bounds, WHITE);
-    // DrawRectangleLinesEx(bounds, 2, BLACK);
 
-    // Draw button label centered
     if (isLoaded) {
         const std::string& label = buttonView->getText();
         Vector2 textSize = MeasureTextEx(font, label.c_str(), fontSize, 2);
-        // int textX = inMiddle ? bounds.x + (bounds.width - textSize.x) / 2 : buttonView->getX() + buttonView->getWidth() - offsetRightSide - textSize.x;
         float textX = 0.0f;
-        if (side == -1) { // Left
+        if (side == -1) {
             textX = bounds.x + offset;
-        } else if (side == 0) { // Center
+        } else if (side == 0) {
             textX = bounds.x + (bounds.width - textSize.x) / 2;
-        } else if (side == 1) { // Right
+        } else if (side == 1) {
             textX = bounds.x + bounds.width - textSize.x - offset;
         }
         int textY = bounds.y + (bounds.height - textSize.y) / 2;

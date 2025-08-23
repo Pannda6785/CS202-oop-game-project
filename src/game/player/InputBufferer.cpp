@@ -1,6 +1,6 @@
 #include "InputBufferer.hpp"
 
-InputBufferer::InputBufferer(std::shared_ptr<InputInterpreter> interpreter) : interpreter(interpreter), currentTime(0.0f) {}
+InputBufferer::InputBufferer(const InputInterpreter* interpreter) : interpreter(interpreter), currentTime(0.0f) {}
 
 void InputBufferer::update(float dt) {
     currentTime += dt;

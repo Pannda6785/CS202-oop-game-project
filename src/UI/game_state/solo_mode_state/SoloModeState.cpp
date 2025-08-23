@@ -37,12 +37,12 @@ void SoloModeState::enter() {
     world = std::make_unique<World>();
 
     /* VS Computer */ {
-        inputInterpreters = { std::make_shared<KeyboardInputInterpreter>(), std::make_shared<GeneralAIInterpreter>(world.get(), 1) };
-        std::unique_ptr<Player> player1 = std::make_unique<Player>(0, world.get(), world.get(), std::make_unique<Hero>(), inputInterpreters[0]);
-        std::unique_ptr<Player> player2 = std::make_unique<Player>(1, world.get(), world.get(), std::make_unique<Hero>(), inputInterpreters[1]);
+        // inputInterpreters = { std::make_shared<KeyboardInputInterpreter>(), std::make_shared<GeneralAIInterpreter>(world.get(), 1) };
+        // std::unique_ptr<Player> player1 = std::make_unique<Player>(0, world.get(), world.get(), std::make_unique<Hero>(), inputInterpreters[0]);
+        // std::unique_ptr<Player> player2 = std::make_unique<Player>(1, world.get(), world.get(), std::make_unique<Hero>(), inputInterpreters[1]);
 
-        world->addPlayer(std::move(player1));
-        world->addPlayer(std::move(player2));
+        // world->addPlayer(std::move(player1));
+        // world->addPlayer(std::move(player2));
     }
     
     // /* Single Player */ {

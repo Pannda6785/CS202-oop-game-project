@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 #include <memory>
-#include "../../../../input/KeyboardInputInterpreter.hpp"
+#include "../../../../input/InputInterpreter.hpp"
 #include "CharSelectorGraphicsComponent.hpp"
 
 class CharSelector {
@@ -16,10 +16,8 @@ public:
     void unloadTextures();
 
     void setOptions(const std::vector<std::string>& options);
-    void setKeyUp(int raylibKey);
-    void setKeyDown(int raylibKey);
-    void setKeyConfirm(int raylibKey);
     void setSide(bool isLeft);
+    void setInputInterpreter(const InputInterpreter* interpreter);
     void setPosition(Vector2 position);
     void setDirection(Vector2 dir);
     void setAngleRotate(float angle);
@@ -27,6 +25,7 @@ public:
 
     int getCurrentSelection() const;
     bool getChangeSelection() const;
+    const InputInterpreter* getInputInterpreter() const;
 
     bool isLocked() const;
 
@@ -38,7 +37,7 @@ private:
 
     int currentSelection = 0;
     bool lockSelect = false;
-    KeyboardInputInterpreter inputInterpreter;
+    const InputInterpreter* interpreter = nullptr;
     bool isLeftSide = true;
     bool changeSelection = false;
 
