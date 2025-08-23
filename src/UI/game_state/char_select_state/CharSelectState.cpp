@@ -73,6 +73,22 @@ void CharSelectState::update(float dt) {
     }
 
     registerInputInterpreter();
+    
+    if(charSelectorLeft.isLocked()){
+        worldBuilder.setPlayer(0, getCurrentSelectionName(selectOptions[charSelectorLeft.getCurrentSelection()]), charSelectorLeft.getInputInterpreter());
+    } else{
+        if(charSelectorLeft.getInputInterpreter() != nullptr && charSelectorLeft.getInputInterpreter()->isInputPressed(Unit::Input::Back)) {
+            gameStateManager.popState();
+        }
+    }
+
+    if(charSelectorRight.isLocked()){
+        worldBuilder.setPlayer(1, getCurrentSelectionName(selectOptions[charSelectorRight.getCurrentSelection()]), charSelectorRight.getInputInterpreter());
+    } else{
+        if(charSelectorRight.getInputInterpreter() != nullptr && charSelectorRight.getInputInterpreter()->isInputPressed(Unit::Input::Back)) {
+            gameStateManager.popState();
+        }
+    }
 
     charSelectorLeft.update(dt);
     charSelectorRight.update(dt);
@@ -90,17 +106,6 @@ void CharSelectState::update(float dt) {
     charSelectPreviewManagerLeft.update(dt);
     charSelectPreviewManagerRight.update(dt);
 
-    if(charSelectorLeft.isLocked()){
-        worldBuilder.setPlayer(0, getCurrentSelectionName(selectOptions[charSelectorLeft.getCurrentSelection()]), charSelectorLeft.getInputInterpreter());
-    }
-
-    if(charSelectorRight.isLocked()){
-        worldBuilder.setPlayer(1, getCurrentSelectionName(selectOptions[charSelectorRight.getCurrentSelection()]), charSelectorRight.getInputInterpreter());
-    }
-
-    if(charSelectorLeft.isLocked() && charSelectorRight.isLocked()) {
-        startGame();
-    }
 }
 
 void CharSelectState::registerInputInterpreter(){

@@ -20,6 +20,7 @@
 #include "../../../game/pattern/StaticGreen.hpp"
 
 #include "../../../input/KeyboardInputInterpreter.hpp"
+#include "../../../input/InputInterpreterManager.hpp"
 #include "../../../game/ai/GeneralAIInterpreter.hpp"
 
 #include <iostream>
@@ -39,9 +40,8 @@ void SoloModeState::enter() {
     world = std::make_unique<World>();
 
     /* Single Player */ {
-        inputInterpreters = { std::make_shared<KeyboardInputInterpreter>() };
 
-        std::unique_ptr<Player> player1 = std::make_unique<Player>(0, world.get(), world.get(), std::make_unique<Hero>(), inputInterpreters[0], 1, 5);
+        std::unique_ptr<Player> player1 = std::make_unique<Player>(0, world.get(), world.get(), std::make_unique<Hero>(), InputInterpreterManager::getInstance().getInterpreter(0), 1, 5);
         player1->applyLock(Unit::Lock::BasicLock, 1e9, true);
         player1->applyLock(Unit::Lock::WideLock, 1e9, true);
 
@@ -58,35 +58,9 @@ void SoloModeState::enter() {
     }
 
    world->init();
-    
-    std::unique_ptr<Button> backButton = std::make_unique<Button>(
-        50, 
-        50, 
-        500, 
-        75, 
-        "Back to Main Menu", 
-        50, 
-        50, 
-        0, 
-        "../assets/fonts/Redressed.ttf",
-        true
-    );
-    backButton->setOnClickListener([&gsm = gameStateManager]() {
-        std::cout << "Returning to Main Menu..." << std::endl;
-        gsm.changeState(std::make_unique<MainMenuState>(gsm));
-        AudioManager::getInstance().playSound("tick");
-    });
-    backButton->setOnHoverEnterListener([]() {
-        std::cout << "Hovered over Back button!" << std::endl;
-        AudioManager::getInstance().playSound("tick");
-    });
-    // buttonManager.addButton(std::move(backButton));
 }
 
 void SoloModeState::update(float dt) {
-    // Update input interpreters and world if needed
-    for (size_t i = 0; i < inputInterpreters.size(); i++)
-        inputInterpreters[i]->update(dt);
     world->update(dt);
 
     buttonManager.update(dt);

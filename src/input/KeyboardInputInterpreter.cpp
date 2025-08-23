@@ -30,7 +30,7 @@ KeyboardInputInterpreter::KeyboardInputInterpreter(int playerIndex) {
         defaultKeyMapping[static_cast<int>(Unit::Input::Toggle)]    = keyMapping[static_cast<int>(Unit::Input::Toggle)]    = KEY_RIGHT_CONTROL;
         defaultKeyMapping[static_cast<int>(Unit::Input::Pause)]     = keyMapping[static_cast<int>(Unit::Input::Pause)]     = KEY_ESCAPE;
         defaultKeyMapping[static_cast<int>(Unit::Input::Confirm)]   = keyMapping[static_cast<int>(Unit::Input::Confirm)]   = KEY_RIGHT_SHIFT;
-        defaultKeyMapping[static_cast<int>(Unit::Input::Back)]      = keyMapping[static_cast<int>(Unit::Input::Back)]      = KEY_BACKSPACE;
+        defaultKeyMapping[static_cast<int>(Unit::Input::Back)]      = keyMapping[static_cast<int>(Unit::Input::Back)]      = KEY_L;
 
         defaultKeyMapping[static_cast<int>(Unit::Input::MoveUp)]    = keyMapping[static_cast<int>(Unit::Input::MoveUp)]    = KEY_W;
         defaultKeyMapping[static_cast<int>(Unit::Input::MoveDown)]  = keyMapping[static_cast<int>(Unit::Input::MoveDown)]  = KEY_S;

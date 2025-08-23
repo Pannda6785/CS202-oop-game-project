@@ -74,6 +74,12 @@ void CharSelector::update(float dt) {
         lockSelect = true;
         AudioManager::getInstance().playSound("ConfirmSelectChar");
     }
+    if (interpreter && interpreter->isInputPressed(Unit::Input::Back)) {
+        if(lockSelect){
+            lockSelect = false;
+            AudioManager::getInstance().playSound("CancelSelectChar");
+        }
+    }
     changeSelection = change;
     if(change){
         AudioManager::getInstance().playSound("MenuCursor");

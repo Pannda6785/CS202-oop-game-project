@@ -22,6 +22,8 @@ class Player {
 public:
     Player(int playerId, IWorldView* worldView, IBulletSpawner* bulletSpawner,
             std::unique_ptr<Character> character, const InputInterpreter* inputInterpreter, int init_stock = STOCK, int init_health = HEALTH);
+    Player(int playerId, IWorldView* worldView, IBulletSpawner* bulletSpawner,
+            std::unique_ptr<Character> character, const InputInterpreter* inputInterpreter);
 
     // Update methods
     void init();

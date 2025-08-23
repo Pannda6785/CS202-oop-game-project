@@ -24,7 +24,6 @@ public:
 private:
     GameStateManager& gameStateManager;
     std::unique_ptr<World> world;
-    std::vector<std::shared_ptr<InputInterpreter>> inputInterpreters;
     ButtonManager buttonManager;
 };
 
