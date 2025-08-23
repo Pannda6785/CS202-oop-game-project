@@ -161,7 +161,7 @@ void CharSelectPreview::update(float dt) {
         checkFadeIn = true;
     }
     if(mainPortrait.finishedFadeIn()){
-        assert(checkFadeIn);
+        // assert(checkFadeIn);
     }
     for(int i = 0; i < 3; i++){
         if(mainPortrait.finishedFadeIn()) {

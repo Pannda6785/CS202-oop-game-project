@@ -38,6 +38,9 @@ private:
     GraphicsComponentManager(const GraphicsComponentManager&) = delete;
     GraphicsComponentManager& operator=(const GraphicsComponentManager&) = delete;
 
+    struct CompareComponent {
+        bool operator()(const GraphicsComponent* a, const GraphicsComponent* b) const;
+    };
     std::vector<const GraphicsComponent*> components;
 
     Camera2D resolutionCamera{};

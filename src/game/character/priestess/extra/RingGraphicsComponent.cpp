@@ -6,6 +6,7 @@
 RingGraphicsComponent::RingGraphicsComponent(bool isWide) : isWide(isWide) {
     setVisible(false);
     setLayer(Unit::Layer::Bullet + 5);
+    addTag("world_object");
 }
 
 void RingGraphicsComponent::render() const {

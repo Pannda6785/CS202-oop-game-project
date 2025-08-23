@@ -14,7 +14,7 @@ class CeresCurrent : public Pattern {
     static constexpr float DURATION = 30;
 
     static constexpr float PLAYPEN_WIDTH = 1400;
-    static constexpr float PLAYPEN_STARTUP = 2.0f;
+    static constexpr float PLAYPEN_STARTUP = 7.0f;
 
     static constexpr float B1_START_TIME = 4;
     static constexpr float B1_SPEED = 450;

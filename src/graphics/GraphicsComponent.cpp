@@ -26,8 +26,8 @@ int GraphicsComponent::getLayer() const {
 
 void GraphicsComponent::setLayer(int newLayer) {
     if (layer != newLayer) {
-        layer = newLayer;
         GraphicsComponentManager::instance().unregisterComponent(this);
+        layer = newLayer;
         GraphicsComponentManager::instance().registerComponent(this);
     }
 }
@@ -42,7 +42,9 @@ bool GraphicsComponent::hasTag(const std::string& tag) const {
 
 bool GraphicsComponent::addTag(const std::string& tag) {
     if (!hasTag(tag)) {
+        GraphicsComponentManager::instance().unregisterComponent(this);
         tags.push_back(tag);
+        GraphicsComponentManager::instance().registerComponent(this);
         return true;
     }
     return false;
@@ -51,7 +53,9 @@ bool GraphicsComponent::addTag(const std::string& tag) {
 bool GraphicsComponent::removeTag(const std::string& tag) {
     auto it = std::find(tags.begin(), tags.end(), tag);
     if (it != tags.end()) {
+        GraphicsComponentManager::instance().unregisterComponent(this);
         tags.erase(it);
+        GraphicsComponentManager::instance().registerComponent(this);
         return true;
     }
     return false;

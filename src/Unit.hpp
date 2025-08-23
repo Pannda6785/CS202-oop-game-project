@@ -8,7 +8,7 @@
 namespace Unit {
     const float EPS = 1e-6;
 
-    const float BATTLEFIELD_WIDTH = 2800.0f;
+    const float BATTLEFIELD_WIDTH = 2400.0f;
     const float BATTLEFIELD_HEIGHT = 1000.0f;
     const float BOUNDARY_PADDING = 35.0f;
 
