@@ -13,14 +13,14 @@ public:
     WorldBuilder();
     ~WorldBuilder() = default;
 
-    void setPlayer(int id, const std::string& characterName, const InputInterpreter* interpreter);
+    void setPlayer(int id, const std::string& characterName, std::shared_ptr<InputInterpreter> interpreter);
     
     std::unique_ptr<World> getWorld();
 
 private:
     struct PlayerConfig {
         std::string name;
-        const InputInterpreter* interpreter;
+        std::shared_ptr<InputInterpreter> interpreter;
         
         PlayerConfig() : name(""), interpreter(nullptr) {}
     };

@@ -11,7 +11,7 @@
 #include <random>
 
 Player::Player(int playerId, IWorldView* worldView, IBulletSpawner* bulletSpawner,
-            std::unique_ptr<Character> character, const InputInterpreter* inputInterpreter,
+            std::unique_ptr<Character> character, std::shared_ptr<InputInterpreter> inputInterpreter,
             int init_stock, int init_health) 
         : playerId(playerId), world(worldView), bulletSpawner(bulletSpawner), 
           character(std::move(character)), input(std::make_unique<InputBufferer>(inputInterpreter)),
@@ -30,24 +30,24 @@ Player::Player(int playerId, IWorldView* worldView, IBulletSpawner* bulletSpawne
     hitbox = std::make_unique<CircleHitbox>(pos, HITBOX_RADIUS);
 }
 
-Player::Player(int playerId, IWorldView* worldView, IBulletSpawner* bulletSpawner,
-            std::unique_ptr<Character> character, const InputInterpreter* inputInterpreter) 
-        : playerId(playerId), world(worldView), bulletSpawner(bulletSpawner), 
-          character(std::move(character)), input(std::make_unique<InputBufferer>(inputInterpreter)),
-          stock(STOCK), init_health(HEALTH), health(HEALTH) 
-{
-    this->character->registerPlayer(this);
+// Player::Player(int playerId, IWorldView* worldView, IBulletSpawner* bulletSpawner,
+//             std::unique_ptr<Character> character, std::shared_ptr<InputInterpreter> inputInterpreter) 
+//         : playerId(playerId), world(worldView), bulletSpawner(bulletSpawner), 
+//           character(std::move(character)), input(std::make_unique<InputBufferer>(inputInterpreter)),
+//           stock(STOCK), init_health(HEALTH), health(HEALTH) 
+// {
+//     this->character->registerPlayer(this);
 
-    invincibility = {0, 0};
+//     invincibility = {0, 0};
 
-    float offset = playerId == 0 ? -400 : +400;
-    setPosition({Unit::BATTLEFIELD_WIDTH / 2 + offset, Unit::BATTLEFIELD_HEIGHT / 2});
+//     float offset = playerId == 0 ? -400 : +400;
+//     setPosition({Unit::BATTLEFIELD_WIDTH / 2 + offset, Unit::BATTLEFIELD_HEIGHT / 2});
     
-    arrow = {0.0f, 1.0f};
-    movement = {0.0f, 0.0f};
+//     arrow = {0.0f, 1.0f};
+//     movement = {0.0f, 0.0f};
     
-    hitbox = std::make_unique<CircleHitbox>(pos, HITBOX_RADIUS);
-}
+//     hitbox = std::make_unique<CircleHitbox>(pos, HITBOX_RADIUS);
+// }
 
 // --- Update methods ---
 void Player::init() {

@@ -24,7 +24,7 @@ void CharSelector::setSide(bool isLeft) {
     graphic.setOriginRotate(!isLeft, !isLeft);
 }
 
-void CharSelector::setInputInterpreter(const InputInterpreter* interpreter) {
+void CharSelector::setInputInterpreter(std::shared_ptr<InputInterpreter> interpreter) {
     this->interpreter = interpreter;
 }
 
@@ -52,7 +52,7 @@ bool CharSelector::getChangeSelection() const {
     return changeSelection;
 }
 
-const InputInterpreter* CharSelector::getInputInterpreter() const {
+std::shared_ptr<InputInterpreter> CharSelector::getInputInterpreter() const {
     return interpreter;
 }
 

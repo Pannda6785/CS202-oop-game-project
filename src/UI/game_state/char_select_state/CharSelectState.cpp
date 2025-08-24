@@ -2,11 +2,12 @@
 #include "../GameStateManager.hpp"
 #include "../versus_mode_state/versus_player_state/VersusPlayerState.hpp"
 #include "../../../input/InputInterpreterManager.hpp"
+#include "../../../game/ai/GeneralAIInterpreter.hpp"
 #include <algorithm>
 #include <iostream>
 
-CharSelectState::CharSelectState(GameStateManager& gsm)
-    : gameStateManager(gsm), charSelectorLeft(), charSelectorRight() {
+CharSelectState::CharSelectState(GameStateManager& gsm, bool isVsPlayer)
+    : gameStateManager(gsm), charSelectorLeft(), charSelectorRight(), isVsPlayer(isVsPlayer) {
     enter();
 }
 
@@ -83,7 +84,8 @@ void CharSelectState::update(float dt) {
     }
 
     if(charSelectorRight.isLocked()){
-        worldBuilder.setPlayer(1, getCurrentSelectionName(selectOptions[charSelectorRight.getCurrentSelection()]), charSelectorRight.getInputInterpreter());
+        if(isVsPlayer) worldBuilder.setPlayer(1, getCurrentSelectionName(selectOptions[charSelectorRight.getCurrentSelection()]), charSelectorRight.getInputInterpreter());
+        // else worldBuilder.setPlayer(1, getCurrentSelectionName(selectOptions[charSelectorRight.getCurrentSelection()]), InputInterpreterManager::getInstance().getInterpreter(2));
     } else{
         if(charSelectorRight.getInputInterpreter() != nullptr && charSelectorRight.getInputInterpreter()->isInputPressed(Unit::Input::Back)) {
             gameStateManager.popState();

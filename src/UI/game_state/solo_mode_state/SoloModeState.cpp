@@ -42,6 +42,7 @@ void SoloModeState::enter() {
     /* Single Player */ {
 
         std::unique_ptr<Player> player1 = std::make_unique<Player>(0, world.get(), world.get(), std::make_unique<Hero>(), InputInterpreterManager::getInstance().getInterpreter(0), 1, 5);
+        
         player1->applyLock(Unit::Lock::BasicLock, 1e9, true);
         player1->applyLock(Unit::Lock::WideLock, 1e9, true);
 

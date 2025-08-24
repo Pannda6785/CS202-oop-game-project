@@ -17,7 +17,7 @@ public:
 
     void setOptions(const std::vector<std::string>& options);
     void setSide(bool isLeft);
-    void setInputInterpreter(const InputInterpreter* interpreter);
+    void setInputInterpreter(std::shared_ptr<InputInterpreter> interpreter);
     void setPosition(Vector2 position);
     void setDirection(Vector2 dir);
     void setAngleRotate(float angle);
@@ -25,7 +25,7 @@ public:
 
     int getCurrentSelection() const;
     bool getChangeSelection() const;
-    const InputInterpreter* getInputInterpreter() const;
+    std::shared_ptr<InputInterpreter> getInputInterpreter() const;
 
     bool isLocked() const;
 
@@ -37,7 +37,7 @@ private:
 
     int currentSelection = 0;
     bool lockSelect = false;
-    const InputInterpreter* interpreter = nullptr;
+    std::shared_ptr<InputInterpreter> interpreter = nullptr;
     bool isLeftSide = true;
     bool changeSelection = false;
 

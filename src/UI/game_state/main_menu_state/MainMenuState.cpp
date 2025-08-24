@@ -49,7 +49,7 @@ void MainMenuState::enter() {
     versusPlayerButton->setOnClickListener([this]() {
         AudioManager::getInstance().playSound("ClickButton");
         setVisible(false);
-        gameStateManager.pushState(std::make_unique<CharSelectState>(gameStateManager));
+        gameStateManager.pushState(std::make_unique<CharSelectState>(gameStateManager, true));
     });
     versusPlayerButton->setOnHoverEnterListener([this]() {
         std::cout << "Hovered over Versus Player button!" << std::endl;
@@ -73,7 +73,7 @@ void MainMenuState::enter() {
         AudioManager::getInstance().playSound("ClickButton");
         // gameStateManager.changeState(std::make_unique<SoloModeState>(gameStateManager));
         setVisible(false);
-        gameStateManager.pushState(std::make_unique<CharSelectState>(gameStateManager));
+        gameStateManager.pushState(std::make_unique<CharSelectState>(gameStateManager, false));
         // gameStateManager.pushState(std::make_unique<VersusPlayerState>(gameStateManager, "Sun Priestess", "Hero of Frost"));
     });
     versusComButton->setOnHoverEnterListener([this]() {

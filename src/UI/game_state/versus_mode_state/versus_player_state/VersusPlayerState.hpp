@@ -18,7 +18,7 @@ class VersusPlayerState : public GameState {
 public:
     VersusPlayerState(GameStateManager& gsm);
     VersusPlayerState(GameStateManager& gsm, std::unique_ptr<World> world);
-    VersusPlayerState(GameStateManager& gsm, std::unique_ptr<World> world, std::vector<const InputInterpreter*> interpreters);
+    VersusPlayerState(GameStateManager& gsm, std::unique_ptr<World> world, std::vector<std::shared_ptr<InputInterpreter>> interpreters);
     VersusPlayerState(GameStateManager& gsm, const std::string& player1Character, const std::string& player2Character);
     ~VersusPlayerState() override;
 
@@ -32,7 +32,7 @@ public:
 private:
     GameStateManager& gameStateManager;
     std::unique_ptr<World> world = nullptr;
-    std::vector<const InputInterpreter*> interpreters;
+    std::vector<std::shared_ptr<InputInterpreter>> interpreters;
     ButtonManager buttonManager;
     PauseMenuOption selectedOption;
 

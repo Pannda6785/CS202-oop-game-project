@@ -14,7 +14,7 @@
 WorldBuilder::WorldBuilder(){
 }
 
-void WorldBuilder::setPlayer(int id, const std::string& characterName, const InputInterpreter* interpreter) {
+void WorldBuilder::setPlayer(int id, const std::string& characterName, std::shared_ptr<InputInterpreter> interpreter) {
     while(!(id < playerConfigs.size())) playerConfigs.push_back(PlayerConfig());
     playerConfigs[id].name = characterName;
     playerConfigs[id].interpreter = interpreter;

@@ -20,8 +20,8 @@ VersusPlayerState::VersusPlayerState(GameStateManager& gsm)
     : gameStateManager(gsm), world(nullptr), selectedOption(PauseMenuOption::RESUME) {
 }
 
-VersusPlayerState::VersusPlayerState(GameStateManager& gsm, std::unique_ptr<World> world, std::vector<const InputInterpreter*> interpreters)
-    : gameStateManager(gsm), world(std::move(world)), interpreters(interpreters), selectedOption(PauseMenuOption::RESUME) {
+VersusPlayerState::VersusPlayerState(GameStateManager& gsm, std::unique_ptr<World> world, std::vector<std::shared_ptr<InputInterpreter>> interpreters)
+    : gameStateManager(gsm), world(std::move(world)), interpreters(std::move( interpreters)), selectedOption(PauseMenuOption::RESUME) {
 }
 
 VersusPlayerState::VersusPlayerState(GameStateManager& gsm, std::unique_ptr<World> world)
@@ -136,7 +136,7 @@ void VersusPlayerState::update(float dt) {
     if(selectedOption != PauseMenuOption::RESUME) {
         if(selectedOption == PauseMenuOption::CHARACTER_SELECT) {
             // Handle character select
-            gameStateManager.changeCurrentState(std::make_unique<CharSelectState>(gameStateManager));
+            gameStateManager.changeCurrentState(std::make_unique<CharSelectState>(gameStateManager, true));
         } else if(selectedOption == PauseMenuOption::MAIN_MENU) {
             // Handle main menu
             gameStateManager.popState();
