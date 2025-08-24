@@ -11,7 +11,7 @@
 #include <random>
 
 Player::Player(int playerId, IWorldView* worldView, IBulletSpawner* bulletSpawner,
-            std::unique_ptr<Character> character, const InputInterpreter* inputInterpreter,
+            std::unique_ptr<Character> character, std::shared_ptr<InputInterpreter> inputInterpreter,
             int init_stock, int init_health) 
         : playerId(playerId), world(worldView), bulletSpawner(bulletSpawner), 
           character(std::move(character)), input(std::make_unique<InputBufferer>(inputInterpreter)),

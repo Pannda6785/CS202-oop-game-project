@@ -8,9 +8,9 @@
 class InputInterpreterManager {
 public:
     static InputInterpreterManager& getInstance();
-    
-    InputInterpreter* getInterpreter(int playerIndex);
-    std::vector<const InputInterpreter*> getInterpreters() const;
+
+    std::shared_ptr<InputInterpreter> getInterpreter(int playerIndex);
+    const std::vector<std::shared_ptr<InputInterpreter>> getInterpreters() const;
 
 private:
     InputInterpreterManager();
@@ -18,7 +18,7 @@ private:
     InputInterpreterManager(const InputInterpreterManager&) = delete;
     InputInterpreterManager& operator=(const InputInterpreterManager&) = delete;
     
-    std::vector<std::unique_ptr<InputInterpreter>> interpreters;
+    std::vector<std::shared_ptr<InputInterpreter>> interpreters;
 };
 
 #endif // INPUT_INTERPRETER_MANAGER_HPP

@@ -1,12 +1,13 @@
 #include "CharSelectState.hpp"
 #include "../GameStateManager.hpp"
-#include "../versus_mode_state/versus_player_state/VersusPlayerState.hpp"
+#include "../versus_mode_state/VersusModeState.hpp"
 #include "../../../input/InputInterpreterManager.hpp"
+#include "../../../game/ai/GeneralAIInterpreter.hpp"
 #include <algorithm>
 #include <iostream>
 
-CharSelectState::CharSelectState(GameStateManager& gsm)
-    : gameStateManager(gsm), charSelectorLeft(), charSelectorRight() {
+CharSelectState::CharSelectState(GameStateManager& gsm, bool isVsPlayer)
+    : gameStateManager(gsm), charSelectorLeft(), charSelectorRight(), isVsPlayer(isVsPlayer), worldBuilder(isVsPlayer) {
     enter();
 }
 
@@ -68,14 +69,38 @@ void CharSelectState::enter() {
 }
 
 void CharSelectState::update(float dt) {
+    if(charSelectorLeft.isLocked() && charSelectorRight.isLocked()){
+        startGame();
+        return;
+    }
+
     for(int i = 0; i < 2; i++){
         movingTileEffect[i].update(dt);
     }
 
     registerInputInterpreter();
 
+    if(!charSelectorLeft.isLocked() && charSelectorLeft.getInputInterpreter() != nullptr && charSelectorLeft.getInputInterpreter()->isInputPressed(Unit::Input::Back)){
+        gameStateManager.popState();
+    }
+
+    if(!charSelectorRight.isLocked() && charSelectorRight.getInputInterpreter() != nullptr && charSelectorRight.getInputInterpreter()->isInputPressed(Unit::Input::Back)) {
+        gameStateManager.popState();
+    }
+
     charSelectorLeft.update(dt);
     charSelectorRight.update(dt);
+
+    if(charSelectorLeft.isLocked()){
+        worldBuilder.setPlayer(0, getCurrentSelectionName(selectOptions[charSelectorLeft.getCurrentSelection()]), charSelectorLeft.getInputInterpreter());
+    }
+
+    if(charSelectorRight.isLocked()){
+        if(isVsPlayer) worldBuilder.setPlayer(1, getCurrentSelectionName(selectOptions[charSelectorRight.getCurrentSelection()]), charSelectorRight.getInputInterpreter());
+        else{
+            worldBuilder.setAI(1, getCurrentSelectionName(selectOptions[charSelectorRight.getCurrentSelection()]));
+        }
+    }
 
     if(charSelectorLeft.getChangeSelection()){
         std::string characterName = selectOptions[charSelectorLeft.getCurrentSelection()];
@@ -89,18 +114,6 @@ void CharSelectState::update(float dt) {
 
     charSelectPreviewManagerLeft.update(dt);
     charSelectPreviewManagerRight.update(dt);
-
-    if(charSelectorLeft.isLocked()){
-        worldBuilder.setPlayer(0, getCurrentSelectionName(selectOptions[charSelectorLeft.getCurrentSelection()]), charSelectorLeft.getInputInterpreter());
-    }
-
-    if(charSelectorRight.isLocked()){
-        worldBuilder.setPlayer(1, getCurrentSelectionName(selectOptions[charSelectorRight.getCurrentSelection()]), charSelectorRight.getInputInterpreter());
-    }
-
-    if(charSelectorLeft.isLocked() && charSelectorRight.isLocked()) {
-        startGame();
-    }
 }
 
 void CharSelectState::registerInputInterpreter(){
@@ -138,7 +151,8 @@ std::string CharSelectState::getCurrentSelectionName(std::string currentSelectio
 }
 
 void CharSelectState::startGame(){
-    gameStateManager.changeCurrentState(std::make_unique<VersusPlayerState>(gameStateManager, worldBuilder.getWorld(), interpreters));
+    interpreters = worldBuilder.getInterpreters();
+    gameStateManager.changeCurrentState(std::make_unique<VersusModeState>(gameStateManager, worldBuilder.getWorld(), interpreters));
 }
 
 void CharSelectState::exit() {

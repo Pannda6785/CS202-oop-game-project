@@ -1,7 +1,6 @@
 #include "MainMenuState.hpp"
 #include "../GameStateManager.hpp"
 #include "../solo_mode_state/SoloModeState.hpp"
-#include "../versus_mode_state/versus_player_state/VersusPlayerState.hpp"
 #include "../char_select_state/CharSelectState.hpp"
 #include "../options_state/OptionsState.hpp"
 #include "../../../audio/AudioManager.hpp"
@@ -34,95 +33,74 @@ void MainMenuState::enter() {
     int offset = 250;
     int deltaOffset = 15;
     int fontSize = 70;
-    // Story button
-    std::unique_ptr<Button> storyButton = std::make_unique<Button>(
-        0, 
-        coordYFirstButton += buttonHeight, 
-        buttonWidth, 
-        buttonHeight, 
-        "STORY", 
-        fontSize, 
-        offset -= deltaOffset, 
-        1, 
-        "../assets/fonts/Redressed.ttf",
-        true
-    );
-    storyButton->setOnClickListener([this]() {
-        AudioManager::getInstance().playSound("ClickButton");
-        std::cout << "Story" << std::endl;
-    });
-    storyButton->setOnHoverEnterListener([this]() {
-        std::cout << "Hovered over Story button!" << std::endl;
-        AudioManager::getInstance().playSound("MenuCursor");
-    });
-    buttonManager.addButton(std::move(storyButton));
-    // Versus button
-    std::unique_ptr<Button> versusButton = std::make_unique<Button>(
+    // Versus player button
+    std::unique_ptr<Button> versusPlayerButton = std::make_unique<Button>(
         0, 
         coordYFirstButton += buttonHeight, 
         buttonWidth, buttonHeight, 
-        "VERSUS", 
+        "VS PLAYER", 
         fontSize, 
         offset -= deltaOffset, 
         1, 
         "../assets/fonts/Redressed.ttf",
         true
     );
-    versusButton->setOnClickListener([this]() {
+    versusPlayerButton->setOnClickListener([this]() {
         AudioManager::getInstance().playSound("ClickButton");
-        // gameStateManager.changeState(std::make_unique<SoloModeState>(gameStateManager));
         setVisible(false);
-        gameStateManager.pushState(std::make_unique<CharSelectState>(gameStateManager));
-        // gameStateManager.pushState(std::make_unique<VersusPlayerState>(gameStateManager, "Sun Priestess", "Hero of Frost"));
+        gameStateManager.pushState(std::make_unique<CharSelectState>(gameStateManager, true));
     });
-    versusButton->setOnHoverEnterListener([this]() {
-        std::cout << "Hovered over Versus button!" << std::endl;
+    versusPlayerButton->setOnHoverEnterListener([this]() {
+        std::cout << "Hovered over Versus Player button!" << std::endl;
         AudioManager::getInstance().playSound("MenuCursor");
     });
-    buttonManager.addButton(std::move(versusButton));
-    // Network button
-    std::unique_ptr<Button> networkButton = std::make_unique<Button>(
+    buttonManager.addButton(std::move(versusPlayerButton));
+    // Versus Com button
+    std::unique_ptr<Button> versusComButton = std::make_unique<Button>(
+        0,
+        coordYFirstButton += buttonHeight,
+        buttonWidth,
+        buttonHeight,
+        "VS COM",
+        fontSize,
+        offset -= deltaOffset,
+        1,
+        "../assets/fonts/Redressed.ttf",
+        true
+    );
+    versusComButton->setOnClickListener([this]() {
+        AudioManager::getInstance().playSound("ClickButton");
+        setVisible(false);
+        gameStateManager.pushState(std::make_unique<CharSelectState>(gameStateManager, false));
+    });
+    versusComButton->setOnHoverEnterListener([this]() {
+        std::cout << "Hovered over Versus Com button!" << std::endl;
+        AudioManager::getInstance().playSound("MenuCursor");
+    });
+    buttonManager.addButton(std::move(versusComButton));
+    // Single player button
+    std::unique_ptr<Button> singleButton = std::make_unique<Button>(
         0, 
         coordYFirstButton += buttonHeight, 
         buttonWidth, 
         buttonHeight, 
-        "NETWORK", 
+        "SINGLE", 
         fontSize, 
         offset -= deltaOffset, 
         1, 
         "../assets/fonts/Redressed.ttf",
         true
     );
-    networkButton->setOnClickListener([this]() {
+    singleButton->setOnClickListener([this]() {
         AudioManager::getInstance().playSound("ClickButton");
+        setVisible(false);
+        gameStateManager.pushState(std::make_unique<SoloModeState>(gameStateManager));
     });
-    networkButton->setOnHoverEnterListener([this]() {
-        std::cout << "Hovered over Network button!" << std::endl;
+    singleButton->setOnHoverEnterListener([this]() {
+        std::cout << "Hovered over Single button!" << std::endl;
         AudioManager::getInstance().playSound("MenuCursor");
     });
-    buttonManager.addButton(std::move(networkButton));
-    // Extras button
-    std::unique_ptr<Button> extrasButton = std::make_unique<Button>(
-        0, 
-        coordYFirstButton += buttonHeight, 
-        buttonWidth, 
-        buttonHeight, 
-        "EXTRAS", 
-        fontSize, 
-        offset -= deltaOffset, 
-        1, 
-        "../assets/fonts/Redressed.ttf",
-        true
-    );
-    extrasButton->setOnClickListener([this]() {
-        AudioManager::getInstance().playSound("ClickButton");
-    });
-    extrasButton->setOnHoverEnterListener([this]() {
-        std::cout << "Hovered over Extra button!" << std::endl;
-        AudioManager::getInstance().playSound("MenuCursor");
-    });
-    buttonManager.addButton(std::move(extrasButton));
-
+    buttonManager.addButton(std::move(singleButton));
     // Options button
     std::unique_ptr<Button> optionsButton = std::make_unique<Button>(
         0, 
@@ -193,7 +171,6 @@ void MainMenuState::update(float dt) {
 }
 
 void MainMenuState::exit() {
-    // AudioManager::getInstance().unloadThemeMusic();
     behindDots.unloadTexture();
     for(int i = 0; i < 2; i++) {
         movingTileEffect[i].unloadTextures();

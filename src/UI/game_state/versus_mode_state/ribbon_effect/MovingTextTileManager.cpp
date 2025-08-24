@@ -2,8 +2,7 @@
 #include <algorithm>
 #include <iostream>
 
-MovingTextTileManager::MovingTextTileManager() 
-    : pauseTileActive(false), pauseTileIndex(-1) {
+MovingTextTileManager::MovingTextTileManager() {
 }
 
 MovingTextTileManager::~MovingTextTileManager() {
@@ -29,11 +28,6 @@ void MovingTextTileManager::addCountdown(float displayTime) {
 }
 
 void MovingTextTileManager::addPause() {
-    // Don't add multiple pause tiles
-    if (pauseTileActive) {
-        return;
-    }
-    
     createPauseTile();
 }
 
@@ -42,19 +36,15 @@ void MovingTextTileManager::update(float dt) {
     
     // Update all tiles and their timers
     for (auto& pair : movingTextTileList) {
-        // If this tile has a timer (not a pause tile)
         if (pair.first > 0.0f) {
-            // Update the timer
             pair.first -= dt;
             
-            // Mark for cleanup if timer expired
             if (pair.first <= 0.0f) {
                 pair.first = 0.0f;
                 needsCleanup = true;
             }
         }
         
-        // Update the tile itself
         if (pair.second) {
             pair.second->update(dt);
         }
@@ -71,18 +61,6 @@ void MovingTextTileManager::update(float dt) {
         );
         
         movingTextTileList.erase(it, movingTextTileList.end());
-        
-        // Reset pause tile tracking if it was removed
-        if (pauseTileActive) {
-            pauseTileActive = false;
-            for (size_t i = 0; i < movingTextTileList.size(); ++i) {
-                if (movingTextTileList[i].first == -1.0f) {
-                    pauseTileActive = true;
-                    pauseTileIndex = i;
-                    break;
-                }
-            }
-        }
     }
     if(countdownTileIndex != -1 && countdownTileIndex < movingTextTileList.size()){
         std::string countdown = std::to_string(movingTextTileList[countdownTileIndex].first);
@@ -103,26 +81,6 @@ void MovingTextTileManager::setVisible(bool visible) {
 
 void MovingTextTileManager::clear() {
     movingTextTileList.clear();
-    pauseTileActive = false;
-    pauseTileIndex = -1;
-}
-
-bool MovingTextTileManager::hasPauseTile() const {
-    return pauseTileActive;
-}
-
-bool MovingTextTileManager::hasActiveTiles() const {
-    return !movingTextTileList.empty();
-}
-
-void MovingTextTileManager::removePauseTile() {
-    if (pauseTileActive && pauseTileIndex >= 0 && 
-        pauseTileIndex < static_cast<int>(movingTextTileList.size())) {
-        
-        movingTextTileList.erase(movingTextTileList.begin() + pauseTileIndex);
-        pauseTileActive = false;
-        pauseTileIndex = -1;
-    }
 }
 
 void MovingTextTileManager::createReadyTile(float displayTime) {
@@ -216,7 +174,32 @@ void MovingTextTileManager::createPauseTile() {
         .build();
     
     // Add to the list with special timer value (-1 means no timer)
-    movingTextTileList.emplace_back(-1.0f, std::move(pauseTile));
-    pauseTileActive = true;
-    pauseTileIndex = movingTextTileList.size() - 1;
+    movingTextTileList.emplace_back(1e9, std::move(pauseTile));
+}
+
+void MovingTextTileManager::addResultAnnouncement(std::string announcement) {
+    float padding = 150.0f;
+    auto resultTile = MovingTextTileBuilder()
+        .withTileTexture("../assets/UI_sprites/charselect_ribbon_mid.png")
+        .withTileStartPosition({0, 450})
+        .withTileSpeed(75.0f)
+        .withTileAngle(93.0f)
+        .withTileScale(0.75f)
+        .withTileInitialNum(20)
+
+        .withTileRestrictArea({-padding, -padding, GetScreenWidth() + padding * 2.0f, GetScreenHeight() + padding * 2.0f})
+        
+        .withBackgroundColor(WHITE)
+        .withBackgroundWidthRatio(0.8f)
+        
+        .withText(announcement)
+        .withTextFont("../assets/fonts/ferrum.otf")
+        .withTextFontSize(145)
+        .withTextColor(BLACK)
+        .withTextSpacing(300.0f)
+        
+        .withLayer(100)
+        .build();
+
+    movingTextTileList.emplace_back(1e9, std::move(resultTile));
 }

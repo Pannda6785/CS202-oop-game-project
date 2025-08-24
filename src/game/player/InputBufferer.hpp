@@ -12,7 +12,7 @@ class InputBufferer {
     static constexpr float BUFFER_TIME = 0.4f; // Time in seconds to keep buffer inputs, assumes no move buffers longer that this
 
 public:
-    InputBufferer(const InputInterpreter* interpreter);
+    InputBufferer(std::shared_ptr<InputInterpreter> interpreter);
 
     void update(float dt);
     Unit::Vec2D getMovement() const;
@@ -21,7 +21,7 @@ public:
     void flush();
 
 private:
-    const InputInterpreter* interpreter;
+    std::shared_ptr<InputInterpreter> interpreter;
     struct BufferedInput {
         Unit::Input input;
         float inputtedTime;

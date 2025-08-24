@@ -36,7 +36,14 @@ void KeybindingConfigState::enter() {
     int buttonY = -30;
     for(int i = 0; i < static_cast<int>(Unit::Input::InputCount); i++){
         Vector2 position = {GetScreenWidth() / 2 - buttonWidth / 2, buttonY += (buttonHeight + buttonSpacing)};
-        keybindDisplays.push_back(std::make_unique<KeybindDisplay>(static_cast<KeyboardInputInterpreter*>(InputInterpreterManager::getInstance().getInterpreter(playerIndex))->getKeyMapping(static_cast<Unit::Input>(i))));
+        auto interpreter = InputInterpreterManager::getInstance().getInterpreter(playerIndex);
+        auto keyboardInterpreter = std::dynamic_pointer_cast<KeyboardInputInterpreter>(interpreter);
+        if (keyboardInterpreter) {
+            keybindDisplays.push_back(std::make_unique<KeybindDisplay>(
+                keyboardInterpreter->getKeyMapping(static_cast<Unit::Input>(i))));
+        } else {
+            std::cerr << "Error: Expected keyboard interpreter for player " << playerIndex << std::endl;
+        }
         keybindDisplays.back()->setPosition(position.x + buttonWidth - 100, position.y + buttonHeight / 2);
         keybindDisplays.back()->setLayer(20);
         auto button = std::make_unique<Button>(
@@ -109,14 +116,22 @@ int KeybindingConfigState::waitForKeyPress() {
 
 void KeybindingConfigState::setInputKeyForAction(int actionIndex, int raylibKey) {
     if (actionIndex >= 0 && actionIndex < keybindActions.size()) {
-        static_cast<KeyboardInputInterpreter*>(InputInterpreterManager::getInstance().getInterpreter(playerIndex))->setKeyMapping(static_cast<Unit::Input>(actionIndex), raylibKey);
+        auto interpreter = InputInterpreterManager::getInstance().getInterpreter(playerIndex);
+        auto keyboardInterpreter = std::dynamic_pointer_cast<KeyboardInputInterpreter>(interpreter);
+        if (keyboardInterpreter) {
+            keyboardInterpreter->setKeyMapping(static_cast<Unit::Input>(actionIndex), raylibKey);
+        }
     }
     updateDisplay();
 }
 
 void KeybindingConfigState::updateDisplay() {
     for (size_t i = 0; i < keybindDisplays.size(); i++) {
-        keybindDisplays[i]->setKey(static_cast<KeyboardInputInterpreter*>(InputInterpreterManager::getInstance().getInterpreter(playerIndex))->getKeyMapping(static_cast<Unit::Input>(i)));
+        auto interpreter = InputInterpreterManager::getInstance().getInterpreter(playerIndex);
+        auto keyboardInterpreter = std::dynamic_pointer_cast<KeyboardInputInterpreter>(interpreter);
+        if (keyboardInterpreter) {
+            keybindDisplays[i]->setKey(keyboardInterpreter->getKeyMapping(static_cast<Unit::Input>(i)));
+        }
     }
 }
 

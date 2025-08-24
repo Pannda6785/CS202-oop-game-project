@@ -1,13 +1,13 @@
 #include "InputBufferer.hpp"
 
-InputBufferer::InputBufferer(const InputInterpreter* interpreter) : interpreter(interpreter), currentTime(0.0f) {}
+InputBufferer::InputBufferer(std::shared_ptr<InputInterpreter> interpreter) : interpreter(interpreter), currentTime(0.0f) {}
 
 void InputBufferer::update(float dt) {
     currentTime += dt;
 
     // Check and buffer relevant inputs
     for (const auto& input : toBufferInputs) {
-        if (interpreter->isInputPressed(input)) {
+        if (interpreter && interpreter->isInputPressed(input)) {
             bufferQueue.push_back({input, currentTime});
         }
     }
@@ -19,11 +19,12 @@ void InputBufferer::update(float dt) {
 }
 
 Unit::Vec2D InputBufferer::getMovement() const {
+    if(!interpreter) return Unit::Vec2D{0.0f, 0.0f};
     return interpreter->getMovement();
 }
 
 bool InputBufferer::isHoldingKey(Unit::Input input) const {
-    return interpreter->isInputDown(input);
+    return interpreter && interpreter->isInputDown(input);
 }
 
 bool InputBufferer::tryRegister(Unit::Input input, float bufferTime) {

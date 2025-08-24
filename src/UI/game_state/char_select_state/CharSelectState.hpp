@@ -18,7 +18,7 @@ class GameStateManager;
 
 class CharSelectState : public GameState {
 public:
-    CharSelectState(GameStateManager& gsm);
+    CharSelectState(GameStateManager& gsm, bool isVsPlayer = true);
     ~CharSelectState();
 
     void enter() override;
@@ -44,7 +44,7 @@ private:
             "Stormbeast"
         };
 
-    std::vector<const InputInterpreter*> interpreters;
+    std::vector<std::shared_ptr<InputInterpreter>> interpreters;
     CharSelector charSelectorLeft;
     CharSelector charSelectorRight;
 
@@ -54,6 +54,8 @@ private:
     WorldBuilder worldBuilder;
 
     std::string getCurrentSelectionName(std::string currentSelection);
+
+    bool isVsPlayer = true;
 
     void registerInputInterpreter();
     void startGame();
