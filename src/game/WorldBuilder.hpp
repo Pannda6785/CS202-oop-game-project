@@ -10,11 +10,13 @@
 
 class WorldBuilder {
 public:
-    WorldBuilder();
+    WorldBuilder(bool isVsPlayer = true);
     ~WorldBuilder() = default;
 
     void setPlayer(int id, const std::string& characterName, std::shared_ptr<InputInterpreter> interpreter);
-    
+    void setAI(int id, const std::string& characterName);
+    std::vector<std::shared_ptr<InputInterpreter>> getInterpreters() const;
+
     std::unique_ptr<World> getWorld();
 
 private:
@@ -25,8 +27,10 @@ private:
         PlayerConfig() : name(""), interpreter(nullptr) {}
     };
 
+    std::unique_ptr<World> world;
     std::vector<PlayerConfig> playerConfigs;
-    std::unique_ptr<Character> createCharacter(const std::string& characterName);    
+    bool isVsPlayer = true;
+    std::unique_ptr<Character> createCharacter(const std::string& characterName);
 
 };
 

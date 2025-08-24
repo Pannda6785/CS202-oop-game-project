@@ -1,5 +1,7 @@
 #include "WorldBuilder.hpp"
 #include "./player/Player.hpp"
+#include "../game/ai/GeneralAIInterpreter.hpp"
+
 #include <iostream>
 
 #include "character/priestess/Priestess.hpp"
@@ -11,7 +13,8 @@
 #include "character/depth/Depth.hpp"
 #include "character/stormbeast/Stormbeast.hpp"
 
-WorldBuilder::WorldBuilder(){
+WorldBuilder::WorldBuilder(bool isVsPlayer) : isVsPlayer(isVsPlayer) {
+    world = std::make_unique<World>();
 }
 
 void WorldBuilder::setPlayer(int id, const std::string& characterName, std::shared_ptr<InputInterpreter> interpreter) {
@@ -20,9 +23,13 @@ void WorldBuilder::setPlayer(int id, const std::string& characterName, std::shar
     playerConfigs[id].interpreter = interpreter;
 }
 
-std::unique_ptr<World> WorldBuilder::getWorld() {
-    auto world = std::make_unique<World>();
+void WorldBuilder::setAI(int id, const std::string& characterName) {
+    while(!(id < playerConfigs.size())) playerConfigs.push_back(PlayerConfig());
+    playerConfigs[id].name = characterName;
+    playerConfigs[id].interpreter = std::make_shared<GeneralAIInterpreter>(world.get(), 1);
+}
 
+std::unique_ptr<World> WorldBuilder::getWorld() {
     for (int id = 0; id < playerConfigs.size(); ++id) {
         const auto& config = playerConfigs[id];
         std::unique_ptr<Player> player = std::make_unique<Player>(
@@ -36,7 +43,17 @@ std::unique_ptr<World> WorldBuilder::getWorld() {
     }
     
     world->init();
-    return world;
+    return std::move(world);
+}
+
+std::vector<std::shared_ptr<InputInterpreter>> WorldBuilder::getInterpreters() const {
+    std::vector<std::shared_ptr<InputInterpreter>> interpreters;
+    for (const auto& config : playerConfigs) {
+        if (config.interpreter) {
+            interpreters.push_back(config.interpreter);
+        }
+    }
+    return interpreters;
 }
 
 std::unique_ptr<Character> WorldBuilder::createCharacter(const std::string& characterName) {

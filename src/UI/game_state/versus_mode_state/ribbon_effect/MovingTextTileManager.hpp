@@ -16,24 +16,18 @@ public:
     void addReady(float displayTime);     // "READY" announcement
     void addCountdown(float displayTime); // Countdown 3...2...1
     void addPause();                      // "PAUSED" notification (no timer)
-    
+    void addResultAnnouncement(std::string annoucement); // "WIN" announcement
+
     // Core functions
     void update(float dt);
     void setVisible(bool visible);
     
     // Utility functions
     void clear();                        // Remove all tiles
-    bool hasPauseTile() const;           // Check if a pause tile exists
-    bool hasActiveTiles() const;         // Check if any tiles are active
-    void removePauseTile();              // Remove only pause tiles
 
 private:
-    // List of <timer, tile> pairs (timer counts down to removal)
     std::vector<std::pair<float, std::unique_ptr<MovingTextTile>>> movingTextTileList;
     
-    // Track if we have a pause tile (which has no timer)
-    bool pauseTileActive;
-    int pauseTileIndex;
     int countdownTileIndex = -1;
     int readyTileIndex = -1;
 

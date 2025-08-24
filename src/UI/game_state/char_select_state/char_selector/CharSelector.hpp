@@ -37,7 +37,7 @@ private:
 
     int currentSelection = 0;
     bool lockSelect = false;
-    std::shared_ptr<InputInterpreter> interpreter = nullptr;
+    std::shared_ptr<InputInterpreter> interpreter;
     bool isLeftSide = true;
     bool changeSelection = false;
 
