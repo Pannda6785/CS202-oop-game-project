@@ -38,16 +38,12 @@ void KeybindingConfigState::enter() {
         Vector2 position = {GetScreenWidth() / 2 - buttonWidth / 2, buttonY += (buttonHeight + buttonSpacing)};
         auto interpreter = InputInterpreterManager::getInstance().getInterpreter(playerIndex);
         auto keyboardInterpreter = std::dynamic_pointer_cast<KeyboardInputInterpreter>(interpreter);
-
         if (keyboardInterpreter) {
-            // Safe to use KeyboardInputInterpreter methods
             keybindDisplays.push_back(std::make_unique<KeybindDisplay>(
                 keyboardInterpreter->getKeyMapping(static_cast<Unit::Input>(i))));
         } else {
-            // Handle the case where this isn't a KeyboardInputInterpreter
             std::cerr << "Error: Expected keyboard interpreter for player " << playerIndex << std::endl;
         }
-        // keybindDisplays.push_back(std::make_unique<KeybindDisplay>(static_cast<std::shared_ptr<KeyboardInputInterpreter>>(InputInterpreterManager::getInstance().getInterpreter(playerIndex))->getKeyMapping(static_cast<Unit::Input>(i))));
         keybindDisplays.back()->setPosition(position.x + buttonWidth - 100, position.y + buttonHeight / 2);
         keybindDisplays.back()->setLayer(20);
         auto button = std::make_unique<Button>(
