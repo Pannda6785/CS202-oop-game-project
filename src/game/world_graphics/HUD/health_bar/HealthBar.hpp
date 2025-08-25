@@ -1,7 +1,7 @@
 #ifndef HEALTH_BAR_HPP
 #define HEALTH_BAR_HPP
 
-#include "../../../../UI/game_state/decorative_components/Artwork.hpp"
+#include "../../../../UI/game_state/decorative_components/artwork/Artwork.hpp"
 #include "../../../../UI/game_state/decorative_components/GameText.hpp"
 #include "../../../hitbox/RectangleHitbox.hpp"
 #include "../../../hitbox/CircleHitbox.hpp"

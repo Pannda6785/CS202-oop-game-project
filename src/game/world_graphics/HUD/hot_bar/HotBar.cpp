@@ -88,20 +88,20 @@ void HotBar::setCooldownDuration(int slotIndex, float duration) {
 }
 
 void HotBar::checkCollision(std::vector<const CircleHitbox*> circleHitbox) {
-    if (circleHitbox.empty() || !hitbox) {
-        return;
-    }
-    bool collides = false;
-    for (const auto& chb : circleHitbox) {
-        if (hitbox->collidesWithCircle(*chb)) {
-            collides = true;
-            break;
-        }
-    }
-    if (collides != fadeActive) {
-        fadeActive = collides;
-        setFadeHidding(fadeActive);
-    }
+    // if (circleHitbox.empty() || !hitbox) {
+    //     return;
+    // }
+    // bool collides = false;
+    // for (const auto& chb : circleHitbox) {
+    //     if (hitbox->collidesWithCircle(*chb)) {
+    //         collides = true;
+    //         break;
+    //     }
+    // }
+    // if (collides != fadeActive) {
+    //     fadeActive = collides;
+    //     setFadeHidding(fadeActive);
+    // }
 }
 
 void HotBar::resetFadeHidding() {

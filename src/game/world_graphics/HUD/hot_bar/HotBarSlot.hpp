@@ -1,7 +1,7 @@
 #ifndef HOT_BAR_SLOT_HPP
 #define HOT_BAR_SLOT_HPP
 
-#include "../../../../UI/game_state/decorative_components/Artwork.hpp"
+#include "../../../../UI/game_state/decorative_components/artwork/Artwork.hpp"
 #include "../../../../UI/game_state/decorative_components/GameText.hpp"
 #include <string>
 #include <memory>

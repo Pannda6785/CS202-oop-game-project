@@ -1,9 +1,11 @@
 #include "CharSelectState.hpp"
 #include "../GameStateManager.hpp"
 #include "../versus_mode_state/VersusModeState.hpp"
+#include "../../../audio/AudioManager.hpp"
 #include "../../../input/InputInterpreterManager.hpp"
 #include "../../../game/ai/GeneralAIInterpreter.hpp"
 #include "../../../graphics/GraphicsComponentManager.hpp"
+#include "setting_options_state/SettingOptionsState.hpp"
 #include <algorithm>
 #include <iostream>
 
@@ -67,6 +69,34 @@ void CharSelectState::enter() {
 
     charSelectPreviewManagerLeft.init(true);
     charSelectPreviewManagerRight.init(false);
+
+    int buttonWidth = 400;
+    int buttonHeight = 70;
+    int coordYFirstButton = GraphicsComponentManager::NATIVE_HEIGHT - 50;
+    int fontSize = 17;
+    auto challenges = worldBuilder.getAvailableChallenges();
+    std::unique_ptr<Button> challengeButton = std::make_unique<Button>(
+        GraphicsComponentManager::NATIVE_WIDTH / 2 - buttonWidth / 2, 
+        coordYFirstButton, 
+        buttonWidth, 
+        buttonHeight, 
+        "SETTING CHALLENGE", 
+        fontSize, 
+        0, 
+        0, 
+        "../assets/fonts/ferrum.otf",
+        false
+    );
+    challengeButton->setLayer(1000);
+    challengeButton->setOnClickListener([this]() {
+        AudioManager::getInstance().playSound("ClickButton");
+        gameStateManager.pushState(std::make_unique<SettingOptionsState>(gameStateManager, worldBuilder));
+    });
+    challengeButton ->setOnHoverEnterListener([this]() {
+        AudioManager::getInstance().playSound("MenuCursor");
+    });
+    challengeButtonManager.addButton(std::move(challengeButton));
+    challengeButtonManager.enableInterpreterNavigation(false);
 }
 
 void CharSelectState::update(float dt) {
@@ -78,6 +108,8 @@ void CharSelectState::update(float dt) {
     for(int i = 0; i < 2; i++){
         movingTileEffect[i].update(dt);
     }
+
+    challengeButtonManager.update(dt);
 
     registerInputInterpreter();
 

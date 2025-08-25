@@ -81,6 +81,7 @@ void SoloModeState::update(float dt) {
             gameStateManager.popState();
         } else if (selectedOption == PostGameOption::RESTART) {
             // Handle restart
+            world->init();
             std::cout << "HANDLE RESTART" << std::endl;
             selectedOption = PostGameOption::RESUME;
         }
@@ -89,7 +90,6 @@ void SoloModeState::update(float dt) {
     if (paused) {
         auto pauseStateBuilder = std::make_unique<PostGameplayMenuStateBuilder>(gameStateManager, selectedOption);
         pauseStateBuilder->setResumeButton()
-                         .setRestartButton()
                          .setMainMenuButton()
                          .setHeaderText("PAUSED");
         gameStateManager.pushState(pauseStateBuilder->build());

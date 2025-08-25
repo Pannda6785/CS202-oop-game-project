@@ -3,7 +3,7 @@
 #include <raylib.h>
 #include <iostream>
 
-ButtonManager::ButtonManager() : hoveredIndex(-1), isTriggerCurrentButton(false) {
+ButtonManager::ButtonManager() : hoveredIndex(-1), isTriggerCurrentButton(false), isInterpreterNavigationEnabled(true) {
 }
 
 ButtonManager::~ButtonManager() {
@@ -26,7 +26,7 @@ void ButtonManager::update(float dt) {
 
     updateHoveredByMouse();
 
-    updateHoveredByKeyboard();
+    if(isInterpreterNavigationEnabled) updateHoveredByKeyboard();
 
     if (hoveredIndex != -1 && isTriggerCurrentButton) {
         triggerCurrentButton();
@@ -98,6 +98,10 @@ int ButtonManager::findNextEnabled(int start, int dir) const {
         if (buttons[next]->isEnabled()) return next;
     }
     return -1;
+}
+
+void ButtonManager::enableInterpreterNavigation(bool enable) {
+    isInterpreterNavigationEnabled = enable;
 }
 
 void ButtonManager::triggerCurrentButton() {

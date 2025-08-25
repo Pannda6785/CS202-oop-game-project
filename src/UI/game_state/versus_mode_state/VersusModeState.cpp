@@ -41,9 +41,7 @@ void VersusModeState::update(float dt) {
             gameStateManager.changeCurrentState(std::make_unique<CharSelectState>(gameStateManager, true));
         } else if(selectedOption == PostGameOption::MAIN_MENU) {
             // Handle main menu
-            std::cout << "HANDLE MAIN MENU HUHUHUHUHUHUHUHUHUHUHUHUH" << std::endl;
             gameStateManager.popState();
-            std::cout << "HANDLE MAIN MENU HIHIHIHIHIHIHIHIHIHIHIHIHIHIHIH" << std::endl;
         } else if(selectedOption == PostGameOption::RESTART) {
             // Handle restart
             std::cout << "HANDLE RESTART" << std::endl;
@@ -53,7 +51,6 @@ void VersusModeState::update(float dt) {
     if(paused){
         auto pauseStateBuilder = std::make_unique<PostGameplayMenuStateBuilder>(gameStateManager, selectedOption);
         pauseStateBuilder->setResumeButton()
-                         .setRestartButton()
                          .setCharSelectButton()
                          .setMainMenuButton()
                          .setHeaderText("PAUSED");
@@ -61,8 +58,7 @@ void VersusModeState::update(float dt) {
     }
     if(isGameEnded && selectedOption == PostGameOption::RESUME) {
         auto endGameStateBuilder = std::make_unique<PostGameplayMenuStateBuilder>(gameStateManager, selectedOption);
-        endGameStateBuilder->setRestartButton()
-                         .setCharSelectButton()
+        endGameStateBuilder->setCharSelectButton()
                          .setMainMenuButton()
                          .setHeaderText(world->getFinalResults());
         gameStateManager.pushState(endGameStateBuilder->build());

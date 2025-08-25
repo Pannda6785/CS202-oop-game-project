@@ -3,7 +3,7 @@
 
 #include "../GameState.hpp"
 #include "../../button/ButtonManager.hpp"
-#include "../decorative_components/Background.hpp"
+#include "../decorative_components/background/Background.hpp"
 #include "../decorative_components/MovingTextTile.hpp"
 #include "../versus_mode_state/ribbon_effect/MovingTextTileManager.hpp"
 

@@ -3,8 +3,8 @@
 
 #include "../../decorative_components/MovingTileGraphicsComponent.hpp"
 #include "../../decorative_components/GameText.hpp"
-#include "../../decorative_components/Artwork.hpp"
-#include "../../decorative_components/Background.hpp"
+#include "../../decorative_components/artwork/Artwork.hpp"
+#include "../../decorative_components/background/Background.hpp"
 #include "../LayerInfoProvider.hpp"
 
 
