@@ -37,7 +37,7 @@ void CharSelectState::enter() {
 
 
     float characterSelectArtworkScale = 0.97f;
-    characterSelectArtwork.addTexture("../assets/UI_sprites/charselect_mid_1.png");
+    characterSelectArtwork.addTexture("../assets/UI_sprites/charselect_mid.png");
     characterSelectArtwork.setPosition(GetScreenWidth() / 2 - characterSelectArtwork.getWidth() * characterSelectArtworkScale / 2, 0);
     characterSelectArtwork.setLayer(LayerInfoProvider::getInstance().getLayer("char_select_artwork"));
     characterSelectArtwork.setScale(characterSelectArtworkScale);

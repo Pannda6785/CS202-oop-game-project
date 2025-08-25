@@ -54,20 +54,20 @@ void PostGameplayMenuState::update(float dt) {
         switch(choosingOption){
             case PostGameOption::CHARACTER_SELECT:
                 selectedOption = PostGameOption::CHARACTER_SELECT;
-                // gameStateManager.popState();
+                gameStateManager.popState();
                 break;
             case PostGameOption::MAIN_MENU:
                 selectedOption = PostGameOption::MAIN_MENU;
-                // gameStateManager.popState();
+                gameStateManager.popState();
                 break;
             case PostGameOption::RESTART:
                 selectedOption = PostGameOption::RESTART;
-                // gameStateManager.popState();
+                gameStateManager.popState();
                 break;
             default:
                 break;
         }
-        gameStateManager.popState();
+        // gameStateManager.popState();
     }
 }
 

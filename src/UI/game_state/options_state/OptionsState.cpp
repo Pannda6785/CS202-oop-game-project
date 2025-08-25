@@ -79,51 +79,51 @@ void OptionsState::enter(){
     });
     buttonManager.addButton(std::move(soundButton));
 
-    // Battle options button
-    std::unique_ptr<Button> battleButton = std::make_unique<Button>(
-        0, 
-        coordYFirstButton += buttonHeight + buttonSpacing, 
-        buttonWidth, 
-        buttonHeight, 
-        "BATTLE OPTIONS", 
-        fontSize, 
-        offset -= deltaOffset, 
-        0, 
-        "../assets/fonts/18thCentury.ttf",
-        false
-    );
-    battleButton->setOnClickListener([this]() {
-        AudioManager::getInstance().playSound("ClickButton");
-        std::cout << "Battle Options" << std::endl;
-    });
-    battleButton->setOnHoverEnterListener([this]() {
-        std::cout << "Hovered over Battle Options button!" << std::endl;
-        AudioManager::getInstance().playSound("MenuCursor");
-    });
-    buttonManager.addButton(std::move(battleButton));
+    // // Battle options button
+    // std::unique_ptr<Button> battleButton = std::make_unique<Button>(
+    //     0, 
+    //     coordYFirstButton += buttonHeight + buttonSpacing, 
+    //     buttonWidth, 
+    //     buttonHeight, 
+    //     "BATTLE OPTIONS", 
+    //     fontSize, 
+    //     offset -= deltaOffset, 
+    //     0, 
+    //     "../assets/fonts/18thCentury.ttf",
+    //     false
+    // );
+    // battleButton->setOnClickListener([this]() {
+    //     AudioManager::getInstance().playSound("ClickButton");
+    //     std::cout << "Battle Options" << std::endl;
+    // });
+    // battleButton->setOnHoverEnterListener([this]() {
+    //     std::cout << "Hovered over Battle Options button!" << std::endl;
+    //     AudioManager::getInstance().playSound("MenuCursor");
+    // });
+    // buttonManager.addButton(std::move(battleButton));
 
-    // Language options button
-    std::unique_ptr<Button> languageButton = std::make_unique<Button>(
-        0, 
-        coordYFirstButton += buttonHeight + buttonSpacing, 
-        buttonWidth, 
-        buttonHeight, 
-        "LANGUAGE OPTIONS", 
-        fontSize, 
-        offset -= deltaOffset, 
-        0, 
-        "../assets/fonts/18thCentury.ttf",
-        false
-    );
-    languageButton->setOnClickListener([this]() {
-        AudioManager::getInstance().playSound("ClickButton");
-        std::cout << "Language Options" << std::endl;
-    });
-    languageButton->setOnHoverEnterListener([this]() {
-        std::cout << "Hovered over Language Options button!" << std::endl;
-        AudioManager::getInstance().playSound("MenuCursor");
-    });
-    buttonManager.addButton(std::move(languageButton));
+    // // Language options button
+    // std::unique_ptr<Button> languageButton = std::make_unique<Button>(
+    //     0, 
+    //     coordYFirstButton += buttonHeight + buttonSpacing, 
+    //     buttonWidth, 
+    //     buttonHeight, 
+    //     "LANGUAGE OPTIONS", 
+    //     fontSize, 
+    //     offset -= deltaOffset, 
+    //     0, 
+    //     "../assets/fonts/18thCentury.ttf",
+    //     false
+    // );
+    // languageButton->setOnClickListener([this]() {
+    //     AudioManager::getInstance().playSound("ClickButton");
+    //     std::cout << "Language Options" << std::endl;
+    // });
+    // languageButton->setOnHoverEnterListener([this]() {
+    //     std::cout << "Hovered over Language Options button!" << std::endl;
+    //     AudioManager::getInstance().playSound("MenuCursor");
+    // });
+    // buttonManager.addButton(std::move(languageButton));
 
     // Input options button
     std::unique_ptr<Button> inputButton = std::make_unique<Button>(

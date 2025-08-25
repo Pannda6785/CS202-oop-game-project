@@ -29,7 +29,7 @@ int main() {
         + audio
     */
 
-    bool tool = true;
+    bool tool = false;
 
     if(!tool) HideCursor(); // Hide the default cursor
 
