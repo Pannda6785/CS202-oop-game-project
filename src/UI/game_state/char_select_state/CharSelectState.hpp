@@ -4,10 +4,11 @@
 #include <vector>
 #include <memory>
 
+#include "../../button/ButtonManager.hpp"
 #include "./char_selector/CharSelector.hpp"
 #include "LayerInfoProvider.hpp"
 #include "../GameState.hpp"
-#include "../decorative_components/Artwork.hpp"
+#include "../decorative_components/artwork/Artwork.hpp"
 #include "../decorative_components/MovingTileGraphicsComponent.hpp"
 #include "../../../input/InputInterpreter.hpp"
 #include "./char_select_preview/CharSelectPreviewManager.hpp"
@@ -52,6 +53,8 @@ private:
     CharSelectPreviewManager charSelectPreviewManagerRight;
 
     WorldBuilder worldBuilder;
+
+    ButtonManager challengeButtonManager;
 
     std::string getCurrentSelectionName(std::string currentSelection);
 

@@ -1,7 +1,7 @@
 #ifndef ARTWORK_HPP
 #define ARTWORK_HPP
 
-#include "../../../graphics/GraphicsComponent.hpp"
+#include "../../../../graphics/GraphicsComponent.hpp"
 #include <raylib.h>
 #include <vector>
 #include <string>

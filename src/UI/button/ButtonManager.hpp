@@ -19,11 +19,13 @@ public:
     Button* getButton(int idx);
     std::vector<std::unique_ptr<Button>>& getButtons();
     void setVisible(bool visible);
+    void enableInterpreterNavigation(bool enable);
 
 private:
     std::vector<std::unique_ptr<Button>> buttons;
     int hoveredIndex = -1;
     bool isTriggerCurrentButton = false;
+    bool isInterpreterNavigationEnabled = true;
 
     void updateHoveredByMouse();
     void updateHoveredByKeyboard();

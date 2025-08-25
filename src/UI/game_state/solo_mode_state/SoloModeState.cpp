@@ -81,6 +81,7 @@ void SoloModeState::update(float dt) {
             gameStateManager.popState();
         } else if (selectedOption == PostGameOption::RESTART) {
             // Handle restart
+            world->init();
             std::cout << "HANDLE RESTART" << std::endl;
             selectedOption = PostGameOption::RESUME;
         }

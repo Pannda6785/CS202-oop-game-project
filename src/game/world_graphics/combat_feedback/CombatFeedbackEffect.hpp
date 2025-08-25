@@ -2,7 +2,7 @@
 #define COMBAT_FEEDBACK_EFFECT_HPP
 
 #include "CombatFeedback.hpp"
-#include "../../../UI/game_state/decorative_components/Artwork.hpp"
+#include "../../../UI/game_state/decorative_components/artwork/Artwork.hpp"
 
 class CombatFeedbackEffect : public CombatFeedback {
 public:

@@ -7,6 +7,7 @@
 #include "../state_heading/StateHeading.hpp"
 #include "ArtworkTitle.hpp"
 #include "../decorative_components/MovingTileGraphicsComponent.hpp"
+#include "../decorative_components/artwork/Artwork.hpp"
 #include "BehindDots.hpp"
 #include <memory>
 
@@ -16,7 +17,8 @@ class MainMenuState : public GameState {
 private:
     ButtonManager buttonManager;
     GameStateManager& gameStateManager;
-    ArtworkTitle artworkTitle;
+    // ArtworkTitle artworkTitle;
+    Artwork artworkTitle;
     MovingTileGraphicsComponent movingTileEffect[2];
     BehindDots behindDots;
     StateHeading heading;

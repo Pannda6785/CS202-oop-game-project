@@ -11,7 +11,7 @@ CustomCursorGraphicsComponent::~CustomCursorGraphicsComponent(){
 void CustomCursorGraphicsComponent::loadNormalTexture(const std::string &texturePath){
     normalCursorTexture = LoadTexture(texturePath.c_str());
     isNormalLoaded = normalCursorTexture.id != 0;
-    setLayer(100);
+    setLayer(1000);
 }
 
 void CustomCursorGraphicsComponent::loadClickTexture(const std::string &texturePath){

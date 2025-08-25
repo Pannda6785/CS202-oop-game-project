@@ -2,7 +2,7 @@
 #define KEYBIND_DISPLAY_HPP
 
 #include "../decorative_components/GameText.hpp"
-#include "../decorative_components/Background.hpp"
+#include "../decorative_components/background/Background.hpp"
 #include <raylib.h>
 #include <string>
 #include <unordered_map>

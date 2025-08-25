@@ -3,7 +3,7 @@
 
 #include "MovingTileGraphicsComponent.hpp"
 #include "MovingText.hpp"
-#include "Background.hpp"
+#include "background/Background.hpp"
 #include "../../../graphics/GraphicsComponent.hpp"
 #include <memory>
 #include <string>

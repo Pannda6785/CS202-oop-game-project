@@ -17,9 +17,12 @@ MainMenuState::~MainMenuState(){
 void MainMenuState::enter() {
     setVisible(true);
     heading.setHasHeading(false);
-    artworkTitle.loadCharTexture("../assets/background/main_menu_char.png");
-    artworkTitle.loadTitleTexture("../assets/background/main_menu_title.png");
-    artworkTitle.loadDecorationTexture("../assets/background/main_menu_decoration.png");
+    // artworkTitle.loadCharTexture("../assets/background/main_menu_char.png");
+    // artworkTitle.loadTitleTexture("../assets/background/main_menu_title.png");
+    // artworkTitle.loadDecorationTexture("../assets/background/main_menu_decoration.png");
+    artworkTitle.addTexture("../assets/UI_sprites/main_menu_decoration.png");
+    artworkTitle.setPosition(900, 150);
+    artworkTitle.setLayer(10);
     movingTileEffect[0].addTexture("../assets/background/tile_pattern_0.png");
     movingTileEffect[0].addTexture("../assets/background/side_lines.png");
     movingTileEffect[1].addTexture("../assets/background/tile_pattern_1.png");

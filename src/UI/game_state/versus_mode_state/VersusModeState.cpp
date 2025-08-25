@@ -46,6 +46,7 @@ void VersusModeState::update(float dt) {
             std::cout << "HANDLE MAIN MENU HIHIHIHIHIHIHIHIHIHIHIHIHIHIHIH" << std::endl;
         } else if(selectedOption == PostGameOption::RESTART) {
             // Handle restart
+            world->init();
             std::cout << "HANDLE RESTART" << std::endl;
             selectedOption = PostGameOption::RESUME;
         }

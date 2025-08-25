@@ -1,7 +1,7 @@
 #ifndef BACKGROUND_HPP
 #define BACKGROUND_HPP
 
-#include "../../../graphics/GraphicsComponent.hpp"
+#include "../../../../graphics/GraphicsComponent.hpp"
 #include <raylib.h>
 
 class Background : public GraphicsComponent {
