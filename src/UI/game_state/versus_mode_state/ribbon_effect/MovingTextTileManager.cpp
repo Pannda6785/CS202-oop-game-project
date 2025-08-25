@@ -134,7 +134,7 @@ void MovingTextTileManager::createCountdownTile(float displayTime) {
         .withBackgroundColor(WHITE)
         .withBackgroundWidthRatio(0.8f)
         
-        .withText(std::to_string(countdownNumber))
+        .withText(std::to_string(countdownNumber) + ".00 SECONDS")
         .withTextFont("../assets/fonts/ferrum.otf")
         .withTextFontSize(145)
         .withTextColor(BLACK)
@@ -177,15 +177,15 @@ void MovingTextTileManager::createPauseTile() {
     movingTextTileList.emplace_back(1e9, std::move(pauseTile));
 }
 
-void MovingTextTileManager::addResultAnnouncement(std::string announcement) {
-    float padding = 150.0f;
+void MovingTextTileManager::addAnnouncement(std::string announcement) {
+    float padding = 300.0f;
     auto resultTile = MovingTextTileBuilder()
         .withTileTexture("../assets/UI_sprites/charselect_ribbon_mid.png")
         .withTileStartPosition({0, 450})
         .withTileSpeed(75.0f)
         .withTileAngle(93.0f)
         .withTileScale(0.75f)
-        .withTileInitialNum(20)
+        .withTileInitialNum(30)
 
         .withTileRestrictArea({-padding, -padding, GetScreenWidth() + padding * 2.0f, GetScreenHeight() + padding * 2.0f})
         
@@ -196,7 +196,7 @@ void MovingTextTileManager::addResultAnnouncement(std::string announcement) {
         .withTextFont("../assets/fonts/ferrum.otf")
         .withTextFontSize(145)
         .withTextColor(BLACK)
-        .withTextSpacing(300.0f)
+        .withTextSpacing(600.0f)
         
         .withLayer(100)
         .build();

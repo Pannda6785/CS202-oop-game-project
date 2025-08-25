@@ -23,10 +23,14 @@
 #include "../../../input/InputInterpreterManager.hpp"
 #include "../../../game/ai/GeneralAIInterpreter.hpp"
 
+#include "../post_gameplay_menu_state/PostGameplayMenuState.hpp"
+#include "../post_gameplay_menu_state/PostGameplayMenuStateBuilder.hpp"
+#include "../gameplay_pause_state/GameplayPauseState.hpp"
+
 #include <iostream>
 
 SoloModeState::SoloModeState(GameStateManager& gsm)
-    : gameStateManager(gsm)
+    : gameStateManager(gsm), selectedOption(PostGameOption::RESUME)
 {
     enter();
 }
@@ -64,7 +68,27 @@ void SoloModeState::enter() {
 void SoloModeState::update(float dt) {
     world->update(dt);
 
-    buttonManager.update(dt);
+    bool paused = false;
+    auto interpreter = InputInterpreterManager::getInstance().getInterpreter(0);
+    if (interpreter->isInputDown(Unit::Input::Pause)) {
+        paused = true;
+    }
+
+    if(selectedOption != PostGameOption::RESUME) {
+        if(selectedOption == PostGameOption::MAIN_MENU) {
+            // Handle main menu
+            std::cout << "HANDLE MAIN MENU" << std::endl;
+            gameStateManager.popState();
+        }
+    }
+
+    if (paused) {
+        auto pauseStateBuilder = std::make_unique<PostGameplayMenuStateBuilder>(gameStateManager, selectedOption);
+        pauseStateBuilder->setResumeButton()
+                         .setMainMenuButton()
+                         .setHeaderText("PAUSED");
+        gameStateManager.pushState(pauseStateBuilder->build());
+    }
 }
 
 void SoloModeState::exit() {

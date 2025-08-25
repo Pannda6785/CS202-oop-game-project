@@ -10,9 +10,9 @@ CustomCursor::~CustomCursor() {
 }
 
 void CustomCursor::init(){
-    graphic.loadClickTexture("../assets/UI_sprites/new_click_cursor.png");
-    graphic.loadNormalTexture("../assets/UI_sprites/new_normal_cursor.png");
-    graphic.loadArroundDotTexture("../assets/UI_sprites/arround_dot.png");
+    graphic.loadClickTexture("../assets/UI_sprites/click_cursor.png");
+    graphic.loadNormalTexture("../assets/UI_sprites/normal_cursor.png");
+    graphic.loadArroundDotTexture("../assets/UI_sprites/decoration/arround_dot.png");
 }
 
 void CustomCursor::update(float dt){

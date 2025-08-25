@@ -12,6 +12,8 @@
 
 class GameStateManager; // Forward declaration
 
+enum class PostGameOption;
+
 class SoloModeState : public GameState {
 public:
     SoloModeState(GameStateManager& gsm);
@@ -24,7 +26,7 @@ public:
 private:
     GameStateManager& gameStateManager;
     std::unique_ptr<World> world;
-    ButtonManager buttonManager;
+    PostGameOption selectedOption;
 };
 
 #endif // SOLO_MODE_STATE_HPP

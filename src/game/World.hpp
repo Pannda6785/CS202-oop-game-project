@@ -41,6 +41,8 @@ public:
     void addPattern(std::unique_ptr<Pattern> pattern, float time = 0.0f);
     void addChallenge(std::unique_ptr<Challenge> challenge, float time = 0.0f);
 
+    std::string getFinalResults() const;
+
 private:
     std::vector<std::unique_ptr<Player>> players;
     std::vector<std::shared_ptr<Bullet>> bullets;

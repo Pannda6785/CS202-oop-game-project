@@ -16,7 +16,7 @@ public:
     void addReady(float displayTime);     // "READY" announcement
     void addCountdown(float displayTime); // Countdown 3...2...1
     void addPause();                      // "PAUSED" notification (no timer)
-    void addResultAnnouncement(std::string annoucement); // "WIN" announcement
+    void addAnnouncement(std::string annoucement);
 
     // Core functions
     void update(float dt);

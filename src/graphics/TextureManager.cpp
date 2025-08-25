@@ -7,6 +7,10 @@ TextureManager& TextureManager::instance() {
     return instance;
 }
 
+void TextureManager::preloadTextures() {
+    loadTexture("../assets/textures/character_spritesheet.png");
+}
+
 const Texture* TextureManager::getTexture(std::string path) {
     auto it = textureCache.find(path);
     if (it != textureCache.end()) {
@@ -30,4 +34,13 @@ void TextureManager::clear() {
 
 TextureManager::~TextureManager() {
     clear();
+}
+
+void TextureManager::loadTexture(const std::string& path) {
+    Texture texture = LoadTexture(path.c_str());
+    if (texture.id == 0) {
+        std::cerr << "Warning: TextureManager - Failed to load texture: " << path << std::endl;
+        return;
+    }
+    textureCache[path] = texture;
 }

@@ -49,6 +49,7 @@ void World::init() {
     devTool = std::make_unique<DevTool>(this);
     camera = std::make_unique<WorldCamera>(this);
 
+    pendingBullets.clear();
     background = std::make_unique<WorldBackground>();
     hud = std::make_unique<HUD>(this);
     combatFeedbackManager = std::make_unique<CombatFeedbackManager>();
@@ -105,6 +106,16 @@ void World::addPattern(std::unique_ptr<Pattern> pattern, float time) {
 
 void World::addChallenge(std::unique_ptr<Challenge> challenge, float time) {
     pendingChallenges.emplace_back(std::move(challenge), time);
+}
+
+std::string World::getFinalResults() const {
+    std::string results = "";
+    for (const auto& player : players) {
+        if (player->getStock() > 0) {
+            results += "PLAYER " + std::to_string(player->getPlayerId() + 1) + " WINS";
+        }
+    }
+    return results;
 }
 
 void World::handlePendings(float dt) {

@@ -26,7 +26,7 @@ void MainMenuState::enter() {
     for(int i = 0; i < 2; i++){
         movingTileEffect[i].setRestrictArea({0.0f, -100.0f, (float)GetScreenWidth(), (float)GetScreenHeight() + 100.0f});
     }
-    behindDots.loadDotTexture("../assets/UI_sprites/arround_dot.png");
+    behindDots.loadDotTexture("../assets/UI_sprites/decoration/arround_dot.png");
     int buttonWidth = 720;
     int buttonHeight = 100;
     int coordYFirstButton = 50;

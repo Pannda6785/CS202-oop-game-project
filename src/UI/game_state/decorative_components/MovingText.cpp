@@ -62,12 +62,22 @@ void MovingText::init() {
     sampleText->setAngle(90 - angle);
     
     float textHeight = sampleText->getHeight() * scale;
-    
+    float textWidth = sampleText->getWidth() * scale;
+
     // Create initial position
     positions.push_back(startPosition);
+
+    // float _textSpacing = sampleText->getWidth();
+
+    // textSpacing = sampleText->getHeight() + 50.0f;
+
+    // float deltaX = sin(angle * (PI / 180.0)) * (textHeight + textSpacing);
+    // float deltaY = cos(angle * (PI / 180.0)) * (textHeight + textSpacing);
     
-    float deltaX = sin(angle * (PI / 180.0)) * (textHeight + textSpacing);
-    float deltaY = cos(angle * (PI / 180.0)) * (textHeight + textSpacing);
+    textSpacing = 50.0f;
+
+    float deltaX = sin(angle * (PI / 180.0)) * (textWidth + textSpacing);
+    float deltaY = cos(angle * (PI / 180.0)) * (textWidth + textSpacing);
     
     // Generate all positions
     for (int i = 0; i < initialNumTexts - 1; ++i) {
