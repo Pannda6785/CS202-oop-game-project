@@ -44,9 +44,9 @@ private:
     // Background tiles
     MovingTileGraphicsComponent backgroundTiles[3] = { MovingTileGraphicsComponent(), MovingTileGraphicsComponent(), MovingTileGraphicsComponent() };
     Vector2 backgroundTilesPosition[3] = {
-        {GetScreenWidth() / 2.0f, 430.0f},
-        {GetScreenWidth() / 2.0f, 200.0f},
-        {GetScreenWidth() / 2.0f, 750.0f}
+        {GraphicsComponentManager::NATIVE_WIDTH / 2.0f, 430.0f},
+        {GraphicsComponentManager::NATIVE_WIDTH / 2.0f, 200.0f},
+        {GraphicsComponentManager::NATIVE_WIDTH / 2.0f, 750.0f}
     };
     float backgroundTilesAngle[3] = {75.0f, 125.0f, 75.0f};
     float backgroundTilesSpeed[3] = {30.0f, 30.0f, 30.0f};
@@ -66,8 +66,8 @@ private:
     
     // Background
     Background background = Background();
-    Rectangle backgroundRect = {0, 0, GetScreenWidth() / 2.0f, GetScreenHeight() * 1.0f};
-    
+    Rectangle backgroundRect = {0, 0, GraphicsComponentManager::NATIVE_WIDTH / 2.0f, GraphicsComponentManager::NATIVE_HEIGHT * 1.0f};
+
     // Below background
     Background belowBackground = Background();
     float belowBackgroundHeight = 50.0f;
@@ -75,8 +75,8 @@ private:
     // Background ribbon
     Background ribbonBackground = Background();
     float ribbonBackgroundHeight = 100.0f;
-    Rectangle ribbonBackgroundRect = {0, (float)GetScreenHeight() - belowBackgroundHeight - ribbonBackgroundHeight, (float)GetScreenWidth() / 2.0f, ribbonBackgroundHeight};
-    
+    Rectangle ribbonBackgroundRect = {0, (float)GraphicsComponentManager::NATIVE_HEIGHT - belowBackgroundHeight - ribbonBackgroundHeight, (float)GraphicsComponentManager::NATIVE_WIDTH / 2.0f, ribbonBackgroundHeight};
+
     // Moving tile backgrounds
     Background movingTileBackground[3] = { Background(), Background(), Background() };
     Color movingTileBackgroundColor = {255, 255, 255, 100};

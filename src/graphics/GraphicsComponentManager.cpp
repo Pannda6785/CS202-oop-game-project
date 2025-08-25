@@ -74,7 +74,10 @@ void GraphicsComponentManager::renderIf(const std::function<bool(const GraphicsC
     if (currentCamera != nullptr) {
         EndMode2D();
     }
+
     EndMode2D(); // close resolutionCamera
+    
+    drawLetterbox();
 }
 
 void GraphicsComponentManager::setResolution(int width, int height) {
@@ -82,17 +85,26 @@ void GraphicsComponentManager::setResolution(int width, int height) {
     windowHeight = height;
     SetWindowSize(width, height);
 
-    // Offset = center of window
-    resolutionCamera.offset = { (float)width / 2.0f, (float)height / 2.0f };
-    resolutionCamera.rotation = 0.0f;
-
-    // Target = center of virtual resolution
-    resolutionCamera.target = { NATIVE_WIDTH / 2.0f, NATIVE_HEIGHT / 2.0f };
-
-    // Uniform zoom based on window size vs native resolution
+    // Uniform zoom (scale to fit inside window)
     float zoomX = (float)width / (float)NATIVE_WIDTH;
     float zoomY = (float)height / (float)NATIVE_HEIGHT;
     resolutionCamera.zoom = std::min(zoomX, zoomY);
+
+    // Calculate the size of the scaled game world
+    float viewportWidth  = NATIVE_WIDTH  * resolutionCamera.zoom;
+    float viewportHeight = NATIVE_HEIGHT * resolutionCamera.zoom;
+
+    // Center the viewport inside the window (letterbox/pillarbox)
+    float offsetX = ((float)width  - viewportWidth)  / 2.0f;
+    float offsetY = ((float)height - viewportHeight) / 2.0f;
+
+    // Camera offset is where (0,0) in world space maps in screen space
+    resolutionCamera.offset = { offsetX + viewportWidth  / 2.0f,
+                                offsetY + viewportHeight / 2.0f };
+
+    // Target = center of the virtual game world
+    resolutionCamera.target = { NATIVE_WIDTH / 2.0f, NATIVE_HEIGHT / 2.0f };
+    resolutionCamera.rotation = 0.0f;
 }
 
 void GraphicsComponentManager::toggleFullscreen() {
@@ -122,4 +134,31 @@ void GraphicsComponentManager::removeTaggedCamera(const std::string& tag) {
 
 bool GraphicsComponentManager::isToggleFullScreen() const {
     return isFullscreen;
+}
+
+void GraphicsComponentManager::drawLetterbox() const {
+    // Compute scaled viewport size
+    float zoomX = (float)windowWidth / (float)NATIVE_WIDTH;
+    float zoomY = (float)windowHeight / (float)NATIVE_HEIGHT;
+    float zoom = std::min(zoomX, zoomY);
+
+    float viewportWidth  = NATIVE_WIDTH  * zoom;
+    float viewportHeight = NATIVE_HEIGHT * zoom;
+
+    float offsetX = (windowWidth  - viewportWidth)  / 2.0f;
+    float offsetY = (windowHeight - viewportHeight) / 2.0f;
+
+    // Left bar
+    if (offsetX > 0) {
+        DrawRectangle(0, 0, (int)offsetX, windowHeight, BLACK);
+        DrawRectangle((int)(offsetX + viewportWidth), 0,
+                      (int)offsetX + 10, windowHeight, BLACK);
+    }
+
+    // Top/bottom bars
+    if (offsetY > 0) {
+        DrawRectangle(0, 0, windowWidth, (int)offsetY, BLACK);
+        DrawRectangle(0, (int)(offsetY + viewportHeight),
+                      windowWidth, (int)offsetY, BLACK);
+    }
 }

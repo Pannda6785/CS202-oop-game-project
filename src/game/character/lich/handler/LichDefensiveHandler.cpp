@@ -102,7 +102,7 @@ void LichDefensiveHandler::onCastRelease(bool isInterrupted) {
         bloomTex->addBloom(0, STARTUP / 3.0f);
         bloomTex->addDebloom(STARTUP / 3.0f + DURATION, STARTUP / 3.0f + DURATION + STARTUP / 3.0f);
         bloomTex->addRotation(-1.0f / 10.0f);
-        bloomTex->setLayer(Unit::Layer::Underlay);
+        bloomTex->setLayer(Unit::Layer::Underlay - 1);
         composite->addComponent(std::move(bloomTex), castReleaseTime + STARTUP * 2.0f / 3.0f, castReleaseTime + STARTUP + DURATION + STARTUP / 3.0f);
 
         // After release, bullet stays at position (no movement)

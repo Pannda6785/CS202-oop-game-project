@@ -54,7 +54,11 @@ void World::init() {
     hud = std::make_unique<HUD>(this);
     combatFeedbackManager = std::make_unique<CombatFeedbackManager>();
     ribbonManager = std::make_unique<MovingTextTileManager>();
+    
+    freezeTimer = 0.0f;
     resetRoundTimer = 1.5f;
+    endGameTimer = 1e9;
+    gameEnded = false;
 }
 
 bool World::isGameEnded() const {

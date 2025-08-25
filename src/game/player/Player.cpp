@@ -17,21 +17,18 @@ Player::Player(int playerId, IWorldView* worldView, IBulletSpawner* bulletSpawne
           character(std::move(character)), input(std::make_unique<InputBufferer>(inputInterpreter)),
           init_stock(init_stock), stock(init_stock), init_health(init_health), health(init_health) 
 {
-    this->character->registerPlayer(this);
-
-    invincibility = {0, 0};
-
-    float offset = playerId == 0 ? -400 : +400;
-    setPosition({Unit::BATTLEFIELD_WIDTH / 2 + offset, Unit::BATTLEFIELD_HEIGHT / 2});
-    
-    arrow = {0.0f, 1.0f};
-    movement = {0.0f, 0.0f};
-    
+    this->character->registerPlayer(this);    
     hitbox = std::make_unique<CircleHitbox>(pos, HITBOX_RADIUS);
 }
 
 // --- Update methods ---
 void Player::init() {
+    invincibility = {0, 0};
+    float offset = playerId == 0 ? -400 : +400;
+    setPosition({Unit::BATTLEFIELD_WIDTH / 2 + offset, Unit::BATTLEFIELD_HEIGHT / 2});
+    arrow = {0.0f, 1.0f};
+    movement = {0.0f, 0.0f};
+
     character->init();
     health = init_health;
     stock = init_stock;

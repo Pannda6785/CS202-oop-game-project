@@ -9,7 +9,7 @@
 
 class WorldBackground : public GraphicsComponent {
 public:
-    explicit WorldBackground(int dotCount = 100);
+    explicit WorldBackground(int dotCount = 150);
     ~WorldBackground() override = default;
 
     void update(float dt);
