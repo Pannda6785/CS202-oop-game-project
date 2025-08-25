@@ -58,7 +58,7 @@ void HealthBar::init() {
     // Load default avatar (will be overridden by character subclasses)
     float avtScale = 0.9f;
     avatar.setOriginRatio({0.5f, 0.5f});
-    avatar.loadShader("../src/UI/game_state/versus_mode_state/HUD/health_bar/flash_red.fs");
+    avatar.loadShader("../src/game/world_graphics/HUD/flash_red.fs");
     avatar.setScale(avtScale);
     avatar.setPosition(avatarPos.x, avatarPos.y);
     avatar.setLayer(Unit::Layer::HUD);
@@ -68,7 +68,7 @@ void HealthBar::init() {
         heart[i].addTexture("../assets/UI_sprites/health_bar/heart.png");
         heart[i].setOriginRatio({0.5f, 0.5f});
         heart[i].setScale(scale * 0.7f);
-        heart[i].loadShader("../src/UI/game_state/versus_mode_state/HUD/health_bar/flash_red.fs");
+        heart[i].loadShader("../src/game/world_graphics/HUD/flash_red.fs");
         heart[i].enableShader(shaderEnabled);
         heart[i].setPosition(heartPos.x, heartPos.y);
         heart[i].setLayer(Unit::Layer::HUD);
@@ -80,7 +80,7 @@ void HealthBar::init() {
     healthText.loadFont("../assets/fonts/Redressed.ttf");
     healthText.setFontSize(65);
     healthText.setOriginRatio({0.5f, 0.5f});
-    healthText.loadShader("../src/UI/game_state/versus_mode_state/HUD/health_bar/flash_red.fs");
+    healthText.loadShader("../src/game/world_graphics/HUD/flash_red.fs");
     healthText.enableShader(shaderEnabled);
     healthText.setPosition(healthTextPos.x, healthTextPos.y);
     healthText.setLayer(Unit::Layer::HUD);
@@ -198,32 +198,32 @@ void HealthBar::triggerShake() {
 }
 
 void HealthBar::checkCollision(std::vector<const CircleHitbox*> circleHitboxes) {
-    if (circleHitboxes.empty()) {
-        return;
-    }
-    bool collides = false;
-    for (const auto& chb : circleHitboxes) {
-        if (hitbox->collidesWithCircle(*chb)) {
-            collides = true;
-            break;
-        }
-    }
-    // If collision state changed, update blur effect
-    if (collides != blurActive) {
-        blurActive = collides;
-        // Apply blur effect by changing alpha
-        float alpha = blurActive ? 0.1f : 1.0f;
-        background.setAlphaColor(alpha);
-        avatar.setAlphaColor(alpha);
-        for (int i = 0; i < 2; i++) {
-            heart[i].setAlphaColor(alpha);
-        }
-        healthText.setAlphaColor(alpha);
-        for (auto& stockPair : stockIcons) {
-            stockPair[0].setAlphaColor(alpha);
-            stockPair[1].setAlphaColor(alpha);
-        }
-    }
+    // if (circleHitboxes.empty()) {
+    //     return;
+    // }
+    // bool collides = false;
+    // for (const auto& chb : circleHitboxes) {
+    //     if (hitbox->collidesWithCircle(*chb)) {
+    //         collides = true;
+    //         break;
+    //     }
+    // }
+    // // If collision state changed, update blur effect
+    // if (collides != blurActive) {
+    //     blurActive = collides;
+    //     // Apply blur effect by changing alpha
+    //     float alpha = blurActive ? 0.1f : 1.0f;
+    //     background.setAlphaColor(alpha);
+    //     avatar.setAlphaColor(alpha);
+    //     for (int i = 0; i < 2; i++) {
+    //         heart[i].setAlphaColor(alpha);
+    //     }
+    //     healthText.setAlphaColor(alpha);
+    //     for (auto& stockPair : stockIcons) {
+    //         stockPair[0].setAlphaColor(alpha);
+    //         stockPair[1].setAlphaColor(alpha);
+    //     }
+    // }
 }
 
 void HealthBar::setWorldView(const IWorldView* worldView) {

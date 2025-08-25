@@ -3,6 +3,7 @@
 #include "graphics/GraphicsComponentManager.hpp"
 #include "UI/game_state/GameStateManager.hpp"
 #include "audio/AudioManager.hpp"
+#include "graphics/TextureManager.hpp"
 #include "UI/custom_cursor/CustomCursor.hpp"
 
 #include <memory>
@@ -39,6 +40,7 @@ int main() {
     AudioManager::getInstance().loadThemeMusic("../assets/audio/music_mainthema.ogg");
     AudioManager::getInstance().setMasterVolume(0.5f);
     AudioManager::getInstance().stopThemeMusic();
+    TextureManager::instance().preloadTextures();
     if(!tool) CustomCursor::getInstance().init(); // Initialize custom cursor
 
     Vector2 initialPoint = { -1, -1 };

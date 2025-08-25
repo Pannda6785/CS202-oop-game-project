@@ -16,7 +16,7 @@ public:
     void update(float dt);
     void setVisible(bool visible);
 private:
-    Texture2D dotTexture = {0}; // Texture for the dots
+    const Texture2D *dotTexture;
     bool loadedDotTexture = false;
     std::vector<std::unique_ptr<BehindDotsGraphicsComponent>> dots;
     std::vector<Color> palette = { RED, ORANGE, YELLOW, GREEN, BLUE, PURPLE };

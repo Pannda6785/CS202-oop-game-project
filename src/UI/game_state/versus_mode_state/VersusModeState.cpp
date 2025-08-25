@@ -41,9 +41,7 @@ void VersusModeState::update(float dt) {
             gameStateManager.changeCurrentState(std::make_unique<CharSelectState>(gameStateManager, true));
         } else if(selectedOption == PostGameOption::MAIN_MENU) {
             // Handle main menu
-            std::cout << "HANDLE MAIN MENU HUHUHUHUHUHUHUHUHUHUHUHUH" << std::endl;
             gameStateManager.popState();
-            std::cout << "HANDLE MAIN MENU HIHIHIHIHIHIHIHIHIHIHIHIHIHIHIH" << std::endl;
         } else if(selectedOption == PostGameOption::RESTART) {
             // Handle restart
             world->init();

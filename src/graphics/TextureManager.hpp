@@ -4,24 +4,31 @@
 #include "raylib.h"
 #include <string>
 #include <unordered_map>
+#include <vector>
+#include <filesystem>
 
 class TextureManager {
 public:
     static TextureManager& instance();
 
-    void preloadTextures();
+    // Texture loading methods
     const Texture* getTexture(std::string path);
+    void loadTexture(const std::string& path);
+    
+    // Preloading methods
+    void preloadTextures();
+    void preloadTexturesFromDirectory(const std::string& directory);
+    
+    // Management methods
     void clear();
 
 private:
     TextureManager() = default;
     ~TextureManager();
 
-    // Delete copy/move
+    // Delete copy/move constructors and assignments
     TextureManager(const TextureManager&) = delete;
     TextureManager& operator=(const TextureManager&) = delete;
-
-    void loadTexture(const std::string& path);
 
     std::unordered_map<std::string, Texture> textureCache;
 };

@@ -1,4 +1,5 @@
 #include "BehindDots.hpp"
+#include "../../../graphics/TextureManager.hpp"
 #include <cassert>
 #include <random>
 #include <algorithm>
@@ -8,14 +9,13 @@ BehindDots::BehindDots() = default;
 BehindDots::~BehindDots() = default;
 
 void BehindDots::loadDotTexture(const std::string& texturePath) {
-    dotTexture = LoadTexture(texturePath.c_str());
-    loadedDotTexture = dotTexture.id != 0; // Check if the texture is loaded
+    dotTexture = TextureManager::instance().getTexture(texturePath);
+    loadedDotTexture = dotTexture != nullptr; // Check if the texture is loaded
     assert(loadedDotTexture);
 }
 
 void BehindDots::unloadTexture() {
     if (loadedDotTexture) {
-        UnloadTexture(dotTexture);
         loadedDotTexture = false;
     }
 }
@@ -30,7 +30,7 @@ void BehindDots::addNewDot(){
     static std::uniform_int_distribution<> randScale(5.0, 5.0);
     static std::uniform_real_distribution<> randLifeTime(3.0f, 7.0f);
     dots.emplace_back(std::make_unique<BehindDotsGraphicsComponent>());
-    dots.back()->init(&dotTexture, 
+    dots.back()->init(dotTexture, 
                     {(float)randPosX(gen), (float)randPosY(gen)},
                     randScale(gen),
                     {(float)randOffset(gen), (float)randOffset(gen)},
