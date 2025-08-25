@@ -50,7 +50,7 @@ private:
     std::string headerText = "GAME OVER";
     
     // Layout parameters
-    int buttonWidth = GetScreenWidth();
+    int buttonWidth = GraphicsComponentManager::NATIVE_WIDTH;
     int buttonHeight = 80;
     int coordYFirstButton = 320;
     int buttonSpacing = 20;

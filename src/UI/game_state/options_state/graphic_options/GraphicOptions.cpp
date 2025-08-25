@@ -45,7 +45,7 @@ void GraphicOptions::enter() {
         coordYFirstButton += buttonHeight + buttonSpacing, 
         buttonWidth, 
         buttonHeight, 
-        "WINDOWED (1440x900)", 
+        "WINDOWED", 
         fontSize, 
         offset -= deltaOffset, 
         0, 
@@ -146,9 +146,9 @@ void GraphicOptions::updateButtonStates() {
     // Windowed button
     if (windowedButtonIndex >= 0 && windowedButtonIndex < buttons.size()) {
         if (currentWidth == 1440 && currentHeight == 900 && !isFullscreen) {
-            buttons[windowedButtonIndex]->setText("WINDOWED (1440x900) : ACTIVE");
+            buttons[windowedButtonIndex]->setText("WINDOWED : ACTIVE");
         } else {
-            buttons[windowedButtonIndex]->setText("WINDOWED (1440x900)");
+            buttons[windowedButtonIndex]->setText("WINDOWED");
         }
     }
     

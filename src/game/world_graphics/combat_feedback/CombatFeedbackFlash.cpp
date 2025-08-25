@@ -1,13 +1,13 @@
 #include "CombatFeedbackFlash.hpp"
 #include <raylib.h>
 #include "../../../Unit.hpp"
+#include "../../../graphics/GraphicsComponentManager.hpp"
 
 CombatFeedbackFlash::CombatFeedbackFlash(float duration)
     : duration(duration), timer(duration)
 {
     setLayer(Unit::Layer::Foreground);       
     setVisible(true);
-    addTag("screen_flash");
 }
 
 void CombatFeedbackFlash::update(float dt) {
@@ -30,8 +30,8 @@ void CombatFeedbackFlash::render() const {
 
     // Draw bigger than the screen to cover all
     Vector2 size = {
-        static_cast<float>(GetScreenWidth()) * 1.2f,
-        static_cast<float>(GetScreenHeight()) * 1.2f
+        static_cast<float>(GraphicsComponentManager::NATIVE_WIDTH) * 1.2f,
+        static_cast<float>(GraphicsComponentManager::NATIVE_HEIGHT) * 1.2f
     };
     Vector2 pos = { -0.1f * size.x, -0.1f * size.y };
 

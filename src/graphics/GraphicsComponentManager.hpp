@@ -30,8 +30,8 @@ public:
 
     int getWindowWidth() const { return windowWidth; }
     int getWindowHeight() const { return windowHeight; }
-
     bool isToggleFullScreen() const;
+    Camera2D getResolutionCamera() const { return resolutionCamera; }
 
 private:
     GraphicsComponentManager();
@@ -51,6 +51,9 @@ private:
     bool isFullscreen;
 
     std::unordered_map<std::string, Camera2D> taggedCameras;
+
+    void drawLetterbox() const;
+
 };
 
 #endif // GRAPHICS_COMPONENTS_MANAGER_HPP

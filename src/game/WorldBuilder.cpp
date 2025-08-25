@@ -88,11 +88,11 @@ std::vector<std::shared_ptr<InputInterpreter>> WorldBuilder::getInterpreters() c
 std::vector<std::string> WorldBuilder::getAvailableChallenges() const {
     return {
         "Bombless Maiden",
+        "Timeskip Maiden",
         "Giant Maiden",
         "Iron Maiden",
         "Stone Heart Pulsation",
-        "Stone Static Green",
-        "Timeskip Maiden"
+        "Stone Static Green"
     };
 }
 

@@ -1,6 +1,7 @@
 #include "HealthBar.hpp"
 #include "../../../IWorldView.hpp"
 #include "../../../player/Player.hpp"
+#include "../../../../graphics/GraphicsComponentManager.hpp"
 #include <iostream>
 
 HealthBar::HealthBar(bool isLeftSide) 
@@ -285,7 +286,7 @@ void HealthBar::update(float dt) {
 }
 
 Vector2 HealthBar::getSymmetricPos(Vector2 pos) {
-    return {GetScreenWidth() - pos.x, pos.y};
+    return {GraphicsComponentManager::NATIVE_WIDTH - pos.x, pos.y};
 }
 
 void HealthBar::updatePositions() {
