@@ -37,7 +37,7 @@ void PostGameplayMenuState::enter() {
     // Set up background
     background.setLayer(90);
     background.setBackgroundColor({0, 0, 0, 200});
-    background.setBackgroundRect({0, 0, GetScreenWidth(), GetScreenHeight()});
+    background.setBackgroundRect({0, 0, GraphicsComponentManager::NATIVE_WIDTH, GraphicsComponentManager::NATIVE_HEIGHT});
 
     // Add header ribbon
     ribbonManager.addAnnouncement(headerText);

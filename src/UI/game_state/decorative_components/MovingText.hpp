@@ -3,6 +3,7 @@
 
 #include "GameText.hpp"
 #include "../../../graphics/GraphicsComponent.hpp"
+#include "../../../graphics/GraphicsComponentManager.hpp"
 #include <vector>
 #include <string>
 #include <memory>
@@ -55,7 +56,7 @@ private:
     float scale = 1.0f;
     float textSpacing = 10.0f; // Spacing between consecutive texts
     bool upward = true;
-    Rectangle restrictArea = {0, 0, (float)GetScreenWidth(), (float)GetScreenHeight()};
+    Rectangle restrictArea = {0, 0, (float)GraphicsComponentManager::NATIVE_WIDTH, (float)GraphicsComponentManager::NATIVE_HEIGHT};
     int initialNumTexts = 10;
     Vector2 originRatio = {0.5f, 0.5f};
     

@@ -5,6 +5,7 @@
 #include "../../button/ButtonManager.hpp"
 #include "../main_menu_state/BehindDots.hpp"
 #include "../state_heading/StateHeading.hpp"
+#include "../../../graphics/GraphicsComponentManager.hpp"
 
 class GameStateManager;
 

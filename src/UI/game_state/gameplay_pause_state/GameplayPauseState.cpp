@@ -16,7 +16,7 @@ GameplayPauseState::~GameplayPauseState() {
 }
 
 void GameplayPauseState::enter() {
-    int buttonWidth = GetScreenWidth();
+    int buttonWidth = GraphicsComponentManager::NATIVE_WIDTH;
     int buttonHeight = 80;
     int coordYFirstButton = 320;
     int buttonSpacing = 20;
@@ -103,7 +103,7 @@ void GameplayPauseState::enter() {
     buttonManager.addButton(std::move(mainMenuButton));
     background.setLayer(90);
     background.setBackgroundColor({0, 0, 0, 200});
-    background.setBackgroundRect({0, 0, GetScreenWidth(), GetScreenHeight()});
+    background.setBackgroundRect({0, 0, GraphicsComponentManager::NATIVE_WIDTH, GraphicsComponentManager::NATIVE_HEIGHT});
 
     ribbonManager.addPause();
 }

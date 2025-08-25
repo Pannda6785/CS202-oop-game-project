@@ -29,18 +29,18 @@ void KeybindingState::enter() {
         "INPUT OPTIONS", 
         headingPosY, 
         fontSize, 
-        {(GetScreenWidth() - dividerLineLength) / 2, dividerLineY, dividerLineLength, dividerLineThickness}
+        {(GraphicsComponentManager::NATIVE_WIDTH - dividerLineLength) / 2, dividerLineY, dividerLineLength, dividerLineThickness}
     );
     
     // Calculate positions for the player buttons
     int buttonWidth = 400;
     int buttonHeight = 100;
     int buttonSpacing = 30;
-    int buttonY = GetScreenHeight() / 2 - 250; // Centered vertically
+    int buttonY = GraphicsComponentManager::NATIVE_HEIGHT / 2 - 250; // Centered vertically
     
     // Player 1 button
     std::unique_ptr<Button> player1Button = std::make_unique<Button>(
-        GetScreenWidth() / 2 - buttonWidth / 2, 
+        GraphicsComponentManager::NATIVE_WIDTH / 2 - buttonWidth / 2, 
         buttonY += buttonHeight + buttonSpacing, 
         buttonWidth, 
         buttonHeight, 
@@ -65,7 +65,7 @@ void KeybindingState::enter() {
     
     // Player 2 button
     std::unique_ptr<Button> player2Button = std::make_unique<Button>(
-        GetScreenWidth() / 2 - buttonWidth / 2,
+        GraphicsComponentManager::NATIVE_WIDTH / 2 - buttonWidth / 2,
         buttonY += buttonHeight + buttonSpacing, 
         buttonWidth, 
         buttonHeight, 
@@ -90,7 +90,7 @@ void KeybindingState::enter() {
     
     // Return button
     std::unique_ptr<Button> returnButton = std::make_unique<Button>(
-        GetScreenWidth() / 2 - buttonWidth / 2,
+        GraphicsComponentManager::NATIVE_WIDTH / 2 - buttonWidth / 2,
         buttonY += buttonHeight + buttonSpacing, 
         buttonWidth, 
         buttonHeight, 

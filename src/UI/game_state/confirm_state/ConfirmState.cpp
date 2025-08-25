@@ -23,7 +23,7 @@ ConfirmState::~ConfirmState() {
 void ConfirmState::enter() {
     
     // Set up the heading
-    int headingPosY = GetScreenHeight() / 3;
+    int headingPosY = GraphicsComponentManager::NATIVE_HEIGHT / 3;
     int fontSize = 75;
     int dividerLineLength = 600;
     int dividerLineThickness = 3;
@@ -35,7 +35,7 @@ void ConfirmState::enter() {
                  confirmMessage, 
                  headingPosY, 
                  fontSize, 
-                 {(GetScreenWidth() - dividerLineLength) / 2, 
+                 {(GraphicsComponentManager::NATIVE_WIDTH - dividerLineLength) / 2, 
                   dividerLineY, 
                   0, 
                   0},
@@ -46,7 +46,7 @@ void ConfirmState::enter() {
 }
 
 void ConfirmState::setupButtons() {
-    int buttonWidth = GetScreenWidth();
+    int buttonWidth = GraphicsComponentManager::NATIVE_WIDTH;
     int buttonHeight = 80;
     int coordYFirstButton = 320;
     int buttonSpacing = 20;

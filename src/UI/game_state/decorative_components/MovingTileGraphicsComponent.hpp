@@ -2,6 +2,7 @@
 #define MOVING_TILE_GRAPHICS_COMPONENT_HPP
 
 #include "../../../graphics/GraphicsComponent.hpp"
+#include "../../../graphics/GraphicsComponentManager.hpp"
 #include <vector>
 #include <raylib.h>
 
@@ -45,7 +46,7 @@ private:
     std::vector<Vector2> positions;
     std::vector<const Texture2D*> textures;
     bool upward = true;
-    Rectangle restrictArea = {0, 0, (float)GetScreenWidth(), (float)GetScreenHeight()};
+    Rectangle restrictArea = {0, 0, (float)GraphicsComponentManager::NATIVE_WIDTH, (float)GraphicsComponentManager::NATIVE_HEIGHT};
     int initialNumTiles = 50;
     Color color = WHITE;
     float expandingTime = 0.0f;

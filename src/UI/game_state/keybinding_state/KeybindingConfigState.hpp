@@ -2,6 +2,7 @@
 #define KEYBINDING_CONFIG_STATE_HPP
 
 #include "../GameState.hpp"
+#include "../../../graphics/GraphicsComponentManager.hpp"
 #include "../../button/ButtonManager.hpp"
 #include "../main_menu_state/BehindDots.hpp"
 #include "../state_heading/StateHeading.hpp"

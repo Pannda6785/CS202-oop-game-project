@@ -94,7 +94,7 @@ void MovingTextTileManager::createReadyTile(float displayTime) {
         .withTileInitialNum(20)
         // .withTileExpandingTime(0.3f)
         // .withTileStartExpand(true)
-        .withTileRestrictArea({-padding, -padding, GetScreenWidth() + padding * 2.0f, GetScreenHeight() + padding * 2.0f})
+        .withTileRestrictArea({-padding, -padding, GraphicsComponentManager::NATIVE_WIDTH + padding * 2.0f, GraphicsComponentManager::NATIVE_HEIGHT + padding * 2.0f})
         
         .withBackgroundColor(WHITE) // Blue background
         .withBackgroundWidthRatio(0.8f)
@@ -129,7 +129,7 @@ void MovingTextTileManager::createCountdownTile(float displayTime) {
         .withTileInitialNum(20)
         // .withTileExpandingTime(0.3f)
         // .withTileStartExpand(true)
-        .withTileRestrictArea({-padding, -padding, GetScreenWidth() + padding * 2.0f, GetScreenHeight() + padding * 2.0f})
+        .withTileRestrictArea({-padding, -padding, GraphicsComponentManager::NATIVE_WIDTH + padding * 2.0f, GraphicsComponentManager::NATIVE_HEIGHT + padding * 2.0f})
         
         .withBackgroundColor(WHITE)
         .withBackgroundWidthRatio(0.8f)
@@ -159,7 +159,7 @@ void MovingTextTileManager::createPauseTile() {
         .withTileInitialNum(20)
         // .withTileExpandingTime(0.5f)
         // .withTileStartExpand(true)
-        .withTileRestrictArea({-padding, -padding, GetScreenWidth() + padding * 2.0f, GetScreenHeight() + padding * 2.0f})
+        .withTileRestrictArea({-padding, -padding, GraphicsComponentManager::NATIVE_WIDTH + padding * 2.0f, GraphicsComponentManager::NATIVE_HEIGHT + padding * 2.0f})
 
         .withBackgroundColor(WHITE)
         .withBackgroundWidthRatio(0.8f)
@@ -187,7 +187,7 @@ void MovingTextTileManager::addAnnouncement(std::string announcement) {
         .withTileScale(0.75f)
         .withTileInitialNum(30)
 
-        .withTileRestrictArea({-padding, -padding, GetScreenWidth() + padding * 2.0f, GetScreenHeight() + padding * 2.0f})
+        .withTileRestrictArea({-padding, -padding, GraphicsComponentManager::NATIVE_WIDTH + padding * 2.0f, GraphicsComponentManager::NATIVE_HEIGHT + padding * 2.0f})
         
         .withBackgroundColor(WHITE)
         .withBackgroundWidthRatio(0.8f)

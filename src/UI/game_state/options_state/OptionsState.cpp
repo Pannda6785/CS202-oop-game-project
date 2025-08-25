@@ -15,7 +15,7 @@ OptionsState::~OptionsState(){
 }
 
 void OptionsState::enter(){
-    int buttonWidth = GetScreenWidth();
+    int buttonWidth = GraphicsComponentManager::NATIVE_WIDTH;
     int buttonHeight = 80;
     int coordYFirstButton = 140;
     int buttonSpacing = 15;
@@ -28,7 +28,7 @@ void OptionsState::enter(){
     int dividerLineThickness = 5;
     int headingPosY = 130;
     int dividerLineY = headingPosY + 60;
-    heading.init("../assets/fonts/18thCentury.ttf", "OPTIONS", headingPosY, fontSize, {(GetScreenWidth() - dividerLineLength) / 2, dividerLineY, dividerLineLength, dividerLineThickness});
+    heading.init("../assets/fonts/18thCentury.ttf", "OPTIONS", headingPosY, fontSize, {(GraphicsComponentManager::NATIVE_WIDTH - dividerLineLength) / 2, dividerLineY, dividerLineLength, dividerLineThickness});
     // Graphics options button
     std::unique_ptr<Button> graphicsButton = std::make_unique<Button>(
         0, 
