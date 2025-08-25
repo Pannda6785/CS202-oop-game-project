@@ -73,7 +73,7 @@ void CharSelectState::enter() {
     int buttonWidth = 400;
     int buttonHeight = 70;
     int coordYFirstButton = GraphicsComponentManager::NATIVE_HEIGHT - 50;
-    int fontSize = 17;
+    int fontSize = 23;
     auto challenges = worldBuilder.getAvailableChallenges();
     std::unique_ptr<Button> challengeButton = std::make_unique<Button>(
         GraphicsComponentManager::NATIVE_WIDTH / 2 - buttonWidth / 2, 

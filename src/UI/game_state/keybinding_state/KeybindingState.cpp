@@ -2,6 +2,7 @@
 #include "KeybindingConfigState.hpp"
 #include "../GameStateManager.hpp"
 #include "../../../audio/AudioManager.hpp"
+#include "../../../graphics/GraphicsComponentManager.hpp"
 #include <iostream>
 
 // Forward declare the KeybindingConfigState
@@ -33,7 +34,7 @@ void KeybindingState::enter() {
     );
     
     // Calculate positions for the player buttons
-    int buttonWidth = 400;
+    int buttonWidth = GraphicsComponentManager::NATIVE_WIDTH;
     int buttonHeight = 100;
     int buttonSpacing = 30;
     int buttonY = GraphicsComponentManager::NATIVE_HEIGHT / 2 - 250; // Centered vertically

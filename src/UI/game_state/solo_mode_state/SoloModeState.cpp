@@ -67,6 +67,7 @@ void SoloModeState::enter() {
 
 void SoloModeState::update(float dt) {
     world->update(dt);
+    bool isGameEnded = world->isGameEnded();
 
     bool paused = false;
     auto interpreter = InputInterpreterManager::getInstance().getInterpreter(0);
@@ -94,6 +95,14 @@ void SoloModeState::update(float dt) {
                          .setHeaderText("PAUSED");
         gameStateManager.pushState(pauseStateBuilder->build());
     }
+
+    if(isGameEnded && selectedOption == PostGameOption::RESUME) {
+        auto endGameStateBuilder = std::make_unique<PostGameplayMenuStateBuilder>(gameStateManager, selectedOption);
+        endGameStateBuilder->setMainMenuButton()
+                         .setHeaderText("YOU LOSE");
+        gameStateManager.pushState(endGameStateBuilder->build());
+    }
+
 }
 
 void SoloModeState::exit() {
