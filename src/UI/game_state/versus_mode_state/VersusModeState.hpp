@@ -12,7 +12,7 @@
 
 class GameStateManager; // Forward declaration
 
-enum class PauseMenuOption;
+enum class PostGameOption;
 
 class VersusModeState : public GameState {
 public:
@@ -27,7 +27,7 @@ private:
     GameStateManager& gameStateManager;
     std::unique_ptr<World> world = nullptr;
     std::vector<std::shared_ptr<InputInterpreter>> interpreters;
-    PauseMenuOption selectedOption;
+    PostGameOption selectedOption;
 };
 
 #endif // VERSUS_MODE_STATE_HPP

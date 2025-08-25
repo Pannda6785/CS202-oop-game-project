@@ -18,6 +18,7 @@ class Player {
     static constexpr float STOCK = 2;
     static constexpr float HEALTH = 4;
     int init_health;
+    int init_stock;
 
 public:
     Player(int playerId, IWorldView* worldView, IBulletSpawner* bulletSpawner,

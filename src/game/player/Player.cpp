@@ -15,7 +15,7 @@ Player::Player(int playerId, IWorldView* worldView, IBulletSpawner* bulletSpawne
             int init_stock, int init_health) 
         : playerId(playerId), world(worldView), bulletSpawner(bulletSpawner), 
           character(std::move(character)), input(std::make_unique<InputBufferer>(inputInterpreter)),
-          stock(init_stock), init_health(init_health), health(init_health) 
+          init_stock(init_stock), stock(init_stock), init_health(init_health), health(init_health) 
 {
     this->character->registerPlayer(this);
 
@@ -33,6 +33,8 @@ Player::Player(int playerId, IWorldView* worldView, IBulletSpawner* bulletSpawne
 // --- Update methods ---
 void Player::init() {
     character->init();
+    health = init_health;
+    stock = init_stock;
     resetRound();
 }
 

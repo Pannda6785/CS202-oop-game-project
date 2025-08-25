@@ -80,12 +80,21 @@ void CharSelectState::update(float dt) {
 
     registerInputInterpreter();
 
+    for(auto const& interpreter : interpreters) {
+        if(interpreter && interpreter->isInputPressed(Unit::Input::Pause)){
+            gameStateManager.popState();
+            return;
+        }
+    }
+
     if(!charSelectorLeft.isLocked() && charSelectorLeft.getInputInterpreter() != nullptr && charSelectorLeft.getInputInterpreter()->isInputPressed(Unit::Input::Back)){
         gameStateManager.popState();
+        return;
     }
 
     if(!charSelectorRight.isLocked() && charSelectorRight.getInputInterpreter() != nullptr && charSelectorRight.getInputInterpreter()->isInputPressed(Unit::Input::Back)) {
         gameStateManager.popState();
+        return;
     }
 
     charSelectorLeft.update(dt);

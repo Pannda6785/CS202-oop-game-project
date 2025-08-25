@@ -1,6 +1,7 @@
 #include "OptionsState.hpp"
 #include "../GameStateManager.hpp"
 #include "./sound_options/SoundOptions.hpp"
+#include "./graphic_options/GraphicOptions.hpp"
 #include "../../../audio/AudioManager.hpp"
 #include "../keybinding_state/KeybindingState.hpp"
 
@@ -44,6 +45,8 @@ void OptionsState::enter(){
     graphicsButton->setOnClickListener([this]() {
         AudioManager::getInstance().playSound("ClickButton");
         std::cout << "Graphics Options" << std::endl;
+        setVisible(false);
+        gameStateManager.pushState(std::make_unique<GraphicOptions>(gameStateManager, behindDots));
     });
     graphicsButton->setOnHoverEnterListener([this]() {
         std::cout << "Hovered over Graphics Options button!" << std::endl;

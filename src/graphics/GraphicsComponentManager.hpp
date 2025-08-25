@@ -31,6 +31,8 @@ public:
     int getWindowWidth() const { return windowWidth; }
     int getWindowHeight() const { return windowHeight; }
 
+    bool isToggleFullScreen() const;
+
 private:
     GraphicsComponentManager();
     ~GraphicsComponentManager();

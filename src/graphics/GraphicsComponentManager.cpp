@@ -119,3 +119,7 @@ void GraphicsComponentManager::addTaggedCamera(const Camera2D& camera, const std
 void GraphicsComponentManager::removeTaggedCamera(const std::string& tag) {
     taggedCameras.erase(tag);
 }
+
+bool GraphicsComponentManager::isToggleFullScreen() const {
+    return isFullscreen;
+}

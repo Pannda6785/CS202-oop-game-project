@@ -9,6 +9,7 @@ class TextureManager {
 public:
     static TextureManager& instance();
 
+    void preloadTextures();
     const Texture* getTexture(std::string path);
     void clear();
 
@@ -19,6 +20,8 @@ private:
     // Delete copy/move
     TextureManager(const TextureManager&) = delete;
     TextureManager& operator=(const TextureManager&) = delete;
+
+    void loadTexture(const std::string& path);
 
     std::unordered_map<std::string, Texture> textureCache;
 };

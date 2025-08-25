@@ -129,6 +129,10 @@ Button* ButtonManager::getButton(int idx) {
     return buttons[idx].get();
 }
 
+std::vector<std::unique_ptr<Button>>& ButtonManager::getButtons() {
+    return buttons;
+}
+
 void ButtonManager::setVisible(bool visible){
     for(auto &button : buttons){
         button->getGraphicsComponent()->setVisible(visible);
