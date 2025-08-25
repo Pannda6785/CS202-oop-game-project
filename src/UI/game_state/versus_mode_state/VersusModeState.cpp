@@ -44,7 +44,6 @@ void VersusModeState::update(float dt) {
             gameStateManager.popState();
         } else if(selectedOption == PostGameOption::RESTART) {
             // Handle restart
-            world->init();
             std::cout << "HANDLE RESTART" << std::endl;
             selectedOption = PostGameOption::RESUME;
         }
@@ -52,7 +51,6 @@ void VersusModeState::update(float dt) {
     if(paused){
         auto pauseStateBuilder = std::make_unique<PostGameplayMenuStateBuilder>(gameStateManager, selectedOption);
         pauseStateBuilder->setResumeButton()
-                         .setRestartButton()
                          .setCharSelectButton()
                          .setMainMenuButton()
                          .setHeaderText("PAUSED");
@@ -60,8 +58,7 @@ void VersusModeState::update(float dt) {
     }
     if(isGameEnded && selectedOption == PostGameOption::RESUME) {
         auto endGameStateBuilder = std::make_unique<PostGameplayMenuStateBuilder>(gameStateManager, selectedOption);
-        endGameStateBuilder->setRestartButton()
-                         .setCharSelectButton()
+        endGameStateBuilder->setCharSelectButton()
                          .setMainMenuButton()
                          .setHeaderText(world->getFinalResults());
         gameStateManager.pushState(endGameStateBuilder->build());

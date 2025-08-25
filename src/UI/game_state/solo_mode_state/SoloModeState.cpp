@@ -90,7 +90,6 @@ void SoloModeState::update(float dt) {
     if (paused) {
         auto pauseStateBuilder = std::make_unique<PostGameplayMenuStateBuilder>(gameStateManager, selectedOption);
         pauseStateBuilder->setResumeButton()
-                         .setRestartButton()
                          .setMainMenuButton()
                          .setHeaderText("PAUSED");
         gameStateManager.pushState(pauseStateBuilder->build());
