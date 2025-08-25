@@ -15,7 +15,7 @@ SoundOptions::~SoundOptions(){
 void SoundOptions::enter() {
     
     // Add buttons for sound options
-    int buttonWidth = GetScreenWidth();
+    int buttonWidth = GraphicsComponentManager::NATIVE_WIDTH;
     int buttonHeight = 80;
     int coordYFirstButton = 200;
     int buttonSpacing = 15;
@@ -37,7 +37,7 @@ void SoundOptions::enter() {
                  "OPTIONS", 
                  headingPosY, 
                  fontSize, 
-                 {(GetScreenWidth() - dividerLineLength) / 2.0f, dividerLineY * 1.0f, dividerLineLength * 1.0f, dividerLineThickness * 1.0f});
+                 {(GraphicsComponentManager::NATIVE_WIDTH - dividerLineLength) / 2.0f, dividerLineY * 1.0f, dividerLineLength * 1.0f, dividerLineThickness * 1.0f});
     
     // Master Volume button
     std::unique_ptr<Button> masterVolumeButton = std::make_unique<Button>(

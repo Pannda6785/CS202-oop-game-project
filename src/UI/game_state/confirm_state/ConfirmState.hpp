@@ -1,6 +1,7 @@
 #ifndef CONFIRM_STATE_HPP
 #define CONFIRM_STATE_HPP
 
+#include "../../../graphics/GraphicsComponentManager.hpp"
 #include "../GameState.hpp"
 #include "../../button/ButtonManager.hpp"
 #include "../main_menu_state/BehindDots.hpp"

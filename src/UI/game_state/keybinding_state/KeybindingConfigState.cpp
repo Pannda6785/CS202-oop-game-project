@@ -35,7 +35,7 @@ void KeybindingConfigState::enter() {
     int buttonSpacing = 10;
     int buttonY = -30;
     for(int i = 0; i < static_cast<int>(Unit::Input::InputCount); i++){
-        Vector2 position = {GetScreenWidth() / 2 - buttonWidth / 2, buttonY += (buttonHeight + buttonSpacing)};
+        Vector2 position = {GraphicsComponentManager::NATIVE_WIDTH / 2 - buttonWidth / 2, buttonY += (buttonHeight + buttonSpacing)};
         auto interpreter = InputInterpreterManager::getInstance().getInterpreter(playerIndex);
         auto keyboardInterpreter = std::dynamic_pointer_cast<KeyboardInputInterpreter>(interpreter);
         if (keyboardInterpreter) {
@@ -75,7 +75,7 @@ void KeybindingConfigState::enter() {
     }
     // Return button
     std::unique_ptr<Button> returnButton = std::make_unique<Button>(
-        GetScreenWidth() / 2 - buttonWidth / 2, 
+        GraphicsComponentManager::NATIVE_WIDTH / 2 - buttonWidth / 2, 
         buttonY += buttonHeight + buttonSpacing,
         buttonWidth, 
         buttonHeight, 

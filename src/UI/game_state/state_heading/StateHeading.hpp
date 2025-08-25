@@ -4,6 +4,7 @@
 #include <raylib.h>
 #include <string>
 #include "../../../graphics/GraphicsComponent.hpp"
+#include "../../../graphics/GraphicsComponentManager.hpp"
 
 class StateHeading : public GraphicsComponent {
 public:

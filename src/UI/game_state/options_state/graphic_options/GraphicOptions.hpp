@@ -31,8 +31,7 @@ private:
     void setFullscreen(bool enable);
     
     // Buttons
-    int resolutionNativeButtonIndex = -1;
-    int resolution1080pButtonIndex = -1;
+    int windowedButtonIndex = -1;
     int fullscreenButtonIndex = -1;
 };
 

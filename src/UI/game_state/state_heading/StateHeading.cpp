@@ -49,11 +49,11 @@ void StateHeading::updatePosition() {
             break;
             
         case Alignment::MIDDLE:
-            position.x = GetScreenWidth() / 2 - textWidth / 2 + offset;
+            position.x = GraphicsComponentManager::NATIVE_WIDTH / 2 - textWidth / 2 + offset;
             break;
             
         case Alignment::RIGHT:
-            position.x = GetScreenWidth() - textWidth - offset;
+            position.x = GraphicsComponentManager::NATIVE_WIDTH - textWidth - offset;
             break;
     }
 }

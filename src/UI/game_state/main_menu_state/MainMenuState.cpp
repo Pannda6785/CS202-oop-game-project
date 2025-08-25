@@ -24,7 +24,7 @@ void MainMenuState::enter() {
     movingTileEffect[0].addTexture("../assets/background/side_lines.png");
     movingTileEffect[1].addTexture("../assets/background/tile_pattern_1.png");
     for(int i = 0; i < 2; i++){
-        movingTileEffect[i].setRestrictArea({0.0f, -100.0f, (float)GetScreenWidth(), (float)GetScreenHeight() + 100.0f});
+        movingTileEffect[i].setRestrictArea({0.0f, -100.0f, (float)GraphicsComponentManager::NATIVE_WIDTH, (float)GraphicsComponentManager::NATIVE_HEIGHT + 100.0f});
     }
     behindDots.loadDotTexture("../assets/UI_sprites/decoration/arround_dot.png");
     int buttonWidth = 720;

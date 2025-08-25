@@ -28,9 +28,9 @@ void CharSelectPreview::enter() {
         charNamePosition = getSymetricPos(charNamePosition);
         charNamePosition.x -= charName.getWidth();
         
-        ribbonBackgroundRect = {GetScreenWidth() / 2.0f, (float)GetScreenHeight() - belowBackgroundHeight - ribbonBackgroundHeight, (float)GetScreenWidth() / 2.0f, ribbonBackgroundHeight};
+        ribbonBackgroundRect = {GraphicsComponentManager::NATIVE_WIDTH / 2.0f, (float)GraphicsComponentManager::NATIVE_HEIGHT - belowBackgroundHeight - ribbonBackgroundHeight, (float)GraphicsComponentManager::NATIVE_WIDTH / 2.0f, ribbonBackgroundHeight};
         
-        backgroundRect = {GetScreenWidth() / 2.0f, 0.0f, GetScreenWidth() / 2.0f, GetScreenHeight() * 1.0f};
+        backgroundRect = {GraphicsComponentManager::NATIVE_WIDTH / 2.0f, 0.0f, GraphicsComponentManager::NATIVE_WIDTH / 2.0f, GraphicsComponentManager::NATIVE_HEIGHT * 1.0f};
         
         for(int i = 0; i < 3; i++){
             backgroundTilesPosition[i] = getSymetricPos(backgroundTilesPosition[i]);
@@ -60,7 +60,7 @@ void CharSelectPreview::enter() {
     background.setLayer(LayerInfoProvider::getInstance().getLayer("background"));
 
     belowBackground.setLayer(LayerInfoProvider::getInstance().getLayer("below_background"));
-    belowBackground.setBackgroundRect({isLeft ? 0 : GetScreenWidth() / 2.0f, (float)GetScreenHeight() - belowBackgroundHeight, (float)GetScreenWidth() / 2.0f, belowBackgroundHeight});
+    belowBackground.setBackgroundRect({isLeft ? 0 : GraphicsComponentManager::NATIVE_WIDTH / 2.0f, (float)GraphicsComponentManager::NATIVE_HEIGHT - belowBackgroundHeight, (float)GraphicsComponentManager::NATIVE_WIDTH / 2.0f, belowBackgroundHeight});
     belowBackground.setBackgroundColor(BLACK);
 
     ribbonBackground.setLayer(LayerInfoProvider::getInstance().getLayer("ribbon_background"));
@@ -75,7 +75,7 @@ void CharSelectPreview::enter() {
 
     for(int i = 0; i < 3; i++){
         backgroundTiles[i].setScale(0.60f);
-        backgroundTiles[i].setRestrictArea({isLeft ? 0 : (float)GetScreenWidth() / 2.0f, 0, (float)GetScreenWidth() / 2.0f, (float)GetScreenHeight()});
+        backgroundTiles[i].setRestrictArea({isLeft ? 0 : (float)GraphicsComponentManager::NATIVE_WIDTH / 2.0f, 0, (float)GraphicsComponentManager::NATIVE_WIDTH / 2.0f, (float)GraphicsComponentManager::NATIVE_HEIGHT});
         backgroundTiles[i].setUpward(!isLeft);
         backgroundTilesLayer[i] = LayerInfoProvider::getInstance().getLayer("background_tile_" + std::to_string(i));
         backgroundTiles[i].setExpandingTime(expandingTilesTime);
@@ -89,12 +89,12 @@ void CharSelectPreview::enter() {
     frontTile.setScale(0.60f);
     frontTile.addTexture("../assets/UI_sprites/side_ribbon.png");
     if(isLeft){
-        frontTile.setRestrictArea({-100, 0, (float)GetScreenWidth() / 2.0f, (float)GetScreenHeight()});
+        frontTile.setRestrictArea({-100, 0, (float)GraphicsComponentManager::NATIVE_WIDTH / 2.0f, (float)GraphicsComponentManager::NATIVE_HEIGHT});
     } else{
-        frontTile.setRestrictArea({(float)GetScreenWidth() / 2.0f, 0, GetScreenWidth() / 2.0f, (float)GetScreenHeight()});
+        frontTile.setRestrictArea({(float)GraphicsComponentManager::NATIVE_WIDTH / 2.0f, 0, GraphicsComponentManager::NATIVE_WIDTH / 2.0f, (float)GraphicsComponentManager::NATIVE_HEIGHT});
     }
     frontTile.setInitialNumTiles(isLeft ? 8 : 10);
-    frontTile.setStartPosition({ribbonBackgroundRect.x, (float)GetScreenHeight() - 22.0f});
+    frontTile.setStartPosition({ribbonBackgroundRect.x, (float)GraphicsComponentManager::NATIVE_HEIGHT - 22.0f});
     frontTile.setAngle(90.0f);
     frontTile.setSpeed(50.0f);
     frontTile.setLayer(LayerInfoProvider::getInstance().getLayer("front_tile"));
@@ -183,6 +183,6 @@ void CharSelectPreview::update(float dt) {
 }
 
 Vector2 CharSelectPreview::getSymetricPos(Vector2 pos) {
-    float dx = GetScreenWidth() / 2.0f - pos.x;
-    return {GetScreenWidth() / 2.0f + dx, pos.y};
+    float dx = GraphicsComponentManager::NATIVE_WIDTH / 2.0f - pos.x;
+    return {GraphicsComponentManager::NATIVE_WIDTH / 2.0f + dx, pos.y};
 }
